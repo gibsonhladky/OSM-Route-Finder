@@ -5,8 +5,8 @@ import java.util.ArrayList;
  */
 public class AStarSearch 
 {		
-	public ArrayList<SearchPoint> frontier;
-	public ArrayList<SearchPoint> explored;
+	private ArrayList<SearchPoint> frontier;
+	private ArrayList<SearchPoint> explored;
 
 	// Two SearchPoints to keep track of the start and goal
 	public SearchPoint startPoint, goalPoint;

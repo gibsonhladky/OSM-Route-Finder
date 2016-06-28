@@ -9,15 +9,12 @@ public class SearchPoint implements Comparable<SearchPoint>
 	public Map.Point mapPoint;
 	
 	// g and gInitialized are used in g() to reduce recursion
-	public float distanceFromStart;
-	public boolean distanceFromStartInitialized;
+	private float distanceFromStart;
+	private boolean distanceFromStartInitialized;
+
 	// traceback pointer for getSolution()
 	public SearchPoint prev;
 	
-	// Returns the Euclidean 12 distance between any two points
-	public float euclidean_dist(Map.Point a, Map.Point b) {
-		return (float)(Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y,2)));
-	}
 	
 	// Takes a Map Point and SearchPoint as input
 	public SearchPoint(Map.Point startPoint, Map.Point goalPoint, int heuristic, Map.Point mapPoint, SearchPoint prev) {
@@ -25,9 +22,9 @@ public class SearchPoint implements Comparable<SearchPoint>
 		this.goalPoint = goalPoint;
 		this.mapPoint = mapPoint;
 		this.heuristic = heuristic;
+		this.prev = prev;
 		distanceFromStart = 0;
 		distanceFromStartInitialized = false;
-		this.prev = prev;
 	}
 	
 	/*
@@ -59,18 +56,16 @@ public class SearchPoint implements Comparable<SearchPoint>
 	 * specified heuristic:
 	 * 0: always estimate zero, 1: manhattan distance, 2: euclidean l2 distance
 	 */
-	public float heuristicCostToReach(int heuristic, Map.Point goal)
+	public float heuristicCostToReach()
 	{
-		// Zero Heuristic
-		if(heuristic == 0)
+		if(heuristic == 0) {
 			return (float)0;
-		// Manhattan Distance
-		else if(heuristic == 1) {
-			return Math.abs(mapPoint.x - goal.x) + Math.abs(mapPoint.y - goal.y);
 		}
-		// Euclidean 12 distance
+		else if(heuristic == 1) {
+			return Math.abs(mapPoint.x - goalPoint.x) + Math.abs(mapPoint.y - goalPoint.y);
+		}
 		else {
-			return euclidean_dist(goal, this.mapPoint);
+			return euclidean_dist(goalPoint, this.mapPoint);
 		}
 	}
 	
@@ -79,7 +74,7 @@ public class SearchPoint implements Comparable<SearchPoint>
 	 */
 	public float expectedCost()
 	{
-		return heuristicCostToReach(heuristic, goalPoint) + distanceFromStart();
+		return heuristicCostToReach() + distanceFromStart();
 	}
 	
 	/*
@@ -94,10 +89,12 @@ public class SearchPoint implements Comparable<SearchPoint>
 		if(other.expectedCost() == this.expectedCost()){
 			if(other.distanceFromStart() == this.distanceFromStart()) 
 				return 0;
-			else if(other.distanceFromStart() > this.distanceFromStart()) 
+			else if(other.distanceFromStart() > this.distanceFromStart()) {
 				return -1;
-			else 
+			}
+			else { 
 				return 1;
+			}
 		}
 		else if(other.expectedCost() < this.expectedCost()) {
 			return 1;
@@ -114,18 +111,15 @@ public class SearchPoint implements Comparable<SearchPoint>
 	@Override
 	public boolean equals(Object other)
 	{
-		// Return false for non-SearchPoint objects
 		if(other.getClass() != this.getClass()){
 			return false;
 		}
 		
-		// Convert 'other' to a SearchPoint object
-		SearchPoint newsp = (SearchPoint) other;
-		
-		// Return true if both SearchPoints have the same Map.Point
-		if(newsp.mapPoint.equals(this.mapPoint)){
-			return true;
-		}
-		return false;
+		return ((SearchPoint)other).mapPoint.equals(this.mapPoint);
+	}
+
+	// Returns the Euclidean 12 distance between any two points
+	public float euclidean_dist(Map.Point a, Map.Point b) {
+		return (float)Math.sqrt( Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2) );
 	}
 }
