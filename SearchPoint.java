@@ -17,8 +17,8 @@ public class SearchPoint implements Comparable<SearchPoint>
 	public SearchPoint prev;
 	
 	// Returns the Euclidean 12 distance between any two points
-	public float euclidean_dist(SearchPoint a, SearchPoint b) {
-		return (float)(Math.sqrt(Math.pow(a.mapPoint.x - b.mapPoint.x, 2) + Math.pow(a.mapPoint.y - b.mapPoint.y,2)));
+	public float euclidean_dist(Map.Point a, Map.Point b) {
+		return (float)(Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y,2)));
 	}
 	
 	// SearchPoint constructor. 
@@ -49,7 +49,7 @@ public class SearchPoint implements Comparable<SearchPoint>
 		}
 		// All other points:
 		else {
-			this.g = this.prev.minimumCostToReach() + euclidean_dist(this, this.prev);
+			this.g = this.prev.minimumCostToReach() + euclidean_dist(this.mapPoint, this.prev.mapPoint);
 			return g;
 		}
 	}	
@@ -57,18 +57,18 @@ public class SearchPoint implements Comparable<SearchPoint>
 	// TODO - implement this method to return the heuristic estimate
 	// of the remaining cost, based on the H parameter passed from main:
 	// 0: always estimate zero, 1: manhattan distance, 2: euclidean l2 distance
-	public float heuristicCostToReach()
+	public float heuristicCostToReach(int heuristic, Map.Point goal)
 	{
 		// Zero Heuristic
-		if(this.gibson_HLADKY_AStar.H == 0)
+		if(heuristic == 0)
 			return (float)0;
 		// Manhattan Distance
-		else if(this.gibson_HLADKY_AStar.H == 1) {
-			return Math.abs(mapPoint.x - this.gibson_HLADKY_AStar.goalPoint.mapPoint.x) + Math.abs(mapPoint.y - this.gibson_HLADKY_AStar.goalPoint.mapPoint.y);
+		else if(heuristic == 1) {
+			return Math.abs(mapPoint.x - goal.x) + Math.abs(mapPoint.y - goal.y);
 		}
 		// Euclidean 12 distance
 		else {
-			return euclidean_dist(this.gibson_HLADKY_AStar.goalPoint, this);
+			return euclidean_dist(goal, this.mapPoint);
 		}
 	}
 	
@@ -77,7 +77,7 @@ public class SearchPoint implements Comparable<SearchPoint>
 	 */
 	public float expectedCost()
 	{
-		return heuristicCostToReach() + minimumCostToReach();
+		return heuristicCostToReach(this.gibson_HLADKY_AStar.H, this.gibson_HLADKY_AStar.goalPoint.mapPoint) + minimumCostToReach();
 	}
 	
 	// TODO - override this compareTo method to help sort the points in 
