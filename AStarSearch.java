@@ -65,7 +65,7 @@ public class AStarSearch
 			if(getFrontier().contains(neighbors.get(i))) {
 				SearchPoint newPoint = new SearchPoint(this, neighbors.get(i), currPoint);
 				for(int j = 0; j < frontier.size(); j++) {
-					if(frontier.get(j).equals(newPoint) && frontier.get(j).minimumCostToReach() > newPoint.minimumCostToReach()) {
+					if(frontier.get(j).equals(newPoint) && frontier.get(j).distanceFromStart() > newPoint.distanceFromStart()) {
 						frontier.set(j, newPoint);
 					}
 				}

@@ -2,17 +2,13 @@
 
 public class SearchPoint implements Comparable<SearchPoint>
 {
-	/*
-	 * 
-	 */
 	private final AStarSearch gibson_HLADKY_AStar;
 
 	public Map.Point mapPoint;
-	// TODO - add any extra member fields or methods that you would like here
 	
 	// g and gInitialized are used in g() to reduce recursion
-	public float g;
-	public boolean gInitialized;
+	public float distanceFromStart;
+	public boolean distanceFromStartInitialized;
 	// traceback pointer for getSolution()
 	public SearchPoint prev;
 	
@@ -21,42 +17,44 @@ public class SearchPoint implements Comparable<SearchPoint>
 		return (float)(Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y,2)));
 	}
 	
-	// SearchPoint constructor. 
 	// Takes a Map Point and SearchPoint as input
 	public SearchPoint(AStarSearch gibson_HLADKY_AStar, Map.Point x, SearchPoint prev) {
 		this.gibson_HLADKY_AStar = gibson_HLADKY_AStar;
 		this.mapPoint = x;
-		g = 0;
-		gInitialized = false;
+		distanceFromStart = 0;
+		distanceFromStartInitialized = false;
 		this.prev = prev;
 	}
 	
-	// TODO - implement this method to return the minimum cost
-	// necessary to travel from the start point to here
+	/*
+	 * Returns the minimum cost to reach this point from the start point.
+	 */
 	public float distanceFromStart()
 	{	
 		// Avoid high recursion costs:
-		if(gInitialized) {
-			return g;
+		if(distanceFromStartInitialized) {
+			return distanceFromStart;
 		}
 		
-		gInitialized = true;
+		distanceFromStartInitialized = true;
 		// Recursively solve for g()
 		// Start point initialization:
 		if(this.mapPoint.equals(this.gibson_HLADKY_AStar.startPoint.mapPoint)) {
-			this.g = 0;
-			return g;
+			this.distanceFromStart = 0;
+			return distanceFromStart;
 		}
 		// All other points:
 		else {
-			this.g = this.prev.distanceFromStart() + euclidean_dist(this.mapPoint, this.prev.mapPoint);
-			return g;
+			this.distanceFromStart = this.prev.distanceFromStart() + euclidean_dist(this.mapPoint, this.prev.mapPoint);
+			return distanceFromStart;
 		}
 	}	
 	
-	// TODO - implement this method to return the heuristic estimate
-	// of the remaining cost, based on the H parameter passed from main:
-	// 0: always estimate zero, 1: manhattan distance, 2: euclidean l2 distance
+	/*
+	 * Returns the estimated cost to reach the goal point based on the
+	 * specified heuristic:
+	 * 0: always estimate zero, 1: manhattan distance, 2: euclidean l2 distance
+	 */
 	public float heuristicCostToReach(int heuristic, Map.Point goal)
 	{
 		// Zero Heuristic
@@ -80,18 +78,15 @@ public class SearchPoint implements Comparable<SearchPoint>
 		return heuristicCostToReach(this.gibson_HLADKY_AStar.H, this.gibson_HLADKY_AStar.goalPoint.mapPoint) + distanceFromStart();
 	}
 	
-	// TODO - override this compareTo method to help sort the points in 
-	// your frontier from highest priority = lowest f(), and break ties
-	// using whichever point has the lowest g()
+	/*
+	 * Compares on priority:
+	 * <: lower expected cost OR equal expected cost and lower heuristic cost.
+	 * ==: equal expected cost and heuristic cost.
+	 * >: higher expected cost OR equal expected cost and higher heuristic cost.
+	 */
 	@Override
 	public int compareTo(SearchPoint other)
 	{
-		// Compare on Priority:
-		// lower f() = -1
-		// higher f() = 1
-		// equal f() = tie break on g()
-		// equal f() and g() = 0
-		
 		if(other.expectedCost() == this.expectedCost()){
 			if(other.distanceFromStart() == this.distanceFromStart()) 
 				return 0;
@@ -108,8 +103,10 @@ public class SearchPoint implements Comparable<SearchPoint>
 		}
 	}
 	
-	// TODO - override this equals to help you check whether your ArrayLists
-	// already contain a SearchPoint referencing a given Map.Point
+	/*
+	 * Returns true if and only if the search points refer to
+	 * the same map points.
+	 */
 	@Override
 	public boolean equals(Object other)
 	{
