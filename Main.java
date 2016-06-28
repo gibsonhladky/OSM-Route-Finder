@@ -1,7 +1,9 @@
 import java.util.ArrayList;
 import processing.core.*;
 
-
+/*
+ * Original implementation by Gary Dahl
+ */
 public class Main extends PApplet
 {
 	GIBSON_HLADKY_AStar search; // your implementation of A* search

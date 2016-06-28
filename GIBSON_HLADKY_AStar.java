@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.Collections;
 
+/*
+ * Original structure provided by Gary Dahl
+ */
 public class GIBSON_HLADKY_AStar 
 {		
 	public ArrayList<SearchPoint> frontier;

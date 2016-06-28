@@ -2,6 +2,9 @@ import java.util.*;
 import processing.core.*;
 import processing.data.*;
 
+/*
+ * Original implementation by Gary Dahl
+ */
 public class Map 
 {
 	// access to all points and streets
