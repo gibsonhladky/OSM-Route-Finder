@@ -4,3 +4,5 @@
 /Map$Point.class
 /Map$Street.class
 /Map.class
+/SearchPoint.class
+/AStarSearch.class
