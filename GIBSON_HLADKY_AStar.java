@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Collections;
 
 /*
  * Original structure provided by Gary Dahl
@@ -8,136 +7,12 @@ public class GIBSON_HLADKY_AStar
 {		
 	public ArrayList<SearchPoint> frontier;
 	public ArrayList<SearchPoint> explored;
-	// TODO - add any extra member fields that you would like here 
 
-	// Two SearchPoints to keep track of our start and goal
+	// Two SearchPoints to keep track of the start and goal
 	public SearchPoint startPoint, goalPoint;
 	
 	// The chosen heuristic
 	public int H;
-	
-	public class SearchPoint implements Comparable<SearchPoint>
-	{
-		public Map.Point mapPoint;
-		// TODO - add any extra member fields or methods that you would like here
-		
-		// g and gInitialized are used in g() to reduce recursion
-		public float g;
-		public boolean gInitialized;
-		// traceback pointer for getSolution()
-		public SearchPoint prev;
-		
-		// Returns the Euclidean 12 distance between any two points
-		public float euclidean_dist(SearchPoint a, SearchPoint b) {
-			return (float)(Math.sqrt(Math.pow(a.mapPoint.x - b.mapPoint.x, 2) + Math.pow(a.mapPoint.y - b.mapPoint.y,2)));
-		}
-		
-		// SearchPoint constructor. 
-		// Takes a Map Point and SearchPoint as input
-		public SearchPoint(Map.Point x, SearchPoint prev) {
-			this.mapPoint = x;
-			g = 0;
-			gInitialized = false;
-			this.prev = prev;
-		}
-		
-		// TODO - implement this method to return the minimum cost
-		// necessary to travel from the start point to here
-		public float g()
-		{	
-			// Avoid high recursion costs:
-			if(gInitialized) {
-				return g;
-			}
-			
-			gInitialized = true;
-			// Recursively solve for g()
-			// Start point initialization:
-			if(this.mapPoint.equals(startPoint.mapPoint)) {
-				this.g = 0;
-				return g;
-			}
-			// All other points:
-			else {
-				this.g = this.prev.g() + euclidean_dist(this, this.prev);
-				return g;
-			}
-		}	
-		
-		// TODO - implement this method to return the heuristic estimate
-		// of the remaining cost, based on the H parameter passed from main:
-		// 0: always estimate zero, 1: manhattan distance, 2: euclidean l2 distance
-		public float h()
-		{
-			// Zero Heuristic
-			if(H == 0)
-				return (float)0;
-			// Manhattan Distance
-			else if(H == 1) {
-				return Math.abs(mapPoint.x - goalPoint.mapPoint.x) + Math.abs(mapPoint.y - goalPoint.mapPoint.y);
-			}
-			// Euclidean 12 distance
-			else {
-				return euclidean_dist(goalPoint, this);
-			}
-		}
-		
-		// TODO - implement this method to return to final priority for this
-		// point, which include the cost spent to reach it and the heuristic 
-		// estimate of the remaining cost
-		public float f()
-		{
-			return h() + g();
-		}
-		
-		// TODO - override this compareTo method to help sort the points in 
-		// your frontier from highest priority = lowest f(), and break ties
-		// using whichever point has the lowest g()
-		@Override
-		public int compareTo(SearchPoint other)
-		{
-			// Compare on Priority:
-			// lower f() = -1
-			// higher f() = 1
-			// equal f() = tie break on g()
-			// equal f() and g() = 0
-			
-			if(other.f() == this.f()){
-				if(other.g() == this.g()) 
-					return 0;
-				else if(other.g() > this.g()) 
-					return -1;
-				else 
-					return 1;
-			}
-			else if(other.f() < this.f()) {
-				return 1;
-			}
-			else {
-				return -1;
-			}
-		}
-		
-		// TODO - override this equals to help you check whether your ArrayLists
-		// already contain a SearchPoint referencing a given Map.Point
-		@Override
-		public boolean equals(Object other)
-		{
-			// Return false for non-SearchPoint objects
-			if(other.getClass() != this.getClass()){
-				return false;
-			}
-			
-			// Convert 'other' to a SearchPoint object
-			SearchPoint newsp = (SearchPoint) other;
-			
-			// Return true if both SearchPoints have the same Map.Point
-			if(newsp.mapPoint.equals(this.mapPoint)){
-				return true;
-			}
-			return false;
-		}
-	}
 	
 	// TODO - implement this constructor to initialize your member variables
 	// and search, by adding the start point to your frontier.  The parameter
@@ -145,8 +20,8 @@ public class GIBSON_HLADKY_AStar
 	// 0: always estimate zero, 1: manhattan distance, 2: euclidean l2 distance
 	public GIBSON_HLADKY_AStar(Map map, int H)
 	{
-		this.startPoint = new SearchPoint(map.start, null);
-		this.goalPoint = new SearchPoint(map.end, null);
+		this.startPoint = new SearchPoint(this, map.start, null);
+		this.goalPoint = new SearchPoint(this, map.end, null);
 		this.H = H;
 		frontier = new ArrayList<SearchPoint>();
 		explored = new ArrayList<SearchPoint>();
@@ -154,10 +29,11 @@ public class GIBSON_HLADKY_AStar
 		frontier.add(startPoint);
 	}
 	
-	// TODO - implement this method to explore the single highest priority
-	// and lowest f() SearchPoint from your frontier.  This method will be 
-	// called multiple times from Main to help you visualize the search.
-	// This method should not do anything, if your search is complete.
+	/*
+	 * Explores the highest priority (lowest expected cost) node in the frontier
+	 * and adds neighboring nodes to the frontier for further exploration.
+	 * Does nothing if the end point has been found.
+	 */
 	public void exploreNextNode() 
 	{
 		// Do nothing if search is complete
@@ -183,13 +59,13 @@ public class GIBSON_HLADKY_AStar
 		for(int i = 0; i < neighbors.size(); i++) {
 			// Add completely new points to the frontier
 			if(!getFrontier().contains(neighbors.get(i)) && !getExplored().contains(neighbors.get(i))) {
-				frontier.add(new SearchPoint(neighbors.get(i), currPoint));
+				frontier.add(new SearchPoint(this, neighbors.get(i), currPoint));
 			}
 			// Replace points in the frontier if a shorter path to them is found
 			if(getFrontier().contains(neighbors.get(i))) {
-				SearchPoint newPoint = new SearchPoint(neighbors.get(i), currPoint);
+				SearchPoint newPoint = new SearchPoint(this, neighbors.get(i), currPoint);
 				for(int j = 0; j < frontier.size(); j++) {
-					if(frontier.get(j).equals(newPoint) && frontier.get(j).g() > newPoint.g()) {
+					if(frontier.get(j).equals(newPoint) && frontier.get(j).minimumCostToReach() > newPoint.minimumCostToReach()) {
 						frontier.set(j, newPoint);
 					}
 				}
@@ -197,8 +73,9 @@ public class GIBSON_HLADKY_AStar
 		}
 	}
 
-	// TODO - implement this method to return an ArrayList of Map.Points
-	// that represents the SearchPoints in your frontier.
+	/*
+	 *  Returns an ArrayList of Map.Points that represents the SearchPoints in the frontier.
+	 */
 	public ArrayList<Map.Point> getFrontier()
 	{
 		ArrayList<Map.Point> points = new ArrayList<Map.Point>(); 
@@ -208,8 +85,9 @@ public class GIBSON_HLADKY_AStar
 		return points;
 	}
 	
-	// TODO - implement this method to return an ArrayList of Map.Points
-	// that represents the SearchPoints that you have explored.
+	/*
+	 *  Returns an ArrayList of Map.Points that represents the SearchPoints that have been explored.
+	 */
 	public ArrayList<Map.Point> getExplored()
 	{
 		ArrayList<Map.Point> points = new ArrayList<Map.Point>(); 
@@ -219,8 +97,10 @@ public class GIBSON_HLADKY_AStar
 		return points;
 	}
 
-	// TODO - implement this method to return true only after a solution
-	// has been found, or you have determined that no solution is possible.
+	/*
+	 *  Returns true when a search is complete:
+	 *  Either the end has been found, or the end cannot be reached.
+	 */
 	public boolean isComplete()
 	{
 		// Search explored list for the goal point
@@ -236,10 +116,11 @@ public class GIBSON_HLADKY_AStar
 		return false;
 	}
 
-	// TODO - implement this method to return an ArrayList of the Map.Points
-	// that are along the path that you have found from the start to end.  
-	// These points must be in the ArrayList in the order that they are 
-	// traversed while moving along the path that you have found.
+	/*
+	 * Returns a list of the points along the path from start to end.
+	 * The points are ordered by position in path from start to end.
+	 * Returns an empty list if no solution was found.
+	 */
 	public ArrayList<Map.Point> getSolution()
 	{
 		// Grab the end point from the end of the explored list
@@ -259,9 +140,4 @@ public class GIBSON_HLADKY_AStar
 		return solution;
 	}	
 	
-	// Use a simple bubble sort to sort the frontier
-	// This could be improved using a faster search algorithm
-	public void sortFrontier() {
-		
-	}
 }
