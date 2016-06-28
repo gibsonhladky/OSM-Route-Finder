@@ -2,11 +2,11 @@
 
 public class SearchPoint implements Comparable<SearchPoint>
 {
-	private final Map.Point startPoint;
-	private final Map.Point goalPoint;
+	private final Point startPoint;
+	private final Point goalPoint;
 	private final int heuristic;
 
-	public Map.Point mapPoint;
+	public Point mapPoint;
 	
 	// g and gInitialized are used in g() to reduce recursion
 	private float distanceFromStart;
@@ -17,7 +17,7 @@ public class SearchPoint implements Comparable<SearchPoint>
 	
 	
 	// Takes a Map Point and SearchPoint as input
-	public SearchPoint(Map.Point startPoint, Map.Point goalPoint, int heuristic, Map.Point mapPoint, SearchPoint prev) {
+	public SearchPoint(Point startPoint, Point goalPoint, int heuristic, Point mapPoint, SearchPoint prev) {
 		this.startPoint = startPoint;
 		this.goalPoint = goalPoint;
 		this.mapPoint = mapPoint;
@@ -119,7 +119,7 @@ public class SearchPoint implements Comparable<SearchPoint>
 	}
 
 	// Returns the Euclidean 12 distance between any two points
-	public float euclidean_dist(Map.Point a, Map.Point b) {
+	public float euclidean_dist(Point a, Point b) {
 		return (float)Math.sqrt( Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2) );
 	}
 }

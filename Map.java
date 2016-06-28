@@ -13,26 +13,7 @@ public class Map
 	// actual points to search between
 	public Point start;
 	public Point end;
-	// point class
-	public class Point 
-	{
-		// x and y screen coordinate
-		public float x;
-		public float y;
-		// list of points connected to this one by roads
-		public ArrayList<Point> neighbors;
-		// temporary variable used to cull unused points
-		public boolean isOnStreet; 
-
-		public Point(float x, float y)
-		{
-			this.x = x;
-			this.y = y;
-			neighbors = new ArrayList<Point>();
-			isOnStreet = false;
-			allPoints.add(this);
-		}	
-	}
+	
 
 	// YOU CAN IGNORE THE REST OF THIS FILE FOR THE PURPOSES
 	// OF COMPLETING THIS ASSIGNMENT...
@@ -67,9 +48,7 @@ public class Map
 		read(filename);
 		// initialize gui points near center of the screen
 		guiStart = new Point(p.width * 4 / 10, p.height / 2);
-		allPoints.remove(guiStart);
 		guiEnd = new Point(p.width * 6 / 10, p.height / 2);
-		allPoints.remove(guiEnd);
 		guiDragging = null;
 		moveEndPointsToClosestStreet();
 	}
@@ -104,6 +83,7 @@ public class Map
 	    	float lat = node.getFloat("lat");
 	    	float lon = node.getFloat("lon");
 	    	Point point = new Point(p.width * (lon-minlon)/dLon, p.height - (usableHeight * (lat-minlat)/dLat) - (p.height-usableHeight)/2);
+	    	allPoints.add(point);
 	    	indexConvert.put(id, allPoints.indexOf(point));
 	    }
 	    

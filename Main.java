@@ -80,7 +80,7 @@ public class Main extends PApplet
 		updateGUI(); // allow user to drag around end points		
 	}
 	
-	public void colorPoints(ArrayList<Map.Point> points, boolean isFrontier)
+	public void colorPoints(ArrayList<Point> points, boolean isFrontier)
 	{
 		if(isFrontier) 
 		{
@@ -95,11 +95,11 @@ public class Main extends PApplet
 			text("EXPLORED: "+points.size(),width/2,32);
 		}
 		
-		for(Map.Point p : points)
+		for(Point p : points)
 			ellipse(p.x,p.y,4,4);
 	}
 	
-	public void drawSolution(ArrayList<Map.Point> points)
+	public void drawSolution(ArrayList<Point> points)
 	{
 		stroke(255); // draw white lines between points
 		strokeWeight(2);
