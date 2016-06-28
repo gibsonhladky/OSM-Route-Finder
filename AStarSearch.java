@@ -20,8 +20,8 @@ public class AStarSearch
 	// 0: always estimate zero, 1: manhattan distance, 2: euclidean l2 distance
 	public AStarSearch(Map map, int H)
 	{
-		this.startPoint = new SearchPoint(this, map.start, null);
-		this.goalPoint = new SearchPoint(this, map.end, null);
+		this.startPoint = new SearchPoint(map.start, map.end, H, map.start, null);
+		this.goalPoint = new SearchPoint(map.start, map.end, H, map.end, null);
 		this.H = H;
 		frontier = new ArrayList<SearchPoint>();
 		explored = new ArrayList<SearchPoint>();
@@ -59,11 +59,11 @@ public class AStarSearch
 		for(int i = 0; i < neighbors.size(); i++) {
 			// Add completely new points to the frontier
 			if(!getFrontier().contains(neighbors.get(i)) && !getExplored().contains(neighbors.get(i))) {
-				frontier.add(new SearchPoint(this, neighbors.get(i), currPoint));
+				frontier.add(new SearchPoint(this.startPoint.mapPoint, this.goalPoint.mapPoint, this.H, neighbors.get(i), currPoint));
 			}
 			// Replace points in the frontier if a shorter path to them is found
 			if(getFrontier().contains(neighbors.get(i))) {
-				SearchPoint newPoint = new SearchPoint(this, neighbors.get(i), currPoint);
+				SearchPoint newPoint = new SearchPoint(this.startPoint.mapPoint, this.goalPoint.mapPoint, this.H, neighbors.get(i), currPoint);
 				for(int j = 0; j < frontier.size(); j++) {
 					if(frontier.get(j).equals(newPoint) && frontier.get(j).distanceFromStart() > newPoint.distanceFromStart()) {
 						frontier.set(j, newPoint);

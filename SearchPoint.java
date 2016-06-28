@@ -2,7 +2,9 @@
 
 public class SearchPoint implements Comparable<SearchPoint>
 {
-	private final AStarSearch gibson_HLADKY_AStar;
+	private final Map.Point startPoint;
+	private final Map.Point goalPoint;
+	private final int heuristic;
 
 	public Map.Point mapPoint;
 	
@@ -18,9 +20,11 @@ public class SearchPoint implements Comparable<SearchPoint>
 	}
 	
 	// Takes a Map Point and SearchPoint as input
-	public SearchPoint(AStarSearch gibson_HLADKY_AStar, Map.Point x, SearchPoint prev) {
-		this.gibson_HLADKY_AStar = gibson_HLADKY_AStar;
-		this.mapPoint = x;
+	public SearchPoint(Map.Point startPoint, Map.Point goalPoint, int heuristic, Map.Point mapPoint, SearchPoint prev) {
+		this.startPoint = startPoint;
+		this.goalPoint = goalPoint;
+		this.mapPoint = mapPoint;
+		this.heuristic = heuristic;
 		distanceFromStart = 0;
 		distanceFromStartInitialized = false;
 		this.prev = prev;
@@ -39,7 +43,7 @@ public class SearchPoint implements Comparable<SearchPoint>
 		distanceFromStartInitialized = true;
 		// Recursively solve for g()
 		// Start point initialization:
-		if(this.mapPoint.equals(this.gibson_HLADKY_AStar.startPoint.mapPoint)) {
+		if(this.mapPoint.equals(startPoint)) {
 			this.distanceFromStart = 0;
 			return distanceFromStart;
 		}
@@ -75,7 +79,7 @@ public class SearchPoint implements Comparable<SearchPoint>
 	 */
 	public float expectedCost()
 	{
-		return heuristicCostToReach(this.gibson_HLADKY_AStar.H, this.gibson_HLADKY_AStar.goalPoint.mapPoint) + distanceFromStart();
+		return heuristicCostToReach(heuristic, goalPoint) + distanceFromStart();
 	}
 	
 	/*
