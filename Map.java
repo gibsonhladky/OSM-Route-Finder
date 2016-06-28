@@ -18,19 +18,6 @@ public class Map
 	// YOU CAN IGNORE THE REST OF THIS FILE FOR THE PURPOSES
 	// OF COMPLETING THIS ASSIGNMENT...
 	
-	public class Street 
-	{
-		public ArrayList<Point> points;
-		public String name;
-		
-		public Street(ArrayList<Point> points, String name)
-		{
-			this.points = points;
-			this.name = name;
-			allStreets.add(this);
-		}	
-	}
-
 	private PApplet p;
 	// extra points to manipulate with gui
 	public Point guiStart;
@@ -126,8 +113,8 @@ public class Map
 	    		points.add(nextPoint);
 	    	}
 	    	// create new street
-	    	@SuppressWarnings("unused")
-			Street street = new Street(points,name);
+			Street street = new Street(points, name);
+	    	allStreets.add(street);
 	    	// add neighboring nodes to each node
 	    	if(points.size() > 1) points.get(0).neighbors.add(points.get(1));
 	    	for(int i=1;i<points.size()-1;i++)
