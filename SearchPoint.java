@@ -33,7 +33,7 @@ public class SearchPoint implements Comparable<SearchPoint>
 	
 	// TODO - implement this method to return the minimum cost
 	// necessary to travel from the start point to here
-	public float minimumCostToReach()
+	public float distanceFromStart()
 	{	
 		// Avoid high recursion costs:
 		if(gInitialized) {
@@ -49,7 +49,7 @@ public class SearchPoint implements Comparable<SearchPoint>
 		}
 		// All other points:
 		else {
-			this.g = this.prev.minimumCostToReach() + euclidean_dist(this.mapPoint, this.prev.mapPoint);
+			this.g = this.prev.distanceFromStart() + euclidean_dist(this.mapPoint, this.prev.mapPoint);
 			return g;
 		}
 	}	
@@ -77,7 +77,7 @@ public class SearchPoint implements Comparable<SearchPoint>
 	 */
 	public float expectedCost()
 	{
-		return heuristicCostToReach(this.gibson_HLADKY_AStar.H, this.gibson_HLADKY_AStar.goalPoint.mapPoint) + minimumCostToReach();
+		return heuristicCostToReach(this.gibson_HLADKY_AStar.H, this.gibson_HLADKY_AStar.goalPoint.mapPoint) + distanceFromStart();
 	}
 	
 	// TODO - override this compareTo method to help sort the points in 
@@ -93,9 +93,9 @@ public class SearchPoint implements Comparable<SearchPoint>
 		// equal f() and g() = 0
 		
 		if(other.expectedCost() == this.expectedCost()){
-			if(other.minimumCostToReach() == this.minimumCostToReach()) 
+			if(other.distanceFromStart() == this.distanceFromStart()) 
 				return 0;
-			else if(other.minimumCostToReach() > this.minimumCostToReach()) 
+			else if(other.distanceFromStart() > this.distanceFromStart()) 
 				return -1;
 			else 
 				return 1;
