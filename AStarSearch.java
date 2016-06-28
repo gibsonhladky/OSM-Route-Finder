@@ -3,7 +3,7 @@ import java.util.ArrayList;
 /*
  * Original structure provided by Gary Dahl
  */
-public class GIBSON_HLADKY_AStar 
+public class AStarSearch 
 {		
 	public ArrayList<SearchPoint> frontier;
 	public ArrayList<SearchPoint> explored;
@@ -18,7 +18,7 @@ public class GIBSON_HLADKY_AStar
 	// and search, by adding the start point to your frontier.  The parameter
 	// H indicates which heuristic you should use while searching:
 	// 0: always estimate zero, 1: manhattan distance, 2: euclidean l2 distance
-	public GIBSON_HLADKY_AStar(Map map, int H)
+	public AStarSearch(Map map, int H)
 	{
 		this.startPoint = new SearchPoint(this, map.start, null);
 		this.goalPoint = new SearchPoint(this, map.end, null);

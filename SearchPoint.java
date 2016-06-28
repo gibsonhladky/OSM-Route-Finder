@@ -5,7 +5,7 @@ public class SearchPoint implements Comparable<SearchPoint>
 	/*
 	 * 
 	 */
-	private final GIBSON_HLADKY_AStar gibson_HLADKY_AStar;
+	private final AStarSearch gibson_HLADKY_AStar;
 
 	public Map.Point mapPoint;
 	// TODO - add any extra member fields or methods that you would like here
@@ -23,7 +23,7 @@ public class SearchPoint implements Comparable<SearchPoint>
 	
 	// SearchPoint constructor. 
 	// Takes a Map Point and SearchPoint as input
-	public SearchPoint(GIBSON_HLADKY_AStar gibson_HLADKY_AStar, Map.Point x, SearchPoint prev) {
+	public SearchPoint(AStarSearch gibson_HLADKY_AStar, Map.Point x, SearchPoint prev) {
 		this.gibson_HLADKY_AStar = gibson_HLADKY_AStar;
 		this.mapPoint = x;
 		g = 0;
