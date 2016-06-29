@@ -1,23 +1,26 @@
+package routeFinder;
 import java.util.ArrayList;
 import processing.core.*;
 
 /*
  * Original implementation by Gary Dahl
  */
-public class Main extends PApplet
+public class MainApplet extends PApplet
 {
-	AStarSearch search; // your implementation of A* search
-	Map map; // map to search for path between start and end points of
-	boolean enterPressed; // press enter to watch entire search until solution
-	boolean spaceWasDown; // press space repeatedly to step through search
+	public AStarSearch search; // your implementation of A* search
+	public Map map; // map to search for path between start and end points of
+	public boolean enterPressed; // press enter to watch entire search until solution
+	public boolean spaceWasDown; // press space repeatedly to step through search
 
+	public String mapFileName = "map.osm";
+	
 	// initialize window
 	public void settings() { size(800, 600); }
 	
 	// load map, and initialize fields along with processing modes
 	public void setup()
 	{		
-		map = new Map("map.osm",this);
+		map = new Map(mapFileName,this);
 		search = null;
 		spaceWasDown = false;
 		enterPressed = false;
@@ -145,6 +148,6 @@ public class Main extends PApplet
 	
 	public static void main(String args[])
 	{
-		PApplet.main(new String[] {"Main"});
+		PApplet.main(new String[] {"routeFinder.MainApplet"});
 	}
 }
