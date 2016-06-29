@@ -21,7 +21,7 @@ public class MainApplet extends PApplet
 	// load map, and initialize fields along with processing modes
 	public void setup()
 	{		
-		map = new Map(mapFileName,this);
+		map = new Map(loadXML(mapFileName), this.width, this.height);
 		mapView = new MapView(map, this);
 		search = null;
 		spaceWasDown = false;
