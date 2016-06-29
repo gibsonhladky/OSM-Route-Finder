@@ -147,21 +147,6 @@ public class Map
 		moveEndPointsToClosestStreet();
 	}
 	
-	public void draw()
-	{
-		applet.stroke(127);
-		applet.strokeWeight(1);
-		for(Street street : allStreets)
-			for(int i=1;i<street.points.size();i++)
-				applet.line(street.points.get(i-1).x,street.points.get(i-1).y,
-					   street.points.get(i).x,  street.points.get(i).y);
-		
-		applet.stroke(0);
-		applet.fill(0);
-		applet.rect(0, 0, applet.width, (applet.height-usableHeight)/2);
-		applet.rect(0, applet.height-(applet.height-usableHeight)/2, applet.width, (applet.height-usableHeight)/2);
-	}
-	
 	public void clear()
 	{
 		allPoints.clear();

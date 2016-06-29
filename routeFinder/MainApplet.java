@@ -9,6 +9,7 @@ public class MainApplet extends PApplet
 {
 	public AStarSearch search; // your implementation of A* search
 	public Map map; // map to search for path between start and end points of
+	private MapView mapView; // View component to draw map to the applet
 	public boolean enterPressed; // press enter to watch entire search until solution
 	public boolean spaceWasDown; // press space repeatedly to step through search
 
@@ -21,6 +22,7 @@ public class MainApplet extends PApplet
 	public void setup()
 	{		
 		map = new Map(mapFileName,this);
+		mapView = new MapView(map, this);
 		search = null;
 		spaceWasDown = false;
 		enterPressed = false;
@@ -33,7 +35,7 @@ public class MainApplet extends PApplet
 	public void draw()
 	{
 		background(0,0,127); // clear display
-		map.draw(); // draw map
+		mapView.draw(); // draw map
 
 		// when solution exists, (potentially) continue search for path
 		if(search != null) 
