@@ -2,17 +2,17 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import routeFinder.Main;
+import routeFinder.MainApplet;
 import routeFinder.Map;
 import routeFinder.Point;
 
 public class ApplicationRunner {
 
-	private Main main;
+	private MainApplet main;
 	public Map SIMPLE_MAP;
 	
 	public void start() {
-		main = new Main();
+		main = new MainApplet();
 	}
 	
 	public void openMap(String mapFileName) {

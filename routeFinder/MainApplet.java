@@ -5,7 +5,7 @@ import processing.core.*;
 /*
  * Original implementation by Gary Dahl
  */
-public class Main extends PApplet
+public class MainApplet extends PApplet
 {
 	public AStarSearch search; // your implementation of A* search
 	public Map map; // map to search for path between start and end points of
@@ -148,6 +148,6 @@ public class Main extends PApplet
 	
 	public static void main(String args[])
 	{
-		PApplet.main(new String[] {"routeFinder.Main"});
+		PApplet.main(new String[] {"routeFinder.MainApplet"});
 	}
 }
