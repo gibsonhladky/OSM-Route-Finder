@@ -1,5 +1,6 @@
 package routeFinder;
 import java.util.*;
+
 import processing.core.*;
 import processing.data.*;
 
@@ -14,44 +15,10 @@ public class Map
 	// actual points to search between
 	public Point start;
 	public Point end;
-	// point class
-	public class Point 
-	{
-		// x and y screen coordinate
-		public float x;
-		public float y;
-		// list of points connected to this one by roads
-		public ArrayList<Point> neighbors;
-		// temporary variable used to cull unused points
-		public boolean isOnStreet; 
-
-		public Point(float x, float y)
-		{
-			this.x = x;
-			this.y = y;
-			neighbors = new ArrayList<Point>();
-			isOnStreet = false;
-			allPoints.add(this);
-		}	
-	}
-
-	// YOU CAN IGNORE THE REST OF THIS FILE FOR THE PURPOSES
-	// OF COMPLETING THIS ASSIGNMENT...
 	
-	public class Street 
-	{
-		public ArrayList<Point> points;
-		public String name;
-		
-		public Street(ArrayList<Point> points, String name)
-		{
-			this.points = points;
-			this.name = name;
-			allStreets.add(this);
-		}	
-	}
-
-	private PApplet p;
+	// A reference to the Processing PApplet used to draw
+	// the map to screen
+	private PApplet applet;
 	// extra points to manipulate with gui
 	public Point guiStart;
 	public Point guiEnd;
@@ -62,37 +29,29 @@ public class Map
 	// based on aspect ration of map data vs 800x600 window
 	public float usableHeight;
 
-	public Map(String filename, PApplet p)
+	public Map(String mapFileName, PApplet p)
 	{
-		this.p = p;
-		read(filename);
-		// initialize gui points near center of the screen
-		guiStart = new Point(p.width * 4 / 10, p.height / 2);
-		allPoints.remove(guiStart);
-		guiEnd = new Point(p.width * 6 / 10, p.height / 2);
-		allPoints.remove(guiEnd);
-		guiDragging = null;
-		moveEndPointsToClosestStreet();
+		this.applet = p;
+		initializePointsAndStreets();
+		loadMap(mapFileName);
+		initializeGuiPoints();
 	}
 	
-	public void read(String filename)
+	public void loadMap(String mapFileName)
 	{
-		// initialize point and street arrays
-		allPoints = new ArrayList<Point>();
-		allStreets = new ArrayList<Street>();
+		XML xml = openXML(mapFileName);
 		
-		// read file
-		XML xml = p.loadXML(filename);
 		
+		// TODO: Extract a MapBounds class
 		// read dimensions to create proportional window
 		//             and to scale myPoint positions
 	    float minlat = xml.getChild("bounds").getFloat("minlat");
 	    float minlon = xml.getChild("bounds").getFloat("minlon");
 	    float maxlat = xml.getChild("bounds").getFloat("maxlat");
 	    float maxlon = xml.getChild("bounds").getFloat("maxlon");
-	    float dLat = maxlat - minlat;
-	    float dLon = maxlon - minlon;
-	    usableHeight = (800*dLat/dLon);
+	    float latRange = maxlat - minlat;
+	    float lonRange = maxlon - minlon;
+	    usableHeight = (800 * latRange / lonRange);
 
 	    // read points
 	    XML nodes[] = xml.getChildren("node");
@@ -104,7 +63,8 @@ public class Map
 	    	long id = node.getLong("id", -1);
 	    	float lat = node.getFloat("lat");
 	    	float lon = node.getFloat("lon");
-	    	Point point = new Point(p.width * (lon-minlon)/dLon, p.height - (usableHeight * (lat-minlat)/dLat) - (p.height-usableHeight)/2);
+	    	Point point = new Point(applet.width * (lon-minlon)/lonRange, applet.height - (usableHeight * (lat-minlat)/latRange) - (applet.height-usableHeight)/2);
+	    	allPoints.add(point);
 	    	indexConvert.put(id, allPoints.indexOf(point));
 	    }
 	    
@@ -147,8 +107,8 @@ public class Map
 	    		points.add(nextPoint);
 	    	}
 	    	// create new street
-	    	@SuppressWarnings("unused")
-			Street street = new Street(points,name);
+			Street street = new Street(points, name);
+	    	allStreets.add(street);
 	    	// add neighboring nodes to each node
 	    	if(points.size() > 1) points.get(0).neighbors.add(points.get(1));
 	    	for(int i=1;i<points.size()-1;i++)
@@ -166,21 +126,40 @@ public class Map
 	    for(Point point : remPoints)
 	    	allPoints.remove(point);
 	}
+
+	private XML openXML(String mapFileName) {
+		return applet.loadXML(mapFileName);
+	}
+
+	private void initializePointsAndStreets() {
+		allPoints = new ArrayList<Point>();
+		allStreets = new ArrayList<Street>();
+	}
+	
+	/*
+	 * Sets the start and end GUI points to an initial state.
+	 * The points are set apart to allow easier usability.
+	 */
+	private void initializeGuiPoints() {
+		guiStart = new Point(applet.width * 2 / 10, applet.height / 2);
+		guiEnd = new Point(applet.width * 8 / 10, applet.height / 2);
+		guiDragging = null;
+		moveEndPointsToClosestStreet();
+	}
 	
 	public void draw()
 	{
-		p.stroke(127);
-		p.strokeWeight(1);
+		applet.stroke(127);
+		applet.strokeWeight(1);
 		for(Street street : allStreets)
 			for(int i=1;i<street.points.size();i++)
-				p.line(street.points.get(i-1).x,street.points.get(i-1).y,
+				applet.line(street.points.get(i-1).x,street.points.get(i-1).y,
 					   street.points.get(i).x,  street.points.get(i).y);
-//		for(Point point : allPoints)
-//			p.ellipse(point.x,point.y,2,2);		
-		p.stroke(0);
-		p.fill(0);
-		p.rect(0, 0, p.width, (p.height-usableHeight)/2);
-		p.rect(0, p.height-(p.height-usableHeight)/2, p.width, (p.height-usableHeight)/2);
+		
+		applet.stroke(0);
+		applet.fill(0);
+		applet.rect(0, 0, applet.width, (applet.height-usableHeight)/2);
+		applet.rect(0, applet.height-(applet.height-usableHeight)/2, applet.width, (applet.height-usableHeight)/2);
 	}
 	
 	public void clear()
@@ -198,7 +177,7 @@ public class Map
 		// find closest point to start and end, save locations, and store mapStart & mapEnd
 		for(Point point : allPoints)
 		{
-			if(point.x < 0 || point.x >= p.width || point.y < 0 || point.y >= p.height) continue;
+			if(point.x < 0 || point.x >= applet.width || point.y < 0 || point.y >= applet.height) continue;
 			
 			distSqr = (guiStart.x-point.x)*(guiStart.x-point.x)+(guiStart.y-point.y)*(guiStart.y-point.y);
 			if(distSqr < dStart)

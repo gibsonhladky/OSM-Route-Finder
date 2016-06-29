@@ -1,8 +1,6 @@
 package routeFinder;
 import java.util.ArrayList;
 
-import routeFinder.Map.Point;
-
 /*
  * Original structure provided by Gary Dahl
  */
@@ -58,7 +56,7 @@ public class AStarSearch
 		explored.add(currPoint);
 		
 		// Add the new neighboring points to the frontier
-		ArrayList<Map.Point> neighbors = currPoint.mapPoint.neighbors;
+		ArrayList<Point> neighbors = currPoint.mapPoint.neighbors;
 		for(int i = 0; i < neighbors.size(); i++) {
 			// Add completely new points to the frontier
 			if(!getFrontier().contains(neighbors.get(i)) && !getExplored().contains(neighbors.get(i))) {
@@ -79,9 +77,9 @@ public class AStarSearch
 	/*
 	 *  Returns an ArrayList of Map.Points that represents the SearchPoints in the frontier.
 	 */
-	public ArrayList<Map.Point> getFrontier()
+	public ArrayList<Point> getFrontier()
 	{
-		ArrayList<Map.Point> points = new ArrayList<Map.Point>(); 
+		ArrayList<Point> points = new ArrayList<Point>(); 
 		for(int i = 0; i < frontier.size(); i++) {
 			points.add(frontier.get(i).mapPoint);
 		}
@@ -91,9 +89,9 @@ public class AStarSearch
 	/*
 	 *  Returns an ArrayList of Map.Points that represents the SearchPoints that have been explored.
 	 */
-	public ArrayList<Map.Point> getExplored()
+	public ArrayList<Point> getExplored()
 	{
-		ArrayList<Map.Point> points = new ArrayList<Map.Point>(); 
+		ArrayList<Point> points = new ArrayList<Point>(); 
 		for(int i = 0; i < explored.size(); i++) {
 			points.add(explored.get(i).mapPoint);
 		}
@@ -107,7 +105,7 @@ public class AStarSearch
 	public boolean isComplete()
 	{
 		// Search explored list for the goal point
-		ArrayList<Map.Point> exploredPoints = getExplored();
+		ArrayList<Point> exploredPoints = getExplored();
 		for(int i = 0; i < exploredPoints.size(); i++) {
 			if(exploredPoints.get(i).equals(goalPoint.mapPoint)) {
 				return true;
@@ -124,16 +122,16 @@ public class AStarSearch
 	 * The points are ordered by position in path from start to end.
 	 * Returns an empty list if no solution was found.
 	 */
-	public ArrayList<Map.Point> getSolution()
+	public ArrayList<Point> getSolution()
 	{
 		// Grab the end point from the end of the explored list
 		SearchPoint point = explored.get(explored.size()-1);
 		
 		// Return an empty array list if there is no solution
 		if(!point.equals(goalPoint)) {
-			return new ArrayList<Map.Point>();
+			return new ArrayList<Point>();
 		}
-		ArrayList<Map.Point> solution = new ArrayList<Map.Point>();
+		ArrayList<Point> solution = new ArrayList<Point>();
 		// Traceback over the prev pointers
 		while(point != null) {
 			solution.add(0, point.mapPoint);
