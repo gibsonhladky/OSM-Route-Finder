@@ -46,7 +46,6 @@ public class Map
 		// read dimensions to create proportional window
 		//             and to scale myPoint positions
 		XML boundsData = mapData.getChild("bounds");
-		
 		Bounds bounds = new Bounds(
 				boundsData.getFloat("minlat"),
 				boundsData.getFloat("minlon"),

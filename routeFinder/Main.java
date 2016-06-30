@@ -4,10 +4,10 @@ import processing.data.XML;
 
 public class Main {
 
-	
+	Map map;
 	
 	public void openMap(XML mapData) {
-		
+//		map = new Map(mapData, 1, 1);
 	}
 	
 	public void setFrom(Point from) {
