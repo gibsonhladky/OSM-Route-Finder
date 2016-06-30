@@ -45,13 +45,14 @@ public class Map
 		// TODO: Extract a MapBounds class
 		// read dimensions to create proportional window
 		//             and to scale myPoint positions
-	    float minlat = mapData.getChild("bounds").getFloat("minlat");
-	    float minlon = mapData.getChild("bounds").getFloat("minlon");
-	    float maxlat = mapData.getChild("bounds").getFloat("maxlat");
-	    float maxlon = mapData.getChild("bounds").getFloat("maxlon");
-	    float latRange = maxlat - minlat;
-	    float lonRange = maxlon - minlon;
-	    usableHeight = (800 * latRange / lonRange);
+		XML boundsData = mapData.getChild("bounds");
+		
+		Bounds bounds = new Bounds(
+				boundsData.getFloat("minlat"),
+				boundsData.getFloat("minlon"),
+				boundsData.getFloat("maxlat"), 
+				boundsData.getFloat("maxlon"));
+	    usableHeight = (800 * bounds.latRange / bounds.lonRange);
 
 	    // read points
 	    XML nodes[] = mapData.getChildren("node");
@@ -63,7 +64,7 @@ public class Map
 	    	long id = node.getLong("id", -1);
 	    	float lat = node.getFloat("lat");
 	    	float lon = node.getFloat("lon");
-	    	Point point = new Point(width * (lon-minlon)/lonRange, height - (usableHeight * (lat-minlat)/latRange) - (height-usableHeight)/2);
+	    	Point point = new Point(width * (lon-bounds.minLon)/bounds.lonRange, height - (usableHeight * (lat-bounds.minLat)/bounds.latRange) - (height-usableHeight)/2);
 	    	allPoints.add(point);
 	    	indexConvert.put(id, allPoints.indexOf(point));
 	    }
@@ -181,5 +182,23 @@ public class Map
 		guiEnd.y = end.y;		
 		
 		dirtyPoints = true;
-	}	
+	}
+	
+	public class Bounds {
+		public final float minLat;
+		public final float minLon;
+		public final float maxLat;
+		public final float maxLon;
+		public final float latRange;
+		public final float lonRange;
+		
+		public Bounds(float minLat, float minLon, float maxLat, float maxLon) {
+			this.minLat = minLat;
+			this.minLon = minLon;
+			this.maxLat = maxLat;
+			this.maxLon = maxLon;
+			this.latRange = maxLat - minLat;
+			this.lonRange = maxLon - minLon;
+		}
+	}
 }
