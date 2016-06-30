@@ -1,129 +1,125 @@
 package routeFinder;
+
 import java.util.ArrayList;
 import processing.core.*;
 
 /*
  * Original implementation by Gary Dahl
  */
-public class MainApplet extends PApplet
-{
+public class MainApplet extends PApplet {
 	public AStarSearch search; // your implementation of A* search
 	public Map map; // map to search for path between start and end points of
 	private MapView mapView; // View component to draw map to the applet
-	public boolean enterPressed; // press enter to watch entire search until solution
-	public boolean spaceWasDown; // press space repeatedly to step through search
+	public boolean enterPressed; // press enter to watch entire search until
+									// solution
+	public boolean spaceWasDown; // press space repeatedly to step through
+									// search
 
 	public String mapFileName = "map.osm";
-	
+
 	// initialize window
-	public void settings() { size(800, 600); }
-	
+	public void settings() {
+		size(800, 600);
+	}
+
 	// load map, and initialize fields along with processing modes
-	public void setup()
-	{		
+	public void setup() {
 		map = new Map(loadXML(mapFileName), this.width, this.height);
 		mapView = new MapView(map, this);
 		search = null;
 		spaceWasDown = false;
 		enterPressed = false;
-		
+
 		drawMap();
-		
+
 		textAlign(CENTER);
 		rectMode(CORNER);
 	}
 
 	// update
-	public void draw()
-	{
+	public void draw() {
 		drawMap();
-		
-		if (search != null) 
-		{
+
+		if (search != null) {
 			attemptToStepForwardInSearch();
-			
+
 			drawSearchProcess();
 			drawInstructions();
 			drawSolution();
-			
+
 			clearSearchOnNewSearch();
-		}
-		else // Search has completed
+		} else // Search has completed
 		{
 			attemptToStartNewSearch();
 			drawPromptToComputeANewSolution();
-		}		
-		updateGUI(); // allow user to drag around end points		
+		}
+		updateGUI(); // allow user to drag around end points
 	}
-	
+
 	/*
 	 * Clears the entire applet background and draws the map on top.
 	 */
 	private void drawMap() {
-		background(0,0,127); // clear display
+		background(0, 0, 127); // clear display
 		mapView.draw();
 	}
-	
-	
+
 	/*
-	 * The search continues one step if and only if
-	 * enter was ever pressed or space was pressed again.
+	 * The search continues one step if enter was ever pressed or space was
+	 * pressed again.
 	 */
 	private void attemptToStepForwardInSearch() {
 		if (enterPressed) {
 			search.exploreNextNode();
-		}
-		else if (keyPressed && key == '\n') {
+		} else if (keyPressed && key == '\n') {
 			enterPressed = true;
-		}
-		else if (keyPressed && key == ' ')
-		{
+		} else if (keyPressed && key == ' ') {
 			// otherwise explore one step per spacebar press
 			if (!spaceWasDown) {
 				search.exploreNextNode();
 			}
 			spaceWasDown = true;
-		}
-		else {
+		} else {
 			spaceWasDown = false;
 		}
 	}
-	
+
 	/*
-	 * Displays the number of Points explored and the number
-	 * of points in the frontier.
+	 * Displays the number of Points explored and the number of points in the
+	 * frontier.
 	 */
 	private void drawSearchProcess() {
-		colorPoints(search.getFrontier(),true);
-		colorPoints(search.getExplored(),false);
+		colorPoints(search.getFrontier(), true);
+		colorPoints(search.getExplored(), false);
 	}
-	
+
 	/*
-	 * Displays the instructions for proceeding with the
-	 * current step.
+	 * Displays the instructions for proceeding with the current step.
 	 */
 	private void drawInstructions() {
 		if (search.isComplete()) {
 			drawPromptToComputeANewSolution();
-		}
-		else {
+		} else {
 			drawPromptToContinueSearch();
 		}
 	}
-	
+
 	/*
 	 * Draws the instructions for beginning a new search.
 	 */
 	private void drawPromptToComputeANewSolution() {
 		fill(255);
-		text("Press <0>, <1>, or <2> to find a path from the green to red circle.",width/2,height-32);
+		text("Press <0>, <1>, or <2> to find a path from the green to red circle.", width / 2, height - 32);
 	}
-	
+
+	/*
+	 * Draws the instructions to continue in a search.
+	 */
 	private void drawPromptToContinueSearch() {
-		fill(255); // display prompt to continue exploring or reset search				
-		text("Press <Enter> to continue or <spacebard> to step through search.",width/2,height-32);
+		fill(255); // display prompt to continue exploring or reset search
+		text("Press <Enter> to continue or <spacebard> to step through search.", width / 2, height - 32);
 	}
-	
+
 	/*
 	 * Draws the solution over the map if a solution has been found.
 	 */
@@ -132,97 +128,96 @@ public class MainApplet extends PApplet
 			drawSolution(search.getSolution());
 		}
 	}
-	
+
 	/*
 	 * When a new search is selected, clears the previous search.
 	 */
 	private void clearSearchOnNewSearch() {
-		if(map.dirtyPoints || (search.isComplete() && (key == '0' || key == '1' || key == '2'))) {
+		if (map.dirtyPoints || (search.isComplete() && (key == '0' || key == '1' || key == '2'))) {
 			search = null;
 			enterPressed = false;
 		}
 	}
-	
+
 	/*
 	 * Starts a new search when a key selecting the type of search is pressed.
 	 */
 	private void attemptToStartNewSearch() {
-		if(keyPressed && (key == '0' || key == '1' || key == '2'))
-		{
-			search = new AStarSearch(map,key-'0');
+		if (keyPressed && (key == '0' || key == '1' || key == '2')) {
+			search = new AStarSearch(map, key - '0');
 			map.dirtyPoints = false;
 		}
 	}
-	
+
 	/*
-	 * Draws the points on the map and displays the number of points
-	 * in the frontier or explored.
+	 * Draws the points on the map and displays the number of points in the
+	 * frontier or explored.
 	 */
-	public void colorPoints(ArrayList<Point> points, boolean isFrontier)
-	{
-		if(isFrontier) 
-		{
-			stroke(color(127,127,0));
-			fill(color(255,255,0)); // color frontier points yellow
-			text("FRONTIER: "+points.size(),width/2,16);
+	public void colorPoints(ArrayList<Point> points, boolean isFrontier) {
+		if (isFrontier) {
+			stroke(color(127, 127, 0));
+			fill(color(255, 255, 0)); // color frontier points yellow
+			text("FRONTIER: " + points.size(), width / 2, 16);
+		} else {
+			stroke(color(127, 0, 0));
+			fill(color(255, 0, 0)); // color explored points red
+			text("EXPLORED: " + points.size(), width / 2, 32);
 		}
-		else 
-		{
-			stroke(color(127,0,0));
-			fill(color(255,0,0)); // color explored points red
-			text("EXPLORED: "+points.size(),width/2,32);
+
+		for (Point p : points) {
+			ellipse(p.x, p.y, 4, 4);
 		}
-		
-		for(Point p : points)
-			ellipse(p.x,p.y,4,4);
 	}
-	
-	public void drawSolution(ArrayList<Point> points)
-	{
+
+	public void drawSolution(ArrayList<Point> points) {
 		stroke(255); // draw white lines between points
 		strokeWeight(2);
-		for(int i=1;i<points.size();i++)
-			line( points.get(i-1).x, points.get(i-1).y,
-				  points.get(i).x, points.get(i).y );
+		for (int i = 1; i < points.size(); i++) {
+			line(points.get(i - 1).x, points.get(i - 1).y, points.get(i).x, points.get(i).y);
+		}
 	}
-	
-	public void updateGUI()
-	{
+
+	public void updateGUI() {
 		// check for mouse press over start and end locations
-		if(mousePressed && map.guiDragging == null)
-		{
-			float dToStartSqr = (float)(Math.pow(mouseX-map.guiStart.x,2)+
-									    Math.pow(mouseY-map.guiStart.y,2));
-			float dToEndSqr = (float)(Math.pow(mouseX-map.guiEnd.x,2)+
-									  Math.pow(mouseY-map.guiEnd.y,2));
-			if(dToStartSqr <= 50 && dToStartSqr < dToEndSqr)
+		if (mousePressed && map.guiDragging == null) {
+			float dToStartSqr = (float) (sqr(mouseX - map.guiStart.x) + sqr(mouseY - map.guiStart.y));
+			float dToEndSqr = (float) (sqr(mouseX - map.guiEnd.x) + sqr(mouseY - map.guiEnd.y));
+			if (dToStartSqr <= 50 && dToStartSqr < dToEndSqr) {
 				map.guiDragging = map.guiStart;
-			else if(dToEndSqr <= 50)
+			} else if (dToEndSqr <= 50) {
 				map.guiDragging = map.guiEnd;
+			}
 		}
 		// dragging start or end location
-		if(mousePressed & map.guiDragging != null)
-		{
+		if (mousePressed & map.guiDragging != null) {
 			map.guiDragging.x = mouseX;
 			map.guiDragging.y = mouseY;
 		}
 		// stop dragging start or end location
-		if(!mousePressed && map.guiDragging != null)
-		{
+		if (!mousePressed && (map.guiDragging != null)) {
 			map.moveEndPointsToClosestStreet();
 			map.guiDragging = null;
 		}
-		
-		// draw start and end
-		fill(0,0,0,0);
-		stroke(0,255,0);
-		ellipse(map.guiStart.x, map.guiStart.y, 8,8);
-		stroke(255,0,0);
-		ellipse(map.guiEnd.x, map.guiEnd.y, 8,8);			
+
+		drawStartAndEnd();
 	}
-	
-	public static void main(String args[])
-	{
-		PApplet.main(new String[] {"routeFinder.MainApplet"});
+
+	private void drawStartAndEnd() {
+		fill(0, 0, 0, 0);
+		stroke(0, 255, 0);
+		ellipse(map.guiStart.x, map.guiStart.y, 8, 8);
+		stroke(255, 0, 0);
+		ellipse(map.guiEnd.x, map.guiEnd.y, 8, 8);
+	}
+
+	/*
+	 * Square function. Returns x^2
+	 */
+	private double sqr(double x) {
+		return Math.pow(x, 2);
+	}
+
+	public static void main(String args[]) {
+		PApplet.main(new String[] { "routeFinder.MainApplet" });
 	}
 }
