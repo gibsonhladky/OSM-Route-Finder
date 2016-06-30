@@ -54,7 +54,7 @@ public class MainApplet extends PApplet {
 			attemptToStartNewSearch();
 			drawPromptToComputeANewSolution();
 		}
-		updateGUI(); // allow user to drag around end points
+		mapView.updateStartAndEndPoints(); // allow user to drag around end points
 	}
 
 	/*
@@ -129,7 +129,7 @@ public class MainApplet extends PApplet {
 	 * Draws the solution over the map if a solution has been found.
 	 */
 	private void drawSolution() {
-		mapView.drawSolution(search.getSolution());
+		mapView.drawRoute(search.getSolution());
 	}
 
 	/*
@@ -173,45 +173,8 @@ public class MainApplet extends PApplet {
 		}
 	}
 
-	public void updateGUI() {
-		// check for mouse press over start and end locations
-		if (mousePressed && map.guiDragging == null) {
-			float dToStartSqr = (float) ( sqr(mouseX - map.guiStart.x) + sqr(mouseY - map.guiStart.y) );
-			float dToEndSqr = (float) ( sqr(mouseX - map.guiEnd.x) + sqr(mouseY - map.guiEnd.y) );
-			if (dToStartSqr <= 50 && dToStartSqr < dToEndSqr) {
-				map.guiDragging = map.guiStart;
-			}
-			else if (dToEndSqr <= 50) {
-				map.guiDragging = map.guiEnd;
-			}
-		}
-		// dragging start or end location
-		if (mousePressed & ( map.guiDragging != null )) {
-			map.guiDragging.x = mouseX;
-			map.guiDragging.y = mouseY;
-		}
-		// stop dragging start or end location
-		if (!mousePressed && ( map.guiDragging != null )) {
-			map.moveEndPointsToClosestStreet();
-			map.guiDragging = null;
-		}
-
-		drawStartAndEnd();
-	}
-
-	private void drawStartAndEnd() {
-		fill(0, 0, 0, 0);
-		stroke(0, 255, 0);
-		ellipse(map.guiStart.x, map.guiStart.y, 8, 8);
-		stroke(255, 0, 0);
-		ellipse(map.guiEnd.x, map.guiEnd.y, 8, 8);
-	}
-
-	/*
-	 * Square function. Returns x^2
-	 */
-	private double sqr(double x) {
-		return Math.pow(x, 2);
+	public void updateStartAndEndPoints() {
+		mapView.updateStartAndEndPoints();;
 	}
 
 	public static void main(String args[]) {
