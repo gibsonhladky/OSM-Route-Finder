@@ -27,6 +27,8 @@ public class MainApplet extends PApplet
 		spaceWasDown = false;
 		enterPressed = false;
 		
+		drawMap();
+		
 		textAlign(CENTER);
 		rectMode(CORNER);
 	}
@@ -34,57 +36,128 @@ public class MainApplet extends PApplet
 	// update
 	public void draw()
 	{
-		background(0,0,127); // clear display
-		mapView.draw(); // draw map
-
-		// when solution exists, (potentially) continue search for path
-		if(search != null) 
+		drawMap();
+		
+		if (search != null) 
 		{
-			// always explore when enter has been pressed
-			if(enterPressed) search.exploreNextNode();
-			else if(keyPressed && key == '\n') enterPressed = true;
-			else if(keyPressed && key == ' ')
-			{
-				// otherwise explore one step per spacebar press
-				if(!spaceWasDown) 
-					search.exploreNextNode();
-				spaceWasDown = true;
-			}
-			else spaceWasDown = false;
+			attemptToStepForwardInSearch();
 			
-			// draw frontier, explored, control instructions, and solution when available
-			colorPoints(search.getFrontier(),true);
-			colorPoints(search.getExplored(),false);
-			fill(255); // display prompt to continue exploring or reset search				
-			text("Press <Enter> to continue or <spacebard> to step through search.",width/2,height-32);				
-			if(search.isComplete())
-			{
-				drawSolution(search.getSolution());
-				text("Press <0>, <1>, or <2> to begin a new search.",width/2,height-16);
-			}
+			drawSearchProcess();
+			drawInstructions();
+			drawSolution();
 			
-			// clear the search and solution when end points are moved
-			if(map.dirtyPoints || (search.isComplete() && (key == '0' || key == '1' || key == '2')))
-			{
-				search = null;
-				enterPressed = false;
-			}
+			clearSearchOnNewSearch();
 		}
-		else
+		else // Search has completed
 		{
-			// and check for key press
-			if(keyPressed && (key == '0' || key == '1' || key == '2'))
-			{
-				search = new AStarSearch(map,key-'0');
-				map.dirtyPoints = false;
-			}
-			// display prompt to compute a new solution
-			fill(255);
-			text("Press <0>, <1>, or <2> to find a path from the green to red circle.",width/2,height-32);
+			attemptToStartNewSearch();
+			drawPromptToComputeANewSolution();
 		}		
 		updateGUI(); // allow user to drag around end points		
 	}
 	
+	/*
+	 * Clears the entire applet background and draws the map on top.
+	 */
+	private void drawMap() {
+		background(0,0,127); // clear display
+		mapView.draw();
+	}
+	
+	
+	/*
+	 * The search continues one step if and only if
+	 * enter was ever pressed or space was pressed again.
+	 */
+	private void attemptToStepForwardInSearch() {
+		if (enterPressed) {
+			search.exploreNextNode();
+		}
+		else if (keyPressed && key == '\n') {
+			enterPressed = true;
+		}
+		else if (keyPressed && key == ' ')
+		{
+			// otherwise explore one step per spacebar press
+			if (!spaceWasDown) {
+				search.exploreNextNode();
+			}
+			spaceWasDown = true;
+		}
+		else {
+			spaceWasDown = false;
+		}
+	}
+	
+	/*
+	 * Displays the number of Points explored and the number
+	 * of points in the frontier.
+	 */
+	private void drawSearchProcess() {
+		colorPoints(search.getFrontier(),true);
+		colorPoints(search.getExplored(),false);
+	}
+	
+	/*
+	 * Displays the instructions for proceeding with the
+	 * current step.
+	 */
+	private void drawInstructions() {
+		if (search.isComplete()) {
+			drawPromptToComputeANewSolution();
+		}
+		else {
+			drawPromptToContinueSearch();
+		}
+	}
+	
+	/*
+	 * Draws the instructions for beginning a new search.
+	 */
+	private void drawPromptToComputeANewSolution() {
+		fill(255);
+		text("Press <0>, <1>, or <2> to find a path from the green to red circle.",width/2,height-32);
+	}
+	
+	private void drawPromptToContinueSearch() {
+		fill(255); // display prompt to continue exploring or reset search				
+		text("Press <Enter> to continue or <spacebard> to step through search.",width/2,height-32);
+	}
+	
+	/*
+	 * Draws the solution over the map if a solution has been found.
+	 */
+	private void drawSolution() {
+		if (search.isComplete()) {
+			drawSolution(search.getSolution());
+		}
+	}
+	
+	/*
+	 * When a new search is selected, clears the previous search.
+	 */
+	private void clearSearchOnNewSearch() {
+		if(map.dirtyPoints || (search.isComplete() && (key == '0' || key == '1' || key == '2'))) {
+			search = null;
+			enterPressed = false;
+		}
+	}
+	
+	/*
+	 * Starts a new search when a key selecting the type of search is pressed.
+	 */
+	private void attemptToStartNewSearch() {
+		if(keyPressed && (key == '0' || key == '1' || key == '2'))
+		{
+			search = new AStarSearch(map,key-'0');
+			map.dirtyPoints = false;
+		}
+	}
+	
+	/*
+	 * Draws the points on the map and displays the number of points
+	 * in the frontier or explored.
+	 */
 	public void colorPoints(ArrayList<Point> points, boolean isFrontier)
 	{
 		if(isFrontier) 
