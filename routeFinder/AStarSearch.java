@@ -124,6 +124,9 @@ public class AStarSearch
 	 */
 	public ArrayList<Point> getSolution()
 	{
+		if (explored.isEmpty()) {
+			return new ArrayList<Point>();
+		}
 		// Grab the end point from the end of the explored list
 		SearchPoint point = explored.get(explored.size()-1);
 		

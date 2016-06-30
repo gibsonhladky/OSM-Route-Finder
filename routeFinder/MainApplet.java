@@ -48,7 +48,8 @@ public class MainApplet extends PApplet {
 			drawSolution();
 
 			clearSearchOnNewSearch();
-		} else // Search has completed
+		}
+		else // Search has completed
 		{
 			attemptToStartNewSearch();
 			drawPromptToComputeANewSolution();
@@ -61,7 +62,7 @@ public class MainApplet extends PApplet {
 	 */
 	private void drawMap() {
 		background(0, 0, 127); // clear display
-		mapView.draw();
+		mapView.drawMap();
 	}
 
 	/*
@@ -71,15 +72,18 @@ public class MainApplet extends PApplet {
 	private void attemptToStepForwardInSearch() {
 		if (enterPressed) {
 			search.exploreNextNode();
-		} else if (keyPressed && key == '\n') {
+		}
+		else if (keyPressed && key == '\n') {
 			enterPressed = true;
-		} else if (keyPressed && key == ' ') {
+		}
+		else if (keyPressed && key == ' ') {
 			// otherwise explore one step per spacebar press
 			if (!spaceWasDown) {
 				search.exploreNextNode();
 			}
 			spaceWasDown = true;
-		} else {
+		}
+		else {
 			spaceWasDown = false;
 		}
 	}
@@ -99,7 +103,8 @@ public class MainApplet extends PApplet {
 	private void drawInstructions() {
 		if (search.isComplete()) {
 			drawPromptToComputeANewSolution();
-		} else {
+		}
+		else {
 			drawPromptToContinueSearch();
 		}
 	}
@@ -124,16 +129,14 @@ public class MainApplet extends PApplet {
 	 * Draws the solution over the map if a solution has been found.
 	 */
 	private void drawSolution() {
-		if (search.isComplete()) {
-			drawSolution(search.getSolution());
-		}
+		mapView.drawSolution(search.getSolution());
 	}
 
 	/*
 	 * When a new search is selected, clears the previous search.
 	 */
 	private void clearSearchOnNewSearch() {
-		if (map.dirtyPoints || (search.isComplete() && (key == '0' || key == '1' || key == '2'))) {
+		if (map.dirtyPoints || ( search.isComplete() && ( key == '0' || key == '1' || key == '2' ) )) {
 			search = null;
 			enterPressed = false;
 		}
@@ -143,7 +146,7 @@ public class MainApplet extends PApplet {
 	 * Starts a new search when a key selecting the type of search is pressed.
 	 */
 	private void attemptToStartNewSearch() {
-		if (keyPressed && (key == '0' || key == '1' || key == '2')) {
+		if (keyPressed && ( key == '0' || key == '1' || key == '2' )) {
 			search = new AStarSearch(map, key - '0');
 			map.dirtyPoints = false;
 		}
@@ -158,7 +161,8 @@ public class MainApplet extends PApplet {
 			stroke(color(127, 127, 0));
 			fill(color(255, 255, 0)); // color frontier points yellow
 			text("FRONTIER: " + points.size(), width / 2, 16);
-		} else {
+		}
+		else {
 			stroke(color(127, 0, 0));
 			fill(color(255, 0, 0)); // color explored points red
 			text("EXPLORED: " + points.size(), width / 2, 32);
@@ -169,32 +173,25 @@ public class MainApplet extends PApplet {
 		}
 	}
 
-	public void drawSolution(ArrayList<Point> points) {
-		stroke(255); // draw white lines between points
-		strokeWeight(2);
-		for (int i = 1; i < points.size(); i++) {
-			line(points.get(i - 1).x, points.get(i - 1).y, points.get(i).x, points.get(i).y);
-		}
-	}
-
 	public void updateGUI() {
 		// check for mouse press over start and end locations
 		if (mousePressed && map.guiDragging == null) {
-			float dToStartSqr = (float) (sqr(mouseX - map.guiStart.x) + sqr(mouseY - map.guiStart.y));
-			float dToEndSqr = (float) (sqr(mouseX - map.guiEnd.x) + sqr(mouseY - map.guiEnd.y));
+			float dToStartSqr = (float) ( sqr(mouseX - map.guiStart.x) + sqr(mouseY - map.guiStart.y) );
+			float dToEndSqr = (float) ( sqr(mouseX - map.guiEnd.x) + sqr(mouseY - map.guiEnd.y) );
 			if (dToStartSqr <= 50 && dToStartSqr < dToEndSqr) {
 				map.guiDragging = map.guiStart;
-			} else if (dToEndSqr <= 50) {
+			}
+			else if (dToEndSqr <= 50) {
 				map.guiDragging = map.guiEnd;
 			}
 		}
 		// dragging start or end location
-		if (mousePressed & map.guiDragging != null) {
+		if (mousePressed & ( map.guiDragging != null )) {
 			map.guiDragging.x = mouseX;
 			map.guiDragging.y = mouseY;
 		}
 		// stop dragging start or end location
-		if (!mousePressed && (map.guiDragging != null)) {
+		if (!mousePressed && ( map.guiDragging != null )) {
 			map.moveEndPointsToClosestStreet();
 			map.guiDragging = null;
 		}

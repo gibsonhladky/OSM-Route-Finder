@@ -1,10 +1,12 @@
 package routeFinder;
 
+import processing.data.XML;
+
 public class Main {
 
 	
 	
-	public void openMap(String mapName) {
+	public void openMap(XML mapData) {
 		
 	}
 	
