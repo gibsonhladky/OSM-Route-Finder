@@ -31,6 +31,8 @@ public class MainApplet extends PApplet {
 		enterPressed = false;
 
 		drawMap();
+		drawTopPane();
+		drawBottomPane();
 
 		textAlign(CENTER);
 		rectMode(CORNER);
@@ -39,14 +41,13 @@ public class MainApplet extends PApplet {
 	// update
 	public void draw() {
 		drawMap();
-
-		if (search != null) {
+		drawTopPane();
+		drawBottomPane();
+		if (stillSearching()) {
 			attemptToStepForwardInSearch();
-
 			drawSearchProcess();
 			drawInstructions();
 			drawSolution();
-
 			clearSearchOnNewSearch();
 		}
 		else // Search has completed
@@ -57,13 +58,36 @@ public class MainApplet extends PApplet {
 		mapView.updateStartAndEndPoints(); // allow user to drag around end points
 	}
 
+	private boolean stillSearching() {
+		return search != null;
+	}
+
 	/*
-	 * Clears the entire applet background and draws the map on top.
+	 * Clears the entire applet background with blue and draws the map on top.
 	 */
 	private void drawMap() {
 		background(0, 0, 127); // clear display
 		mapView.drawMap();
 	}
+	
+	/*
+	 * Clears the top of the applet with black.
+	 */
+	private void drawTopPane() {
+		stroke(0);
+		fill(0);
+		rect(0, 0, width, ( height - map.usableHeight ) / 2);
+	}
+	
+	/*
+	 * Clears the bottom of the applet with black.
+	 */
+	private void drawBottomPane() {
+		stroke(0);
+		fill(0);
+		rect(0, height - ( height - map.usableHeight ) / 2, width,
+				( height - map.usableHeight ) / 2);
+		}
 
 	/*
 	 * The search continues one step if enter was ever pressed or space was
@@ -171,10 +195,6 @@ public class MainApplet extends PApplet {
 		for (Point p : points) {
 			ellipse(p.x, p.y, 4, 4);
 		}
-	}
-
-	public void updateStartAndEndPoints() {
-		mapView.updateStartAndEndPoints();;
 	}
 
 	public static void main(String args[]) {

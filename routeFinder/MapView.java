@@ -26,12 +26,6 @@ public class MapView {
 						street.points.get(i).y);
 			}
 		}
-
-		applet.stroke(0);
-		applet.fill(0);
-		applet.rect(0, 0, applet.width, ( applet.height - map.usableHeight ) / 2);
-		applet.rect(0, applet.height - ( applet.height - map.usableHeight ) / 2, applet.width,
-				( applet.height - map.usableHeight ) / 2);
 	}
 
 	/*
