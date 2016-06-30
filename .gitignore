@@ -6,3 +6,5 @@
 /Map.class
 /SearchPoint.class
 /AStarSearch.class
+/Point.class
+/Street.class
