@@ -1,7 +1,10 @@
-package routeFinder;
+package routeFinder.view;
 
 import java.util.ArrayList;
 import processing.core.*;
+import routeFinder.model.AStarSearch;
+import routeFinder.model.Map;
+import routeFinder.model.Point;
 
 /*
  * Original implementation by Gary Dahl

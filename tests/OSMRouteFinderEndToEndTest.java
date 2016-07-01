@@ -2,7 +2,7 @@ package tests;
 
 import org.junit.Test;
 
-import routeFinder.Point;
+import routeFinder.model.Point;
 
 public class OSMRouteFinderEndToEndTest {
 	

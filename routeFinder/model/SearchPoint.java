@@ -1,4 +1,5 @@
-package routeFinder;
+package routeFinder.model;
+
 public class SearchPoint implements Comparable<SearchPoint>
 {
 	private final Point startPoint;

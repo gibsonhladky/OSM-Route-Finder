@@ -2,8 +2,8 @@ package tests;
 
 import static org.junit.Assert.*;
 
-import routeFinder.Main;
-import routeFinder.Point;
+import routeFinder.control.Main;
+import routeFinder.model.Point;
 import processing.core.PApplet;
 
 public class ApplicationRunner {

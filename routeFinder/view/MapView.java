@@ -1,8 +1,11 @@
-package routeFinder;
+package routeFinder.view;
 
 import java.util.ArrayList;
 
 import processing.core.PApplet;
+import routeFinder.model.Map;
+import routeFinder.model.Point;
+import routeFinder.model.Street;
 
 public class MapView {
 

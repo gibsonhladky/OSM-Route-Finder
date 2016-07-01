@@ -1,6 +1,8 @@
-package routeFinder;
+package routeFinder.control;
 
 import processing.data.XML;
+import routeFinder.model.Map;
+import routeFinder.model.Point;
 
 public class Main {
 
