@@ -8,10 +8,30 @@ public class MapView {
 
 	private PApplet applet;
 	private Map map;
+	
+	private Point guiStart;
+	private Point guiEnd;
+	private Point guiDragging;
 
 	public MapView(Map map, PApplet p) {
 		this.map = map;
 		applet = p;
+		initializeGuiPoints();
+	}
+	
+	/*
+	 * Sets the start and end GUI points to an initial state. The points are set
+	 * apart to allow easier usability.
+	 */
+	private void initializeGuiPoints() {
+		guiStart = new Point(applet.width * 2 / 10, applet.height / 2);
+		guiEnd = new Point(applet.width * 8 / 10, applet.height / 2);
+		guiDragging = null;
+		moveEndPointsToClosestStreet();
+	}
+
+	private void moveEndPointsToClosestStreet() {
+		map.moveEndPointsToClosestStreet(guiStart, guiEnd);
 	}
 
 	/*
@@ -47,25 +67,25 @@ public class MapView {
 	 */
 	public void updateStartAndEndPoints() {
 		// check for mouse press over start and end locations
-		if (applet.mousePressed && map.guiDragging == null) {
-			float dToStartSqr = (float) ( sqr(applet.mouseX - map.guiStart.x) + sqr(applet.mouseY - map.guiStart.y) );
-			float dToEndSqr = (float) ( sqr(applet.mouseX - map.guiEnd.x) + sqr(applet.mouseY - map.guiEnd.y) );
+		if (applet.mousePressed && guiDragging == null) {
+			float dToStartSqr = (float) ( sqr(applet.mouseX - guiStart.x) + sqr(applet.mouseY - guiStart.y) );
+			float dToEndSqr = (float) ( sqr(applet.mouseX - guiEnd.x) + sqr(applet.mouseY - guiEnd.y) );
 			if (dToStartSqr <= 50 && dToStartSqr < dToEndSqr) {
-				map.guiDragging = map.guiStart;
+				guiDragging = guiStart;
 			}
 			else if (dToEndSqr <= 50) {
-				map.guiDragging = map.guiEnd;
+				guiDragging = guiEnd;
 			}
 		}
 		// dragging start or end location
-		if (applet.mousePressed & ( map.guiDragging != null )) {
-			map.guiDragging.x = applet.mouseX;
-			map.guiDragging.y = applet.mouseY;
+		if (applet.mousePressed & ( guiDragging != null )) {
+			guiDragging.x = applet.mouseX;
+			guiDragging.y = applet.mouseY;
 		}
 		// stop dragging start or end location
-		if (!applet.mousePressed && ( map.guiDragging != null )) {
-			map.moveEndPointsToClosestStreet();
-			map.guiDragging = null;
+		if (!applet.mousePressed && ( guiDragging != null )) {
+			map.moveEndPointsToClosestStreet(guiStart, guiEnd);
+			guiDragging = null;
 		}
 
 		drawStartAndEnd();
@@ -77,9 +97,9 @@ public class MapView {
 	public void drawStartAndEnd() {
 		applet.fill(0, 0, 0, 0);
 		applet.stroke(0, 255, 0);
-		applet.ellipse(map.guiStart.x, map.guiStart.y, 8, 8);
+		applet.ellipse(guiStart.x, guiStart.y, 8, 8);
 		applet.stroke(255, 0, 0);
-		applet.ellipse(map.guiEnd.x, map.guiEnd.y, 8, 8);
+		applet.ellipse(guiEnd.x, guiEnd.y, 8, 8);
 	}
 	
 	/*

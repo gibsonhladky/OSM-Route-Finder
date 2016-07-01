@@ -15,13 +15,6 @@ public class Map {
 	public Point start;
 	public Point end;
 
-	// A reference to the Processing PApplet used to draw
-	// the map to screen
-	// extra points to manipulate with gui
-	public Point guiStart;
-	public Point guiEnd;
-	// reference to which guiPoint is being dragged, or null
-	public Point guiDragging;
 	// actual points to search between have changed
 	public boolean dirtyPoints;
 	// based on aspect ration of map data vs 800x600 window
@@ -35,7 +28,6 @@ public class Map {
 		this.height = height;
 		initializePointsAndStreets();
 		loadMap(mapData);
-		initializeGuiPoints();
 	}
 
 	public void loadMap(XML mapData) {
@@ -136,23 +128,12 @@ public class Map {
 		allStreets = new ArrayList<Street>();
 	}
 
-	/*
-	 * Sets the start and end GUI points to an initial state. The points are set
-	 * apart to allow easier usability.
-	 */
-	private void initializeGuiPoints() {
-		guiStart = new Point(width * 2 / 10, height / 2);
-		guiEnd = new Point(width * 8 / 10, height / 2);
-		guiDragging = null;
-		moveEndPointsToClosestStreet();
-	}
-
 	public void clear() {
 		allPoints.clear();
 		allStreets.clear();
 	}
 
-	public void moveEndPointsToClosestStreet() {
+	public void moveEndPointsToClosestStreet(Point guiStart, Point guiEnd) {
 		float dStart = Float.MAX_VALUE;
 		float dEnd = Float.MAX_VALUE;
 		float distSqr = Float.MAX_VALUE;
