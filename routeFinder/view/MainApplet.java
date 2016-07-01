@@ -2,6 +2,7 @@ package routeFinder.view;
 
 import java.util.ArrayList;
 import processing.core.*;
+import routeFinder.control.Main;
 import routeFinder.model.AStarSearch;
 import routeFinder.model.Map;
 import routeFinder.model.Point;
@@ -13,6 +14,8 @@ public class MainApplet extends PApplet {
 	public AStarSearch search; // your implementation of A* search
 	public Map map; // map to search for path between start and end points of
 	private MapView mapView; // View component to draw map to the applet
+	private Main main;
+	
 	public boolean enterPressed; // press enter to watch entire search until
 									// solution
 	public boolean spaceWasDown; // press space repeatedly to step through
@@ -27,7 +30,10 @@ public class MainApplet extends PApplet {
 
 	// load map, and initialize fields along with processing modes
 	public void setup() {
-		map = new Map(loadXML(mapFileName), this.width, this.height);
+		main = new Main(this);
+		main.openMap(loadXML(mapFileName), this.width, this.height);
+		main.initializeGuiPoints();
+		map = main.map;
 		mapView = new MapView(map, this);
 		search = null;
 		spaceWasDown = false;
@@ -44,6 +50,7 @@ public class MainApplet extends PApplet {
 	// update
 	public void draw() {
 		drawMap();
+		drawGuiPoints();
 		drawTopPane();
 		drawBottomPane();
 		if (stillSearching()) {
@@ -58,7 +65,7 @@ public class MainApplet extends PApplet {
 			attemptToStartNewSearch();
 			drawPromptToComputeANewSolution();
 		}
-		mapView.updateStartAndEndPoints(); // allow user to drag around end points
+		main.updateStartAndEndPoints(); // allow user to drag around end points
 	}
 
 	private boolean stillSearching() {
@@ -71,6 +78,14 @@ public class MainApplet extends PApplet {
 	private void drawMap() {
 		background(0, 0, 127); // clear display
 		mapView.drawMap();
+	}
+	
+	/*
+	 * Draws the start and end GUI points used to
+	 * change the start and end points.
+	 */
+	private void drawGuiPoints() {
+		mapView.drawStartAndEnd(main.guiStart, main.guiEnd);
 	}
 	
 	/*
@@ -201,6 +216,6 @@ public class MainApplet extends PApplet {
 	}
 
 	public static void main(String args[]) {
-		PApplet.main(new String[] { "routeFinder.MainApplet" });
+		PApplet.main(new String[] { "routeFinder.view.MainApplet" });
 	}
 }

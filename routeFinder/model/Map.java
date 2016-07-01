@@ -73,9 +73,6 @@ public class Map {
 		float dEnd = Float.MAX_VALUE;
 		float distSqr = Float.MAX_VALUE;
 		
-		start = new Point(0, 0);
-		end = new Point(1, 1);
-		
 		// find closest point to start and end, save locations, and store
 		// mapStart & mapEnd
 		for (Point point : allPoints) {
