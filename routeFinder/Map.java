@@ -37,13 +37,14 @@ public class Map {
 
 		usableHeight = ( 1000 * bounds.latRange / bounds.lonRange );
 		
-		MapLoader loader = new MapLoader(mapData);
+		MapLoader loader = new MapLoader(mapData, bounds);
 		
-		allPoints.addAll(loader.loadPoints(bounds));
-		allStreets.addAll(loader.loadStreets());
-		
-
-		// remove unused points from allPoints
+		allPoints.addAll(loader.points());
+		allStreets.addAll(loader.streets());
+		removeUnusedPoints();
+	}
+	
+	private void removeUnusedPoints() {
 		ArrayList<Point> remPoints = new ArrayList<Point>();
 		for (Point point : allPoints) {
 			if (!point.isOnStreet) {
@@ -121,13 +122,20 @@ public class Map {
 		
 		private XML mapData;
 		private final Hashtable<Long, Point> pointIDTable = new Hashtable<Long, Point>();
+		private ArrayList<Point> points;
+		private ArrayList<Street> streets;
 		
-		public MapLoader(XML mapData) {
+		public MapLoader(XML mapData, Bounds bounds) {
 			this.mapData = mapData;
+			loadPoints(bounds);
+			loadStreets();
 		}
 		
-		public ArrayList<Point> loadPoints(Bounds bounds) {
-			ArrayList<Point> points = new ArrayList<Point>();
+		/*
+		 * Loads all the points from the XML mapData.
+		 */
+		private void loadPoints(Bounds bounds) {
+			points = new ArrayList<Point>();
 			XML nodes[] = mapData.getChildren("node");
 			for (XML node : nodes) {
 				// Filter out invalid nodes
@@ -143,11 +151,15 @@ public class Map {
 				allPoints.add(point);
 				pointIDTable.put(id, point);
 			}
-			return points;
 		}
 		
-		public ArrayList<Street> loadStreets() {
-			ArrayList<Street> streets = new ArrayList<Street>();
+		/*
+		 * Loads the streets in a map from the XML mapData.
+		 * Must be called after loadPoints, as streets are
+		 * constructed by connecting Points.
+		 */
+		private void loadStreets() {
+			streets = new ArrayList<Street>();
 			XML ways[] = mapData.getChildren("way");
 			for (XML way : ways) {
 				// read road type and name
@@ -200,6 +212,19 @@ public class Map {
 					points.get(points.size() - 1).neighbors.add(points.get(points.size() - 2));
 				}
 			}
+		}
+		
+		/*
+		 * Returns the points loaded from the XML map data.
+		 */
+		public ArrayList<Point> points() {
+			return points;
+		}
+		
+		/*
+		 * Returns the streets loaded from the XML map data.
+		 */
+		public ArrayList<Street> streets() {
 			return streets;
 		}
 	}
