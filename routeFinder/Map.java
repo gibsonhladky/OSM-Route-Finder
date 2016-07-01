@@ -30,24 +30,23 @@ public class Map {
 		loadMap(mapData);
 	}
 
-	public void loadMap(XML mapData) {
-		// TODO: Extract a MapBounds class
-		// read dimensions to create proportional window
-		// and to scale myPoint positions
+	private void loadMap(XML mapData) {
 		XML boundsData = mapData.getChild("bounds");
 		Bounds bounds = new Bounds(boundsData.getFloat("minlat"), boundsData.getFloat("minlon"),
 				boundsData.getFloat("maxlat"), boundsData.getFloat("maxlon"));
 
-		usableHeight = ( 800 * bounds.latRange / bounds.lonRange );
-
+		usableHeight = ( 1000 * bounds.latRange / bounds.lonRange );
+		
+		Hashtable<Long, Integer> indexConvert = new Hashtable<Long, Integer>();
+		MapLoader loader = new MapLoader(mapData);
 		// read points
 		XML nodes[] = mapData.getChildren("node");
-		Hashtable<Long, Integer> indexConvert = new Hashtable<Long, Integer>();
 		for (XML node : nodes) {
+			// Filter out invalid nodes
 			if (!node.hasAttribute("id") || !node.hasAttribute("lat") || !node.hasAttribute("lon")) {
 				continue;
 			}
-
+			
 			long id = node.getLong("id", -1);
 			float lat = node.getFloat("lat");
 			float lon = node.getFloat("lon");
@@ -182,6 +181,28 @@ public class Map {
 			this.maxLon = maxLon;
 			this.latRange = maxLat - minLat;
 			this.lonRange = maxLon - minLon;
+		}
+	}
+	
+	private class MapLoader {
+		
+		private XML mapData;
+		private final Hashtable<Long, Integer> indexConvert = new Hashtable<Long, Integer>();
+		
+		public MapLoader(XML mapData) {
+			this.mapData = mapData;
+		}
+		
+		public ArrayList<Point> loadPoints(Bounds bounds) {
+			ArrayList<Point> points = new ArrayList<Point>();
+			
+			return points;
+		}
+		
+		public ArrayList<Street> loadStreets() {
+			ArrayList<Street> streets = new ArrayList<Street>();
+			
+			return streets;
 		}
 	}
 }

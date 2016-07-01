@@ -41,11 +41,24 @@ public class MapView {
 		applet.stroke(127);
 		applet.strokeWeight(1);
 		for (Street street : map.allStreets) {
-			for (int i = 1; i < street.points.size(); i++) {
-				applet.line(street.points.get(i - 1).x, street.points.get(i - 1).y, street.points.get(i).x,
-						street.points.get(i).y);
-			}
+			drawStreet(street);
 		}
+	}
+	
+	/*
+	 * Draws a whole street by connecting the points along the street.
+	 */
+	private void drawStreet(Street street) {
+		for (int i = 1; i < street.points.size(); i++) {
+			drawLineBetween(street.points.get(i - 1), street.points.get(i));
+		}
+	}
+	
+	/*
+	 * Draws a line on the applet between two points.
+	 */
+	private void drawLineBetween(Point p1, Point p2) {
+		applet.line(p1.x, p1.y, p2.x, p2.y);
 	}
 
 	/*
