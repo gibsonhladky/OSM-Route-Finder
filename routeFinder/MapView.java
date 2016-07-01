@@ -68,8 +68,7 @@ public class MapView {
 		applet.stroke(255); // draw white lines between points
 		applet.strokeWeight(2);
 		for (int i = 1; i < routePoints.size(); i++) {
-			applet.line(routePoints.get(i - 1).x, routePoints.get(i - 1).y, routePoints.get(i).x,
-					routePoints.get(i).y);
+			drawLineBetween(routePoints.get(i - 1), routePoints.get(i));
 		}
 	}
 
@@ -121,5 +120,4 @@ public class MapView {
 	private double sqr(double x) {
 		return Math.pow(x, 2);
 	}
-
 }

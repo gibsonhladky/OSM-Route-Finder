@@ -19,6 +19,8 @@ public class Map {
 	public boolean dirtyPoints;
 	// based on aspect ration of map data vs 800x600 window
 	public float usableHeight;
+	
+	private Bounds bounds;
 
 	private int width;
 	private int height;
@@ -32,7 +34,7 @@ public class Map {
 
 	private void loadMap(XML mapData) {
 		XML boundsData = mapData.getChild("bounds");
-		Bounds bounds = new Bounds(boundsData.getFloat("minlat"), boundsData.getFloat("minlon"),
+		bounds = new Bounds(boundsData.getFloat("minlat"), boundsData.getFloat("minlon"),
 				boundsData.getFloat("maxlat"), boundsData.getFloat("maxlon"));
 
 		usableHeight = ( 1000 * bounds.latRange / bounds.lonRange );
@@ -99,6 +101,10 @@ public class Map {
 
 		dirtyPoints = true;
 	}
+	
+	public Bounds bounds() {
+		return bounds;
+	}
 
 	public class Bounds {
 		public final float minLat;
@@ -146,11 +152,25 @@ public class Map {
 				long id = node.getLong("id", -1);
 				float lat = node.getFloat("lat");
 				float lon = node.getFloat("lon");
-				Point point = new Point(width * ( lon - bounds.minLon ) / bounds.lonRange, height
-						- ( usableHeight * ( lat - bounds.minLat ) / bounds.latRange ) - ( height - usableHeight ) / 2);
+				Point point = new Point(scaleLon(lon), scaleLat(lat));
 				allPoints.add(point);
 				pointIDTable.put(id, point);
 			}
+		}
+		
+		/*
+		 * Scales the longitude to fit the screen.
+		 */
+		private float scaleLon(float lon) {
+			return width * ( lon - bounds.minLon ) / bounds.lonRange;
+		}
+		
+		/*
+		 * Scales the latitude to fit the screen.
+		 */
+		private float scaleLat(float lat) {
+			return height
+					- ( usableHeight * ( lat - bounds.minLat ) / bounds.latRange ) - ( height - usableHeight ) / 2;
 		}
 		
 		/*
