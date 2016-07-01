@@ -2,6 +2,7 @@ package routeFinder.control;
 
 import processing.core.PApplet;
 import processing.data.XML;
+import routeFinder.model.AStarSearch;
 import routeFinder.model.Map;
 import routeFinder.model.Point;
 
@@ -9,12 +10,18 @@ public class Main {
 
 	public Map map;
 	
-	private Point start, end;
 	private PApplet applet;
 
 	private Point guiDragging;
 	public Point guiStart;
 	public Point guiEnd;
+	
+	public boolean enterPressed; // press enter to watch entire search until
+	// solution
+	public boolean spaceWasDown; // press space repeatedly to step through
+	// search
+	public AStarSearch search;
+
 	
 	public Main(PApplet applet) {
 		this.applet = applet;
@@ -37,22 +44,6 @@ public class Main {
 	
 	public void openMap(XML mapData, int width, int height) {
 		map = new Map(mapData, width, height);
-		start = new Point(width * 2 / 10, height / 2);
-		end = new Point(width * 8 / 10, height / 2);
-	}
-	
-	public void setFrom(Point from) {
-		start = from;
-		map.moveEndPointsToClosestStreet(start, end);
-	}
-	
-	public void setTo(Point to) {
-		end = to;
-		map.moveEndPointsToClosestStreet(start, end);
-	}
-	
-	public Object route() {
-		return null;
 	}
 	
 	/*
@@ -81,6 +72,56 @@ public class Main {
 		if (!applet.mousePressed && ( guiDragging != null )) {
 			map.moveEndPointsToClosestStreet(guiStart, guiEnd);
 			guiDragging = null;
+		}
+	}
+	
+	/*
+	 * Returns true if the search has not completed.
+	 */
+	public boolean stillSearching() {
+		return search != null;
+	}
+	
+	/*
+	 * The search continues one step if enter was ever pressed or space was
+	 * pressed again.
+	 */
+	public void attemptToStepForwardInSearch() {
+		if (enterPressed) {
+			search.exploreNextNode();
+		}
+		else if (applet.keyPressed && applet.key == '\n') {
+			enterPressed = true;
+		}
+		else if (applet.keyPressed && applet.key == ' ') {
+			// otherwise explore one step per spacebar press
+			if (!spaceWasDown) {
+				search.exploreNextNode();
+			}
+			spaceWasDown = true;
+		}
+		else {
+			spaceWasDown = false;
+		}
+	}
+	
+	/*
+	 * When a new main.search is selected, clears the previous main.search.
+	 */
+	public void clearSearchOnNewSearch() {
+		if (map.dirtyPoints || ( search.isComplete() && ( applet.key == '0' || applet.key == '1' || applet.key == '2' ) )) {
+			search = null;
+			enterPressed = false;
+		}
+	}
+	
+	/*
+	 * Starts a new search when a key selecting the type of search is pressed.
+	 */
+	public void attemptToStartNewSearch() {
+		if (applet.keyPressed && ( applet.key == '0' || applet.key == '1' || applet.key == '2' )) {
+			search = new AStarSearch(map, applet.key - '0');
+			map.dirtyPoints = false;
 		}
 	}
 	

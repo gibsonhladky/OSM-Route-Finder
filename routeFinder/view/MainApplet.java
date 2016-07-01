@@ -1,25 +1,21 @@
 package routeFinder.view;
 
-import java.util.ArrayList;
 import processing.core.*;
 import routeFinder.control.Main;
-import routeFinder.model.AStarSearch;
 import routeFinder.model.Map;
-import routeFinder.model.Point;
 
 /*
  * Original implementation by Gary Dahl
  */
 public class MainApplet extends PApplet {
-	public AStarSearch search; // your implementation of A* search
-	public Map map; // map to search for path between start and end points of
+	public Map map; // map to main.search for path between start and end points of
 	private MapView mapView; // View component to draw map to the applet
 	private Main main;
 	
-	public boolean enterPressed; // press enter to watch entire search until
+	public boolean enterPressed; // press enter to watch entire main.search until
 									// solution
 	public boolean spaceWasDown; // press space repeatedly to step through
-									// search
+									// main.search
 
 	public String mapFileName = "map.osm";
 
@@ -35,9 +31,6 @@ public class MainApplet extends PApplet {
 		main.initializeGuiPoints();
 		map = main.map;
 		mapView = new MapView(map, this);
-		search = null;
-		spaceWasDown = false;
-		enterPressed = false;
 
 		drawMap();
 		drawTopPane();
@@ -53,23 +46,19 @@ public class MainApplet extends PApplet {
 		drawGuiPoints();
 		drawTopPane();
 		drawBottomPane();
-		if (stillSearching()) {
-			attemptToStepForwardInSearch();
+		if (main.stillSearching()) {
+			main.attemptToStepForwardInSearch();
 			drawSearchProcess();
 			drawInstructions();
 			drawSolution();
-			clearSearchOnNewSearch();
+			main.clearSearchOnNewSearch();
 		}
 		else // Search has completed
 		{
-			attemptToStartNewSearch();
+			main.attemptToStartNewSearch();
 			drawPromptToComputeANewSolution();
 		}
 		main.updateStartAndEndPoints(); // allow user to drag around end points
-	}
-
-	private boolean stillSearching() {
-		return search != null;
 	}
 
 	/*
@@ -105,29 +94,6 @@ public class MainApplet extends PApplet {
 		fill(0);
 		rect(0, height - ( height - map.usableHeight ) / 2, width,
 				( height - map.usableHeight ) / 2);
-		}
-
-	/*
-	 * The search continues one step if enter was ever pressed or space was
-	 * pressed again.
-	 */
-	private void attemptToStepForwardInSearch() {
-		if (enterPressed) {
-			search.exploreNextNode();
-		}
-		else if (keyPressed && key == '\n') {
-			enterPressed = true;
-		}
-		else if (keyPressed && key == ' ') {
-			// otherwise explore one step per spacebar press
-			if (!spaceWasDown) {
-				search.exploreNextNode();
-			}
-			spaceWasDown = true;
-		}
-		else {
-			spaceWasDown = false;
-		}
 	}
 
 	/*
@@ -147,27 +113,27 @@ public class MainApplet extends PApplet {
 	private void drawFrontierProgress() {
 		stroke(color(127, 127, 0));
 		fill(color(255, 255, 0));
-		mapView.drawPoints(search.getFrontier());
-		text("FRONTIER: " + search.getFrontier().size(), width / 2, 16);
+		mapView.drawPoints(main.search.getFrontier());
+		text("FRONTIER: " + main.search.getFrontier().size(), width / 2, 16);
 	}
 	
 	/*
 	 * Draws red points on the map indicating which
-	 * points have been searched, and the number of
+	 * points have been main.searched, and the number of
 	 * points explored in the top bar
 	 */
 	private void drawExploredProgress() {
 		stroke(color(127, 0, 0));
 		fill(color(255, 0, 0));
-		mapView.drawPoints(search.getExplored());
-		text("EXPLORED: " + search.getExplored().size(), width / 2, 32);
+		mapView.drawPoints(main.search.getExplored());
+		text("EXPLORED: " + main.search.getExplored().size(), width / 2, 32);
 	}
 
 	/*
 	 * Displays the instructions for proceeding with the current step.
 	 */
 	private void drawInstructions() {
-		if (search.isComplete()) {
+		if (main.search.isComplete()) {
 			drawPromptToComputeANewSolution();
 		}
 		else {
@@ -176,7 +142,7 @@ public class MainApplet extends PApplet {
 	}
 
 	/*
-	 * Draws the instructions for beginning a new search.
+	 * Draws the instructions for beginning a new main.search.
 	 */
 	private void drawPromptToComputeANewSolution() {
 		fill(255);
@@ -184,38 +150,18 @@ public class MainApplet extends PApplet {
 	}
 
 	/*
-	 * Draws the instructions to continue in a search.
+	 * Draws the instructions to continue in a main.search.
 	 */
 	private void drawPromptToContinueSearch() {
-		fill(255); // display prompt to continue exploring or reset search
-		text("Press <Enter> to continue or <spacebard> to step through search.", width / 2, height - 32);
+		fill(255); // display prompt to continue exploring or reset main.search
+		text("Press <Enter> to continue or <spacebard> to step through main.search.", width / 2, height - 32);
 	}
 
 	/*
 	 * Draws the solution over the map if a solution has been found.
 	 */
 	private void drawSolution() {
-		mapView.drawRoute(search.getSolution());
-	}
-
-	/*
-	 * When a new search is selected, clears the previous search.
-	 */
-	private void clearSearchOnNewSearch() {
-		if (map.dirtyPoints || ( search.isComplete() && ( key == '0' || key == '1' || key == '2' ) )) {
-			search = null;
-			enterPressed = false;
-		}
-	}
-
-	/*
-	 * Starts a new search when a key selecting the type of search is pressed.
-	 */
-	private void attemptToStartNewSearch() {
-		if (keyPressed && ( key == '0' || key == '1' || key == '2' )) {
-			search = new AStarSearch(map, key - '0');
-			map.dirtyPoints = false;
-		}
+		mapView.drawRoute(main.search.getSolution());
 	}
 
 	public static void main(String args[]) {
