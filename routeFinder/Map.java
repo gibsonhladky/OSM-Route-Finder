@@ -37,78 +37,11 @@ public class Map {
 
 		usableHeight = ( 1000 * bounds.latRange / bounds.lonRange );
 		
-		Hashtable<Long, Integer> indexConvert = new Hashtable<Long, Integer>();
 		MapLoader loader = new MapLoader(mapData);
-		// read points
-		XML nodes[] = mapData.getChildren("node");
-		for (XML node : nodes) {
-			// Filter out invalid nodes
-			if (!node.hasAttribute("id") || !node.hasAttribute("lat") || !node.hasAttribute("lon")) {
-				continue;
-			}
-			
-			long id = node.getLong("id", -1);
-			float lat = node.getFloat("lat");
-			float lon = node.getFloat("lon");
-			Point point = new Point(width * ( lon - bounds.minLon ) / bounds.lonRange, height
-					- ( usableHeight * ( lat - bounds.minLat ) / bounds.latRange ) - ( height - usableHeight ) / 2);
-			allPoints.add(point);
-			indexConvert.put(id, allPoints.indexOf(point));
-		}
-
-		// read streets
-		XML ways[] = mapData.getChildren("way");
-		for (XML way : ways) {
-			// read road type and name
-			boolean isRoad = false;
-			String name = "";
-			XML tags[] = way.getChildren("tag");
-			for (XML tag : tags)
-				if (tag.hasAttribute("k") && tag.hasAttribute("v")) {
-					if (tag.getString("k").equals("highway")) {
-						switch (tag.getString("v")) {
-						case "pedestrian":
-						case "footway":
-						case "cycleway":
-						case "steps":
-						case "path":
-						case "living street":
-							// isRoad = false; // initialized to false above
-							break;
-						default:
-							isRoad = true;
-						}
-					}
-					else if (tag.getString("k").equals("name")) {
-						name = tag.getString("v");
-					}
-				}
-			if (!isRoad)
-				continue;
-			// read list of points
-			ArrayList<Point> points = new ArrayList<Point>();
-			XML nds[] = way.getChildren("nd");
-			for (XML nd : nds) {
-				long index = nd.getLong("ref", -1);
-				Point nextPoint = allPoints.get((Integer) indexConvert.get(new Long(index)));
-				nextPoint.isOnStreet = true;
-				points.add(nextPoint);
-			}
-			// create new street
-			Street street = new Street(points, name);
-			allStreets.add(street);
-			// add neighboring nodes to each node
-			if (points.size() > 1) {
-				points.get(0).neighbors.add(points.get(1));
-			}
-			for (int i = 1; i < points.size() - 1; i++) {
-				points.get(i).neighbors.add(points.get(i - 1));
-				points.get(i).neighbors.add(points.get(i + 1));
-			}
-			if (points.size() > 1) {
-				points.get(points.size() - 1).neighbors.add(points.get(points.size() - 2));
-			}
-		}
+		
+		allPoints.addAll(loader.loadPoints(bounds));
+		allStreets.addAll(loader.loadStreets());
+		
 
 		// remove unused points from allPoints
 		ArrayList<Point> remPoints = new ArrayList<Point>();
@@ -136,7 +69,7 @@ public class Map {
 		float dStart = Float.MAX_VALUE;
 		float dEnd = Float.MAX_VALUE;
 		float distSqr = Float.MAX_VALUE;
-
+		
 		// find closest point to start and end, save locations, and store
 		// mapStart & mapEnd
 		for (Point point : allPoints) {
@@ -187,7 +120,7 @@ public class Map {
 	private class MapLoader {
 		
 		private XML mapData;
-		private final Hashtable<Long, Integer> indexConvert = new Hashtable<Long, Integer>();
+		private final Hashtable<Long, Point> pointIDTable = new Hashtable<Long, Point>();
 		
 		public MapLoader(XML mapData) {
 			this.mapData = mapData;
@@ -195,13 +128,78 @@ public class Map {
 		
 		public ArrayList<Point> loadPoints(Bounds bounds) {
 			ArrayList<Point> points = new ArrayList<Point>();
-			
+			XML nodes[] = mapData.getChildren("node");
+			for (XML node : nodes) {
+				// Filter out invalid nodes
+				if (!node.hasAttribute("id") || !node.hasAttribute("lat") || !node.hasAttribute("lon")) {
+					continue;
+				}
+				
+				long id = node.getLong("id", -1);
+				float lat = node.getFloat("lat");
+				float lon = node.getFloat("lon");
+				Point point = new Point(width * ( lon - bounds.minLon ) / bounds.lonRange, height
+						- ( usableHeight * ( lat - bounds.minLat ) / bounds.latRange ) - ( height - usableHeight ) / 2);
+				allPoints.add(point);
+				pointIDTable.put(id, point);
+			}
 			return points;
 		}
 		
 		public ArrayList<Street> loadStreets() {
 			ArrayList<Street> streets = new ArrayList<Street>();
-			
+			XML ways[] = mapData.getChildren("way");
+			for (XML way : ways) {
+				// read road type and name
+				boolean isRoad = false;
+				String name = "";
+				XML tags[] = way.getChildren("tag");
+				for (XML tag : tags)
+					if (tag.hasAttribute("k") && tag.hasAttribute("v")) {
+						if (tag.getString("k").equals("highway")) {
+							switch (tag.getString("v")) {
+							case "pedestrian":
+							case "footway":
+							case "cycleway":
+							case "steps":
+							case "path":
+							case "living street":
+								// isRoad = false; // initialized to false above
+								break;
+							default:
+								isRoad = true;
+							}
+						}
+						else if (tag.getString("k").equals("name")) {
+							name = tag.getString("v");
+						}
+					}
+				if (!isRoad)
+					continue;
+				// read list of points
+				ArrayList<Point> points = new ArrayList<Point>();
+				XML nds[] = way.getChildren("nd");
+				for (XML nd : nds) {
+					long index = nd.getLong("ref", -1);
+					Point nextPoint = pointIDTable.get(index);
+					nextPoint.isOnStreet = true;
+					points.add(nextPoint);
+				}
+				// create new street
+				Street street = new Street(points, name);
+				allStreets.add(street);
+				// add neighboring nodes to each node
+				if (points.size() > 1) {
+					points.get(0).neighbors.add(points.get(1));
+				}
+				for (int i = 1; i < points.size() - 1; i++) {
+					points.get(i).neighbors.add(points.get(i - 1));
+					points.get(i).neighbors.add(points.get(i + 1));
+				}
+				if (points.size() > 1) {
+					points.get(points.size() - 1).neighbors.add(points.get(points.size() - 2));
+				}
+			}
 			return streets;
 		}
 	}
