@@ -135,8 +135,32 @@ public class MainApplet extends PApplet {
 	 * frontier.
 	 */
 	private void drawSearchProcess() {
-		colorPoints(search.getFrontier(), true);
-		colorPoints(search.getExplored(), false);
+		drawFrontierProgress();
+		drawExploredProgress();
+	}
+	
+	/*
+	 * Draws yellow points to the map indicating
+	 * which points are currently in the frontier,
+	 * and how many there are in the top bar.
+	 */
+	private void drawFrontierProgress() {
+		stroke(color(127, 127, 0));
+		fill(color(255, 255, 0));
+		mapView.drawPoints(search.getFrontier());
+		text("FRONTIER: " + search.getFrontier().size(), width / 2, 16);
+	}
+	
+	/*
+	 * Draws red points on the map indicating which
+	 * points have been searched, and the number of
+	 * points explored in the top bar
+	 */
+	private void drawExploredProgress() {
+		stroke(color(127, 0, 0));
+		fill(color(255, 0, 0));
+		mapView.drawPoints(search.getExplored());
+		text("EXPLORED: " + search.getExplored().size(), width / 2, 32);
 	}
 
 	/*
@@ -191,27 +215,6 @@ public class MainApplet extends PApplet {
 		if (keyPressed && ( key == '0' || key == '1' || key == '2' )) {
 			search = new AStarSearch(map, key - '0');
 			map.dirtyPoints = false;
-		}
-	}
-
-	/*
-	 * Draws the points on the map and displays the number of points in the
-	 * frontier or explored.
-	 */
-	public void colorPoints(ArrayList<Point> points, boolean isFrontier) {
-		if (isFrontier) {
-			stroke(color(127, 127, 0));
-			fill(color(255, 255, 0)); // color frontier points yellow
-			text("FRONTIER: " + points.size(), width / 2, 16);
-		}
-		else {
-			stroke(color(127, 0, 0));
-			fill(color(255, 0, 0)); // color explored points red
-			text("EXPLORED: " + points.size(), width / 2, 32);
-		}
-
-		for (Point p : points) {
-			ellipse(p.x, p.y, 4, 4);
 		}
 	}
 

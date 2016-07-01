@@ -73,6 +73,15 @@ public class MapView {
 			drawLineBetween(routePoints.get(i - 1), routePoints.get(i));
 		}
 	}
+	
+	/*
+	 * Draws all points to the map.
+	 */
+	public void drawPoints(ArrayList<Point> points) {
+		for (Point p : points) {
+			applet.ellipse(p.x, p.y, 4, 4);
+		}
+	}
 
 	/*
 	 * Draws the start and end points on the map.
