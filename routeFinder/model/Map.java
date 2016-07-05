@@ -36,7 +36,7 @@ public class Map {
 		XML boundsData = mapData.getChild("bounds");
 		bounds = new Bounds(boundsData.getFloat("minlat"), boundsData.getFloat("minlon"),
 				boundsData.getFloat("maxlat"), boundsData.getFloat("maxlon"));
-
+		
 		usableHeight = ( 1000 * bounds.latRange / bounds.lonRange );
 		
 		MapLoader loader = new MapLoader(mapData, bounds);
@@ -166,8 +166,7 @@ public class Map {
 		 * Scales the latitude to fit the screen.
 		 */
 		private float scaleLat(float lat) {
-			return height
-					- ( usableHeight * ( lat - bounds.minLat ) / bounds.latRange ) - ( height - usableHeight ) / 2;
+			return height - height * ( lat - bounds.minLat ) / bounds.latRange;
 		}
 		
 		/*

@@ -18,6 +18,9 @@ public class MainApplet extends PApplet {
 									// main.search
 
 	public String mapFileName = "map.osm";
+	
+	private final double MAP_HEIGHT_RATIO = 0.8;
+	private final double MAP_WIDTH_RATIO = 1.0;
 
 	// initialize window
 	public void settings() {
@@ -33,8 +36,8 @@ public class MainApplet extends PApplet {
 		mapView = new MapView(map, this);
 
 		drawMap();
-		drawTopPane();
-		drawBottomPane();
+//		drawTopPane();
+//		drawBottomPane();
 
 		textAlign(CENTER);
 		rectMode(CORNER);
@@ -44,8 +47,8 @@ public class MainApplet extends PApplet {
 	public void draw() {
 		drawMap();
 		drawGuiPoints();
-		drawTopPane();
-		drawBottomPane();
+//		drawTopPane();
+//		drawBottomPane();
 		if (main.stillSearching()) {
 			main.attemptToStepForwardInSearch();
 			drawSearchProcess();

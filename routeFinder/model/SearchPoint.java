@@ -7,7 +7,6 @@ public class SearchPoint implements Comparable<SearchPoint> {
 
 	public Point mapPoint;
 
-	// g and gInitialized are used in g() to reduce recursion
 	private float distanceFromStart;
 	private boolean distanceFromStartInitialized;
 
@@ -35,15 +34,15 @@ public class SearchPoint implements Comparable<SearchPoint> {
 		}
 
 		distanceFromStartInitialized = true;
-		// Recursively solve for g()
-		// Start point initialization:
+		// Recursively find the distance from start.
+		// Base case
 		if (this.mapPoint.equals(startPoint)) {
-			this.distanceFromStart = 0;
+			distanceFromStart = 0;
 			return distanceFromStart;
 		}
-		// All other points:
+		// Recursive case
 		else {
-			this.distanceFromStart = this.previous.distanceFromStart() + euclidean_dist(this.mapPoint, this.previous.mapPoint);
+			distanceFromStart = previous.distanceFromStart() + distanceBetween(mapPoint, previous.mapPoint);
 			return distanceFromStart;
 		}
 	}
@@ -61,7 +60,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 			return Math.abs(mapPoint.x - goalPoint.x) + Math.abs(mapPoint.y - goalPoint.y);
 		}
 		else {
-			return euclidean_dist(goalPoint, this.mapPoint);
+			return distanceBetween(goalPoint, this.mapPoint);
 		}
 	}
 
@@ -112,7 +111,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 	}
 
 	// Returns the Euclidean 12 distance between any two points
-	public float euclidean_dist(Point a, Point b) {
+	public float distanceBetween(Point a, Point b) {
 		return (float) Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 	}
 }
