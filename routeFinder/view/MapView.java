@@ -1,6 +1,7 @@
 package routeFinder.view;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import processing.core.PApplet;
 import routeFinder.model.Map;
@@ -66,7 +67,7 @@ public class MapView {
 	/*
 	 * Draws the route found on the map.
 	 */
-	public void drawRoute(ArrayList<Point> routePoints) {
+	public void drawRoute(List<Point> routePoints) {
 		applet.stroke(255); // draw white lines between points
 		applet.strokeWeight(2);
 		for (int i = 1; i < routePoints.size(); i++) {
