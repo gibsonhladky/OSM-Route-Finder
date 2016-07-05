@@ -41,6 +41,7 @@ public class Map {
 		
 		MapLoader loader = new MapLoader(mapData, bounds);
 		
+		bounds = loader.bounds();
 		allPoints.addAll(loader.points());
 		allStreets.addAll(loader.streets());
 		removeUnusedPoints();
@@ -124,14 +125,22 @@ public class Map {
 	private class MapLoader {
 		
 		private XML mapData;
+		private Bounds bounds;
 		private final Hashtable<Long, Point> pointIDTable = new Hashtable<Long, Point>();
 		private ArrayList<Point> points;
 		private ArrayList<Street> streets;
 		
 		public MapLoader(XML mapData, Bounds bounds) {
 			this.mapData = mapData;
+			loadBounds();
 			loadPoints(bounds);
 			loadStreets();
+		}
+		
+		private void loadBounds() {
+			XML boundsData = mapData.getChild("bounds");
+			bounds = new Bounds(boundsData.getFloat("minlat"), boundsData.getFloat("minlon"),
+					boundsData.getFloat("maxlat"), boundsData.getFloat("maxlon"));
 		}
 		
 		/*
@@ -228,6 +237,13 @@ public class Map {
 					points.get(points.size() - 1).neighbors.add(points.get(points.size() - 2));
 				}
 			}
+		}
+		
+		/*
+		 * Returns the bounds loaded from the XML map data.
+		 */
+		public Bounds bounds() {
+			return bounds;
 		}
 		
 		/*
