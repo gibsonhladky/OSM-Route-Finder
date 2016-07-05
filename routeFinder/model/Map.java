@@ -47,14 +47,11 @@ public class Map {
 	}
 	
 	private void removeUnusedPoints() {
-		ArrayList<Point> remPoints = new ArrayList<Point>();
-		for (Point point : allPoints) {
-			if (!point.isOnStreet) {
-				remPoints.add(point);
+		for (int i = 0; i < allPoints.size(); i++) {
+			if (!allPoints.get(i).isOnStreet) {
+				allPoints.remove(i);
+				i--;
 			}
-		}
-		for (Point point : remPoints) {
-			allPoints.remove(point);
 		}
 	}
 

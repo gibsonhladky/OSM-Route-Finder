@@ -52,27 +52,70 @@ public class Main {
 	 * Draws the points after being called.
 	 */
 	public void updateStartAndEndPoints() {
-		// check for mouse press over start and end locations
-		if (applet.mousePressed && guiDragging == null) {
-			float dToStartSqr = (float) ( sqr(applet.mouseX - guiStart.x) + sqr(applet.mouseY - guiStart.y) );
-			float dToEndSqr = (float) ( sqr(applet.mouseX - guiEnd.x) + sqr(applet.mouseY - guiEnd.y) );
-			if (dToStartSqr <= 50 && dToStartSqr < dToEndSqr) {
-				guiDragging = guiStart;
-			}
-			else if (dToEndSqr <= 50) {
-				guiDragging = guiEnd;
-			}
+		if (aDraggingAttemptHasStarted()) {
+			selectAPointToDrag();
 		}
-		// dragging start or end location
-		if (applet.mousePressed & ( guiDragging != null )) {
-			guiDragging.x = applet.mouseX;
-			guiDragging.y = applet.mouseY;
+		if (aPointIsBeingDragged()) {
+			updateDraggedPointPosition();
 		}
-		// stop dragging start or end location
-		if (!applet.mousePressed && ( guiDragging != null )) {
-			map.moveEndPointsToClosestStreet(guiStart, guiEnd);
-			guiDragging = null;
+		if (draggingHasStopped()) {
+			placePoint();
 		}
+	}
+	
+	/*
+	 * Returns true when the mouse is pressed and
+	 * the user is not already dragging a point.
+	 */
+	private boolean aDraggingAttemptHasStarted() {
+		return applet.mousePressed && guiDragging == null;
+	}
+	
+	/*
+	 * Selects a GUI point to drag based on current mouse position.
+	 * If the mouse is not in range of any point, no point is set
+	 * to be dragged.
+	 */
+	private void selectAPointToDrag() {
+		double startToMouseDistance = sqr(applet.mouseX - guiStart.x) + sqr(applet.mouseY - guiStart.y);
+		double endToMouseDistance = sqr(applet.mouseX - guiEnd.x) + sqr(applet.mouseY - guiEnd.y);
+		if (startToMouseDistance <= 50 && startToMouseDistance < endToMouseDistance) {
+			guiDragging = guiStart;
+		}
+		else if (endToMouseDistance <= 50) {
+			guiDragging = guiEnd;
+		}
+	}
+	
+	/*
+	 * Returns true if a point is currently being dragged
+	 * by the user.
+	 */
+	private boolean aPointIsBeingDragged() {
+		return applet.mousePressed && ( guiDragging != null );
+	}
+	
+	/*
+	 * Moves the dragged point to the current mouse position.
+	 */
+	private void updateDraggedPointPosition() {
+		guiDragging.x = applet.mouseX;
+		guiDragging.y = applet.mouseY;
+	}
+	
+	/*
+	 * Returns true if the user stops dragging a point.
+	 */
+	private boolean draggingHasStopped() {
+		return !applet.mousePressed && ( guiDragging != null );
+	}
+	
+	/*
+	 * Places the currently dragged point on the map.
+	 */
+	private void placePoint() {
+		map.moveEndPointsToClosestStreet(guiStart, guiEnd);
+		guiDragging = null;
 	}
 	
 	/*
@@ -90,11 +133,11 @@ public class Main {
 		if (enterPressed) {
 			search.exploreNextNode();
 		}
-		else if (applet.keyPressed && applet.key == '\n') {
+		else if (theKeyPressedIs('\n')) {
 			enterPressed = true;
 		}
-		else if (applet.keyPressed && applet.key == ' ') {
-			// otherwise explore one step per spacebar press
+		else if (theKeyPressedIs(' ')) {
+			// explore one step per spacebar press
 			if (!spaceWasDown) {
 				search.exploreNextNode();
 			}
@@ -103,6 +146,13 @@ public class Main {
 		else {
 			spaceWasDown = false;
 		}
+	}
+	
+	/*
+	 * Returns true if a key was pressed that matches the parameter.
+	 */
+	private boolean theKeyPressedIs(char c) {
+		return applet.keyPressed && applet.key == c;
 	}
 	
 	/*
