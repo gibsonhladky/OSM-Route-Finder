@@ -12,14 +12,10 @@ public class MapView {
 
 	private PApplet applet;
 	private Map map;
-	
-	private final int height, width;
 
 	public MapView(Map map, PApplet p) {
 		this.map = map;
 		applet = p;
-		height = applet.height;
-		width = applet.width;
 	}
 
 	/*
@@ -47,21 +43,6 @@ public class MapView {
 	 */
 	private void drawLineBetween(Point p1, Point p2) {
 		applet.line(p1.x, p1.y, p2.x, p2.y);
-	}
-	
-	/*
-	 * Scales the longitude to fit the screen.
-	 */
-	private float scaleLon(float lon) {
-		return width * ( lon - map.bounds().minLon ) / map.bounds().lonRange;
-	}
-	
-	/*
-	 * Scales the latitude to fit the screen.
-	 */
-	private float scaleLat(float lat) {
-		return height
-				- ( map.usableHeight * ( lat - map.bounds().minLat ) / map.bounds().latRange ) - ( height - map.usableHeight ) / 2;
 	}
 
 	/*

@@ -2,13 +2,11 @@ package routeFinder.view;
 
 import processing.core.*;
 import routeFinder.control.Main;
-import routeFinder.model.Map;
 
 /*
  * Original implementation by Gary Dahl
  */
 public class MainApplet extends PApplet {
-	public Map map;
 	private MapView mapView; // View component to draw map to the applet
 	private Main main;
 
@@ -33,16 +31,15 @@ public class MainApplet extends PApplet {
 		MAP_TOP = this.height * ( 1 - MAP_HEIGHT_RATIO ) / 2;
 		MAP_BOTTOM = this.height * ( MAP_HEIGHT_RATIO + ( 1 - MAP_HEIGHT_RATIO ) / 2 );
 		
+		int mapWidth = Math.round(this.width * MAP_WIDTH_RATIO);
+		int mapHeight = Math.round(this.height * MAP_HEIGHT_RATIO);
+		
 		main = new Main(this);
-		main.openMap(loadXML(mapFileName), (int) Math.round(this.width * MAP_WIDTH_RATIO),
-				(int) Math.round(this.height * MAP_HEIGHT_RATIO));
+		
+		main.openMap(loadXML(mapFileName), mapWidth, mapHeight);
 		main.initializeGuiPoints();
-		map = main.map;
-		mapView = new MapView(map, this);
-
-//		drawMap();
-//		 drawTopPane();
-//		 drawBottomPane();
+		
+		mapView = new MapView(main.map, this);
 
 		textAlign(CENTER);
 		rectMode(CORNER);

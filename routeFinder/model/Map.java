@@ -17,8 +17,6 @@ public class Map {
 
 	// actual points to search between have changed
 	public boolean dirtyPoints;
-	// based on aspect ration of map data vs 800x600 window
-	public float usableHeight;
 	
 	private Bounds bounds;
 
@@ -33,13 +31,7 @@ public class Map {
 	}
 
 	private void loadMap(XML mapData) {
-		XML boundsData = mapData.getChild("bounds");
-		bounds = new Bounds(boundsData.getFloat("minlat"), boundsData.getFloat("minlon"),
-				boundsData.getFloat("maxlat"), boundsData.getFloat("maxlon"));
-		
-		usableHeight = ( 1000 * bounds.latRange / bounds.lonRange );
-		
-		MapLoader loader = new MapLoader(mapData, bounds);
+		MapLoader loader = new MapLoader(mapData);
 		
 		bounds = loader.bounds();
 		allPoints.addAll(loader.points());
@@ -130,10 +122,10 @@ public class Map {
 		private ArrayList<Point> points;
 		private ArrayList<Street> streets;
 		
-		public MapLoader(XML mapData, Bounds bounds) {
+		public MapLoader(XML mapData) {
 			this.mapData = mapData;
 			loadBounds();
-			loadPoints(bounds);
+			loadPoints();
 			loadStreets();
 		}
 		
@@ -146,7 +138,7 @@ public class Map {
 		/*
 		 * Loads all the points from the XML mapData.
 		 */
-		private void loadPoints(Bounds bounds) {
+		private void loadPoints() {
 			points = new ArrayList<Point>();
 			XML nodes[] = mapData.getChildren("node");
 			for (XML node : nodes) {
