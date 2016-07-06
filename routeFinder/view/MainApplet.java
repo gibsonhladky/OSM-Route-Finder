@@ -34,15 +34,15 @@ public class MainApplet extends PApplet {
 		int mapWidth = Math.round(this.width * MAP_WIDTH_RATIO);
 		int mapHeight = Math.round(this.height * MAP_HEIGHT_RATIO);
 		
-		main = new Main(this);
-		
-		main.openMap(loadXML(mapFileName), mapWidth, mapHeight);
-		main.initializeGuiPoints();
+		main = new Main(this, mapWidth, mapHeight);
+		main.setup();
 		
 		mapView = new MapView(main.map, this);
 
 		textAlign(CENTER);
 		rectMode(CORNER);
+		
+		
 	}
 
 	// update
@@ -51,19 +51,16 @@ public class MainApplet extends PApplet {
 		drawGuiPoints();
 		drawTopPane();
 		drawBottomPane();
+		main.draw();
 		if (main.stillSearching()) {
-			main.attemptToStepForwardInSearch();
 			drawSearchProcess();
 			drawInstructions();
 			drawSolution();
-			main.clearSearchOnNewSearch();
 		}
 		else // Search has completed
 		{
-			main.attemptToStartNewSearch();
 			drawPromptToComputeANewSolution();
 		}
-		main.updateStartAndEndPoints(); // allow user to drag around end points
 	}
 
 	/*
