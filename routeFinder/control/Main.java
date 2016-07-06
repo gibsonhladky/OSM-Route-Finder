@@ -16,43 +16,15 @@ public class Main {
 	public Point guiStart;
 	public Point guiEnd;
 	
-
-	private String mapFileName = "map.osm";
-	
 	public boolean enterPressed; // press enter to watch entire search until
 	// solution
 	public boolean spaceWasDown; // press space repeatedly to step through
 	// search
 	public AStarSearch search;
-	
-	private final int MAP_WIDTH, MAP_HEIGHT;
 
 	
-	public Main(PApplet applet, int mapWidth, int mapHeight) {
+	public Main(PApplet applet) {
 		this.applet = applet;
-		this.MAP_WIDTH = mapWidth;
-		this.MAP_HEIGHT = mapHeight;
-	}
-	
-	public void setup() {
-		openMap(applet.loadXML(mapFileName), MAP_WIDTH, MAP_HEIGHT);
-		initializeGuiPoints();
-	}
-	
-	/*
-	 * Draw drives the application, dealing with step by step
-	 * user input and progression.
-	 * Draw is called continuously by Processing.
-	 */
-	public void draw() {
-		if(stillSearching()) {
-			attemptToStepForwardInSearch();
-			clearSearchOnNewSearch();
-		}
-		else {
-			attemptToStartNewSearch();
-		}
-		updateStartAndEndPoints();
 	}
 	
 	/*
