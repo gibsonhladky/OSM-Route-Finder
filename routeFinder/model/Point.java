@@ -1,4 +1,4 @@
-package routeFinder;
+package routeFinder.model;
 import java.util.ArrayList;
 
 /*

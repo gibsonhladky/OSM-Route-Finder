@@ -5,3 +5,7 @@
 /Street.class
 /Main.class
 /MainApplet.class
+/MapView.class
+/Map$Bounds.class
+/Map$MapLoader.class
+/MapView$ScaledPoint.class
