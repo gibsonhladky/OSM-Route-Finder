@@ -1,5 +1,7 @@
 package routeFinder.control;
 
+import java.util.List;
+
 import processing.core.PApplet;
 import processing.data.XML;
 import routeFinder.model.AStarSearch;
@@ -13,20 +15,44 @@ public class Main {
 	private PApplet applet;
 
 	private Point guiDragging;
-	public Point guiStart;
-	public Point guiEnd;
+	private Point guiStart;
+	private Point guiEnd;
 	private boolean guiPointsMoved;
 	
-	public boolean enterPressed; // press enter to watch entire search until
+	private boolean enterPressed; // press enter to watch entire search until
 	// solution
-	public boolean spaceWasDown; // press space repeatedly to step through
+	private boolean spaceWasDown; // press space repeatedly to step through
 	// search
-	public AStarSearch search;
+	private AStarSearch search;
 
 	
 	public Main(PApplet applet) {
 		this.applet = applet;
 		guiPointsMoved = false;
+	}
+	
+	public Point searchStartPoint() {
+		return guiStart;
+	}
+	
+	public Point searchEndPoint() {
+		return guiEnd;
+	}
+	
+	public List<Point> frontierPoints() {
+		return search.getFrontier();
+	}
+	
+	public List<Point> exploredPoints() {
+		return search.getExplored();
+	}
+	
+	public boolean searchIsComplete() {
+		return search.isComplete();
+	}
+	
+	public List<Point> searchSolution() {
+		return search.getSolution();
 	}
 	
 	/*

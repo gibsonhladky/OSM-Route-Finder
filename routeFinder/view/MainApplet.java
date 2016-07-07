@@ -79,7 +79,7 @@ public class MainApplet extends PApplet {
 	 * points.
 	 */
 	private void drawGuiPoints() {
-		mapView.drawStartAndEnd(main.guiStart, main.guiEnd);
+		mapView.drawStartAndEnd(main.searchStartPoint(), main.searchEndPoint());
 	}
 
 	/*
@@ -116,8 +116,8 @@ public class MainApplet extends PApplet {
 	private void drawFrontierProgress() {
 		stroke(color(127, 127, 0));
 		fill(color(255, 255, 0));
-		mapView.drawPoints(main.search.getFrontier());
-		text("FRONTIER: " + main.search.getFrontier().size(), width / 2, 16);
+		mapView.drawPoints(main.frontierPoints());
+		text("FRONTIER: " + main.frontierPoints().size(), width / 2, 16);
 	}
 
 	/*
@@ -127,15 +127,15 @@ public class MainApplet extends PApplet {
 	private void drawExploredProgress() {
 		stroke(color(127, 0, 0));
 		fill(color(255, 0, 0));
-		mapView.drawPoints(main.search.getExplored());
-		text("EXPLORED: " + main.search.getExplored().size(), width / 2, 32);
+		mapView.drawPoints(main.exploredPoints());
+		text("EXPLORED: " + main.exploredPoints().size(), width / 2, 32);
 	}
 
 	/*
 	 * Displays the instructions for proceeding with the current step.
 	 */
 	private void drawInstructions() {
-		if (main.search.isComplete()) {
+		if (main.searchIsComplete()) {
 			drawPromptToComputeANewSolution();
 		}
 		else {
@@ -163,7 +163,7 @@ public class MainApplet extends PApplet {
 	 * Draws the solution over the map if a solution has been found.
 	 */
 	private void drawSolution() {
-		mapView.drawRoute(main.search.getSolution());
+		mapView.drawRoute(main.searchSolution());
 	}
 
 	public static void main(String args[]) {
