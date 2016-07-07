@@ -12,11 +12,11 @@ public class AStarSearch {
 	private ArrayList<SearchPoint> explored;
 
 	// Two SearchPoints to keep track of the start and goal
-	public SearchPoint startPoint, goalPoint;
+	private SearchPoint startPoint, goalPoint;
 
 	// The chosen heuristic
 	// 0: always estimate zero, 1: manhattan distance, 2: euclidean l2 distance
-	public int heuristic;
+	private int heuristic;
 
 	public AStarSearch(Map map, int heuristic) {
 		this.startPoint = new SearchPoint(map.startPoint(), map.endPoint(), heuristic, map.startPoint(), null);

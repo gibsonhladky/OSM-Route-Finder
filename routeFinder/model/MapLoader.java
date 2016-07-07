@@ -20,15 +20,13 @@ class MapLoader {
 	private ArrayList<Point> points;
 	private ArrayList<Street> streets;
 	
-	private int widthForScale;
-	private int heightForScale;
+	private final int width, height;
 	
 	public MapLoader(Map map, XML mapData, int width, int height) {
+		this.width = width;
+		this.height = height;
 		mapLoader = map;
 		this.mapData = mapData;
-		this.widthForScale = width;
-		this.heightForScale = height;
-		
 		loadBounds();
 		loadPoints();
 		loadStreets();
@@ -86,14 +84,14 @@ class MapLoader {
 	 * Scales the longitude to fit the screen.
 	 */
 	private float scaleLon(float lon) {
-		return widthForScale * ( lon - bounds.minLon ) / bounds.lonRange;
+		return width * ( lon - bounds.minLon ) / bounds.lonRange;
 	}
 	
 	/*
 	 * Scales the latitude to fit the screen.
 	 */
 	private float scaleLat(float lat) {
-		return heightForScale - heightForScale * ( lat - bounds.minLat ) / bounds.latRange;
+		return height - height * ( lat - bounds.minLat ) / bounds.latRange;
 	}
 	
 	/*
