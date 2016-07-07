@@ -38,10 +38,6 @@ public class Main {
 		moveEndPointsToClosestStreet();
 	}
 	
-	private void moveEndPointsToClosestStreet() {
-		map.moveEndPointsToClosestStreet(guiStart, guiEnd);
-	}
-	
 	public void openMap(XML mapData, int width, int height) {
 		map = new Map(mapData, width, height);
 	}
@@ -61,6 +57,60 @@ public class Main {
 		if (draggingHasStopped()) {
 			placePoint();
 		}
+	}
+	
+	/*
+	 * Returns true if the search has not completed.
+	 */
+	public boolean stillSearching() {
+		return search != null;
+	}
+	
+	/*
+	 * The search continues one step if enter was ever pressed or space was
+	 * pressed again.
+	 */
+	public void attemptToStepForwardInSearch() {
+		if (enterPressed) {
+			search.exploreNextNode();
+		}
+		else if (theKeyPressedIs('\n')) {
+			enterPressed = true;
+		}
+		else if (theKeyPressedIs(' ')) {
+			// explore one step per spacebar press
+			if (!spaceWasDown) {
+				search.exploreNextNode();
+			}
+			spaceWasDown = true;
+		}
+		else {
+			spaceWasDown = false;
+		}
+	}
+	
+	/*
+	 * When a new main.search is selected, clears the previous main.search.
+	 */
+	public void clearSearchOnNewSearch() {
+		if (map.dirtyPoints || ( search.isComplete() && ( applet.key == '0' || applet.key == '1' || applet.key == '2' ) )) {
+			search = null;
+			enterPressed = false;
+		}
+	}
+	
+	/*
+	 * Starts a new search when a key selecting the type of search is pressed.
+	 */
+	public void attemptToStartNewSearch() {
+		if (applet.keyPressed && ( applet.key == '0' || applet.key == '1' || applet.key == '2' )) {
+			search = new AStarSearch(map, applet.key - '0');
+			map.dirtyPoints = false;
+		}
+	}
+	
+	private void moveEndPointsToClosestStreet() {
+		map.moveEndPointsToClosestStreet(guiStart, guiEnd);
 	}
 	
 	/*
@@ -119,60 +169,10 @@ public class Main {
 	}
 	
 	/*
-	 * Returns true if the search has not completed.
-	 */
-	public boolean stillSearching() {
-		return search != null;
-	}
-	
-	/*
-	 * The search continues one step if enter was ever pressed or space was
-	 * pressed again.
-	 */
-	public void attemptToStepForwardInSearch() {
-		if (enterPressed) {
-			search.exploreNextNode();
-		}
-		else if (theKeyPressedIs('\n')) {
-			enterPressed = true;
-		}
-		else if (theKeyPressedIs(' ')) {
-			// explore one step per spacebar press
-			if (!spaceWasDown) {
-				search.exploreNextNode();
-			}
-			spaceWasDown = true;
-		}
-		else {
-			spaceWasDown = false;
-		}
-	}
-	
-	/*
 	 * Returns true if a key was pressed that matches the parameter.
 	 */
 	private boolean theKeyPressedIs(char c) {
 		return applet.keyPressed && applet.key == c;
-	}
-	
-	/*
-	 * When a new main.search is selected, clears the previous main.search.
-	 */
-	public void clearSearchOnNewSearch() {
-		if (map.dirtyPoints || ( search.isComplete() && ( applet.key == '0' || applet.key == '1' || applet.key == '2' ) )) {
-			search = null;
-			enterPressed = false;
-		}
-	}
-	
-	/*
-	 * Starts a new search when a key selecting the type of search is pressed.
-	 */
-	public void attemptToStartNewSearch() {
-		if (applet.keyPressed && ( applet.key == '0' || applet.key == '1' || applet.key == '2' )) {
-			search = new AStarSearch(map, applet.key - '0');
-			map.dirtyPoints = false;
-		}
 	}
 	
 	/*

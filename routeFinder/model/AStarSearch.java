@@ -47,50 +47,6 @@ public class AStarSearch {
 
 		addNeighborsToFrontier(bestPoint);
 	}
-	
-	/*
-	 * Adds the neighbors of the point parameter to the frontier
-	 * to be searched later. If a point already in the frontier 
-	 * can be reached faster through this point, it is updated.
-	 */
-	private void addNeighborsToFrontier(SearchPoint point) {
-		ArrayList<Point> neighbors = point.mapPoint.neighbors;
-		for (Point neighbor : neighbors) {
-			// Add completely new points to the frontier
-			addNewPointToFrontier(neighbor, point);
-			
-			// Replace points in the frontier if a shorter path to them is found
-			if (getFrontier().contains(neighbor)) {
-				replaceFrontierPoint(neighbor, point);
-			}
-		}
-	}
-	
-	/*
-	 * Adds the point to the frontier if it is not already in
-	 * the frontier or explored.
-	 */
-	private void addNewPointToFrontier(Point p, SearchPoint previous) {
-		if (!getFrontier().contains(p) && !getExplored().contains(p)) {
-			frontier.add(new SearchPoint(this.startPoint.mapPoint, this.goalPoint.mapPoint, this.heuristic,
-					p, previous));
-		}
-	}
-	
-	/*
-	 * Replaces a point in the frontier if a shorter path
-	 * to that point is found.
-	 */
-	private void replaceFrontierPoint(Point p, SearchPoint previous) {
-		SearchPoint newPoint = new SearchPoint(this.startPoint.mapPoint, this.goalPoint.mapPoint, this.heuristic,
-				p, previous);
-		for (int j = 0; j < frontier.size(); j++) {
-			if (frontier.get(j).equals(newPoint)
-					&& frontier.get(j).distanceFromStart() > newPoint.distanceFromStart()) {
-				frontier.set(j, newPoint);
-			}
-		}
-	}
 
 	/*
 	 * Returns an ArrayList of Map.Points that represents the SearchPoints in
@@ -162,6 +118,50 @@ public class AStarSearch {
 		Collections.reverse(solution);
 
 		return solution;
+	}
+	
+	/*
+	 * Adds the neighbors of the point parameter to the frontier
+	 * to be searched later. If a point already in the frontier 
+	 * can be reached faster through this point, it is updated.
+	 */
+	private void addNeighborsToFrontier(SearchPoint point) {
+		ArrayList<Point> neighbors = point.mapPoint.neighbors;
+		for (Point neighbor : neighbors) {
+			// Add completely new points to the frontier
+			addNewPointToFrontier(neighbor, point);
+			
+			// Replace points in the frontier if a shorter path to them is found
+			if (getFrontier().contains(neighbor)) {
+				replaceFrontierPoint(neighbor, point);
+			}
+		}
+	}
+	
+	/*
+	 * Adds the point to the frontier if it is not already in
+	 * the frontier or explored.
+	 */
+	private void addNewPointToFrontier(Point p, SearchPoint previous) {
+		if (!getFrontier().contains(p) && !getExplored().contains(p)) {
+			frontier.add(new SearchPoint(this.startPoint.mapPoint, this.goalPoint.mapPoint, this.heuristic,
+					p, previous));
+		}
+	}
+	
+	/*
+	 * Replaces a point in the frontier if a shorter path
+	 * to that point is found.
+	 */
+	private void replaceFrontierPoint(Point p, SearchPoint previous) {
+		SearchPoint newPoint = new SearchPoint(this.startPoint.mapPoint, this.goalPoint.mapPoint, this.heuristic,
+				p, previous);
+		for (int j = 0; j < frontier.size(); j++) {
+			if (frontier.get(j).equals(newPoint)
+					&& frontier.get(j).distanceFromStart() > newPoint.distanceFromStart()) {
+				frontier.set(j, newPoint);
+			}
+		}
 	}
 
 }

@@ -1,9 +1,9 @@
 package routeFinder.view;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import processing.core.PApplet;
+
 import routeFinder.model.Map;
 import routeFinder.model.Point;
 import routeFinder.model.Street;
@@ -28,22 +28,6 @@ public class MapView {
 			drawStreet(street);
 		}
 	}
-	
-	/*
-	 * Draws a whole street by connecting the points along the street.
-	 */
-	private void drawStreet(Street street) {
-		for (int i = 1; i < street.points.size(); i++) {
-			drawLineBetween(street.points.get(i - 1), street.points.get(i));
-		}
-	}
-	
-	/*
-	 * Draws a line on the applet between two points.
-	 */
-	private void drawLineBetween(Point p1, Point p2) {
-		applet.line(p1.x, p1.y, p2.x, p2.y);
-	}
 
 	/*
 	 * Draws the route found on the map.
@@ -59,7 +43,7 @@ public class MapView {
 	/*
 	 * Draws all points to the map.
 	 */
-	public void drawPoints(ArrayList<Point> points) {
+	public void drawPoints(List<Point> points) {
 		for (Point p : points) {
 			applet.ellipse(p.x, p.y, 4, 4);
 		}
@@ -74,5 +58,21 @@ public class MapView {
 		applet.ellipse(guiStart.x, guiStart.y, 8, 8);
 		applet.stroke(255, 0, 0);
 		applet.ellipse(guiEnd.x, guiEnd.y, 8, 8);
+	}
+	
+	/*
+	 * Draws a whole street by connecting the points along the street.
+	 */
+	private void drawStreet(Street street) {
+		for (int i = 1; i < street.points.size(); i++) {
+			drawLineBetween(street.points.get(i - 1), street.points.get(i));
+		}
+	}
+	
+	/*
+	 * Draws a line on the applet between two points.
+	 */
+	private void drawLineBetween(Point p1, Point p2) {
+		applet.line(p1.x, p1.y, p2.x, p2.y);
 	}
 }

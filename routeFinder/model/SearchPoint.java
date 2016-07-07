@@ -48,23 +48,6 @@ public class SearchPoint implements Comparable<SearchPoint> {
 	}
 
 	/*
-	 * Returns the estimated cost to reach the goal point based on the specified
-	 * heuristic: 0: always estimate zero, 1: manhattan distance, 2: euclidean
-	 * l2 distance
-	 */
-	private float heuristicCostToReachEnd() {
-		if (heuristic == 0) {
-			return (float) 0;
-		}
-		else if (heuristic == 1) {
-			return Math.abs(mapPoint.x - goalPoint.x) + Math.abs(mapPoint.y - goalPoint.y);
-		}
-		else {
-			return distanceBetween(goalPoint, this.mapPoint);
-		}
-	}
-
-	/*
 	 * Returns the expected cost to reach the end point from this search point.
 	 */
 	public float expectedCost() {
@@ -113,5 +96,22 @@ public class SearchPoint implements Comparable<SearchPoint> {
 	// Returns the Euclidean 12 distance between any two points
 	public float distanceBetween(Point a, Point b) {
 		return (float) Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+	}
+
+	/*
+	 * Returns the estimated cost to reach the goal point based on the specified
+	 * heuristic: 0: always estimate zero, 1: manhattan distance, 2: euclidean
+	 * l2 distance
+	 */
+	private float heuristicCostToReachEnd() {
+		if (heuristic == 0) {
+			return (float) 0;
+		}
+		else if (heuristic == 1) {
+			return Math.abs(mapPoint.x - goalPoint.x) + Math.abs(mapPoint.y - goalPoint.y);
+		}
+		else {
+			return distanceBetween(goalPoint, this.mapPoint);
+		}
 	}
 }
