@@ -9,16 +9,16 @@ import processing.data.*;
  */
 public class Map {
 	// access to all points and streets
-	public ArrayList<Point> allPoints;
-	public ArrayList<Street> allStreets;
+	private ArrayList<Point> allPoints;
+	private ArrayList<Street> allStreets;
 	// actual points to search between
 	private Point start;
 	private Point end;
 	
 	private Bounds bounds;
 
-	int width;
-	int height;
+	private int width;
+	private int height;
 
 	public Map(XML mapData, int width, int height) {
 		this.width = width;
@@ -51,6 +51,10 @@ public class Map {
 	
 	public Point endPoint() {
 		return end;
+	}
+	
+	public List<Street> streets() {
+		return allStreets;
 	}
 
 	public void clear() {
@@ -90,23 +94,9 @@ public class Map {
 		}
 		return closestPoint;
 	}
-	
-	private void moveToClosestPoint(Point pointToMove) {
-		Point closestPoint = null;
-		double distanceToClosestPoint = Double.MAX_VALUE;
-		for (Point point : allPoints) {
-			double distanceToThisPoint = ( pointToMove.x - point.x ) * ( pointToMove.x - point.x )
-					+ ( pointToMove.y - point.y ) * ( pointToMove.y - point.y );
-			if (distanceToThisPoint < distanceToClosestPoint) {
-				closestPoint = point;
-				distanceToClosestPoint = distanceToThisPoint;
-			}
-		}
-		pointToMove = closestPoint;
-	}
 
 	private void loadMap(XML mapData) {
-		MapLoader loader = new MapLoader(this, mapData);
+		MapLoader loader = new MapLoader(this, mapData, width, height);
 		
 		bounds = loader.bounds();
 		allPoints.addAll(loader.points());

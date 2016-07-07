@@ -20,9 +20,15 @@ class MapLoader {
 	private ArrayList<Point> points;
 	private ArrayList<Street> streets;
 	
-	public MapLoader(Map map, XML mapData) {
+	private int widthForScale;
+	private int heightForScale;
+	
+	public MapLoader(Map map, XML mapData, int width, int height) {
 		mapLoader = map;
 		this.mapData = mapData;
+		this.widthForScale = width;
+		this.heightForScale = height;
+		
 		loadBounds();
 		loadPoints();
 		loadStreets();
@@ -71,7 +77,7 @@ class MapLoader {
 			float lat = node.getFloat("lat");
 			float lon = node.getFloat("lon");
 			Point point = new Point(scaleLon(lon), scaleLat(lat));
-			mapLoader.allPoints.add(point);
+			points.add(point);
 			pointIDTable.put(id, point);
 		}
 	}
@@ -80,14 +86,14 @@ class MapLoader {
 	 * Scales the longitude to fit the screen.
 	 */
 	private float scaleLon(float lon) {
-		return mapLoader.width * ( lon - bounds.minLon ) / bounds.lonRange;
+		return widthForScale * ( lon - bounds.minLon ) / bounds.lonRange;
 	}
 	
 	/*
 	 * Scales the latitude to fit the screen.
 	 */
 	private float scaleLat(float lat) {
-		return mapLoader.height - mapLoader.height * ( lat - bounds.minLat ) / bounds.latRange;
+		return heightForScale - heightForScale * ( lat - bounds.minLat ) / bounds.latRange;
 	}
 	
 	/*
@@ -136,7 +142,7 @@ class MapLoader {
 			}
 			// create new street
 			Street street = new Street(points, name);
-			mapLoader.allStreets.add(street);
+			streets.add(street);
 			// add neighboring nodes to each node
 			if (points.size() > 1) {
 				points.get(0).neighbors.add(points.get(1));
