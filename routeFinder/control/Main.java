@@ -15,6 +15,7 @@ public class Main {
 	private Point guiDragging;
 	public Point guiStart;
 	public Point guiEnd;
+	private boolean guiPointsMoved;
 	
 	public boolean enterPressed; // press enter to watch entire search until
 	// solution
@@ -25,6 +26,7 @@ public class Main {
 	
 	public Main(PApplet applet) {
 		this.applet = applet;
+		guiPointsMoved = false;
 	}
 	
 	/*
@@ -34,8 +36,7 @@ public class Main {
 	public void initializeGuiPoints() {
 		guiStart = new Point(applet.width * 2 / 10, applet.height / 2);
 		guiEnd = new Point(applet.width * 8 / 10, applet.height / 2);
-		guiDragging = null;
-		moveEndPointsToClosestStreet();
+		placePoints();
 	}
 	
 	public void openMap(XML mapData, int width, int height) {
@@ -55,7 +56,7 @@ public class Main {
 			updateDraggedPointPosition();
 		}
 		if (draggingHasStopped()) {
-			placePoint();
+			placePoints();
 		}
 	}
 	
@@ -93,7 +94,7 @@ public class Main {
 	 * When a new main.search is selected, clears the previous main.search.
 	 */
 	public void clearSearchOnNewSearch() {
-		if (map.dirtyPoints || ( search.isComplete() && ( applet.key == '0' || applet.key == '1' || applet.key == '2' ) )) {
+		if (guiPointsMoved || ( search.isComplete() && ( applet.key == '0' || applet.key == '1' || applet.key == '2' ) )) {
 			search = null;
 			enterPressed = false;
 		}
@@ -105,12 +106,8 @@ public class Main {
 	public void attemptToStartNewSearch() {
 		if (applet.keyPressed && ( applet.key == '0' || applet.key == '1' || applet.key == '2' )) {
 			search = new AStarSearch(map, applet.key - '0');
-			map.dirtyPoints = false;
+			guiPointsMoved = false;
 		}
-	}
-	
-	private void moveEndPointsToClosestStreet() {
-		map.moveEndPointsToClosestStreet(guiStart, guiEnd);
 	}
 	
 	/*
@@ -161,10 +158,20 @@ public class Main {
 	}
 	
 	/*
-	 * Places the currently dragged point on the map.
+	 * Updates the map's start and end points based on
+	 * the gui's positions. Moves the gui's over the point
+	 * they refer to.
 	 */
-	private void placePoint() {
-		map.moveEndPointsToClosestStreet(guiStart, guiEnd);
+	private void placePoints() {
+		map.setStartPoint(guiStart);
+		map.setEndPoint(guiEnd);
+		
+		guiStart.x = map.startPoint().x;
+		guiStart.y = map.startPoint().y;
+		guiEnd.x = map.endPoint().x;
+		guiEnd.y = map.endPoint().y;
+		
+		guiPointsMoved = true;
 		guiDragging = null;
 	}
 	

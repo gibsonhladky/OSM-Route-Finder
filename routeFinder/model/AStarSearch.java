@@ -19,8 +19,8 @@ public class AStarSearch {
 	public int heuristic;
 
 	public AStarSearch(Map map, int heuristic) {
-		this.startPoint = new SearchPoint(map.start, map.end, heuristic, map.start, null);
-		this.goalPoint = new SearchPoint(map.start, map.end, heuristic, map.end, null);
+		this.startPoint = new SearchPoint(map.startPoint(), map.endPoint(), heuristic, map.startPoint(), null);
+		this.goalPoint = new SearchPoint(map.startPoint(), map.endPoint(), heuristic, map.endPoint(), null);
 		this.heuristic = heuristic;
 		frontier = new ArrayList<SearchPoint>();
 		explored = new ArrayList<SearchPoint>();
