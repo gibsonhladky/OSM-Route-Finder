@@ -1,7 +1,6 @@
 package routeFinder.view;
 
 import processing.core.*;
-import processing.data.XML;
 import routeFinder.control.SearchRunner;
 
 /*
@@ -30,26 +29,33 @@ public class MainWindow {
 	public void setMapView(MapView mapView) {
 		this.mapView = mapView;
 	}
-
-	// update
-	public void draw() {
+	
+	/*
+	 * Draws the base for the window - the map, 
+	 * gui, and top and bottom panes.
+	 */
+	public void drawBase() {
 		drawMap();
 		drawGuiPoints();
 		drawTopPane();
 		drawBottomPane();
-		if (searchRunner.stillSearching()) {
-			searchRunner.attemptToStepForwardInSearch();
-			drawSearchProcess();
-			drawInstructions();
-			drawSolution();
-			searchRunner.clearSearchOnNewSearch();
-		}
-		else // Search has completed
-		{
-			searchRunner.attemptToStartNewSearch();
-			drawPromptToComputeANewSolution();
-		}
-		searchRunner.updateStartAndEndPoints(); // allow user to drag around end points
+	}
+	
+	/*
+	 * Draws the search process over the base.
+	 */
+	public void drawSearch() {
+		drawSearchProcess();
+		drawInstructions();
+		drawSolution();
+	}
+
+	/*
+	 * Draws the instructions for beginning a new main.search.
+	 */
+	public void drawPromptToComputeANewSolution() {
+		applet.fill(255);
+		applet.text("Press <0>, <1>, or <2> to find a path from the green to red circle.", applet.width / 2, applet.height - 32);
 	}
 
 	/*
@@ -127,14 +133,6 @@ public class MainWindow {
 		else {
 			drawPromptToContinueSearch();
 		}
-	}
-
-	/*
-	 * Draws the instructions for beginning a new main.search.
-	 */
-	private void drawPromptToComputeANewSolution() {
-		applet.fill(255);
-		applet.text("Press <0>, <1>, or <2> to find a path from the green to red circle.", applet.width / 2, applet.height - 32);
 	}
 
 	/*
