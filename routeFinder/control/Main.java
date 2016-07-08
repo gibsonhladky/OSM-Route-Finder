@@ -56,6 +56,13 @@ public class Main {
 	}
 	
 	/*
+	 * Returns true if the search has not completed.
+	 */
+	public boolean stillSearching() {
+		return search != null;
+	}
+	
+	/*
 	 * Sets the start and end GUI points to an initial state. The points are set
 	 * apart to allow easier usability.
 	 */
@@ -84,13 +91,6 @@ public class Main {
 		if (draggingHasStopped()) {
 			placePoints();
 		}
-	}
-	
-	/*
-	 * Returns true if the search has not completed.
-	 */
-	public boolean stillSearching() {
-		return search != null;
 	}
 	
 	/*

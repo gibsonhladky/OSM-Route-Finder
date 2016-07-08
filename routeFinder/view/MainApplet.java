@@ -9,11 +9,8 @@ import routeFinder.control.Main;
 public class MainApplet extends PApplet {
 	private MapView mapView; // View component to draw map to the applet
 	private Main main;
-
-	public boolean enterPressed;
-	public boolean spaceWasDown;
 	
-	public String mapFileName = "map.osm";
+	private String mapFileName = "map.osm";
 
 	private final float MAP_HEIGHT_RATIO = 0.8f;
 	private final float MAP_WIDTH_RATIO = 1.0f;
