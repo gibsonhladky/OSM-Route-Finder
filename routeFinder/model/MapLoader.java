@@ -29,28 +29,7 @@ public class MapLoader {
 	public Map loadMap(XML mapData) {
 		this.mapData = mapData;
 		load();
-		return new Map(points(), streets(), bounds(), width, height);
-	}
-	
-	/*
-	 * Returns the bounds loaded from the XML map data.
-	 */
-	public Bounds bounds() {
-		return bounds;
-	}
-	
-	/*
-	 * Returns the points loaded from the XML map data.
-	 */
-	public List<Point> points() {
-		return points;
-	}
-	
-	/*
-	 * Returns the streets loaded from the XML map data.
-	 */
-	public List<Street> streets() {
-		return streets;
+		return new Map(points, streets, bounds, width, height);
 	}
 	
 	private void load() {
