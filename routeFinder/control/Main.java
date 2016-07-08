@@ -2,12 +2,16 @@ package routeFinder.control;
 
 import processing.core.PApplet;
 import routeFinder.view.MainWindow;
+import routeFinder.view.MapView;
 
 public class Main extends PApplet {
 	
-	private MainWindow mainApplet;
+	private MainWindow mainWindow;
+	private SearchRunner searchRunner;
 	
 	private final String mapFileName = "map.osm";
+	private final float MAP_HEIGHT_RATIO = 0.8f;
+	private final float MAP_WIDTH_RATIO = 1.0f;
 
 	public Main() {
 		
@@ -18,17 +22,30 @@ public class Main extends PApplet {
 	}
 	
 	public void draw() {
-		mainApplet.draw();
+		mainWindow.draw();
 	}
 	
 	public void settings() {
 		size(800, 600);
 	}
 	
-	// load map, and initialize fields along with processing modes
+	
 	public void setup() {
-		mainApplet = new MainWindow(this, loadXML(mapFileName));
+		searchRunner = loadSearchRunner();
+		mainWindow = new MainWindow(this, searchRunner);
+		mainWindow.setMapView(new MapView(searchRunner.map, this));
+		
 		textAlign(CENTER);
 		rectMode(CORNER);
+	}
+
+	private SearchRunner loadSearchRunner() {
+		int mapWidth = Math.round(width * MAP_WIDTH_RATIO);
+		int mapHeight = Math.round(height * MAP_HEIGHT_RATIO);
+		
+		SearchRunner searchRunner = new SearchRunner(this);
+		searchRunner.openMap(loadXML(mapFileName), mapWidth, mapHeight);
+		searchRunner.initializeGuiPoints();
+		return searchRunner;
 	}
 }

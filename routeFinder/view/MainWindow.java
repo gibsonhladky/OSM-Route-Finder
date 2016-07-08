@@ -9,9 +9,8 @@ import routeFinder.control.SearchRunner;
  */
 public class MainWindow {
 	private MapView mapView; // View component to draw map to the applet
-	private SearchRunner main;
+	private SearchRunner searchRunner;
 	
-	private XML mapData;
 	private PApplet applet;
 
 	private final float MAP_HEIGHT_RATIO = 0.8f;
@@ -20,26 +19,16 @@ public class MainWindow {
 	private float MAP_TOP;
 	private float MAP_BOTTOM;
 	
-	public MainWindow(PApplet applet, XML mapData) {
+	public MainWindow(PApplet applet, SearchRunner searchRunner) {
 		this.applet = applet;
-		this.mapData = mapData;
-		setup();
-	}
-
-	// load map, and initialize fields along with processing modes
-	public void setup() {
+		this.searchRunner = searchRunner;
+		
 		MAP_TOP = applet.height * ( 1 - MAP_HEIGHT_RATIO ) / 2;
 		MAP_BOTTOM = applet.height * ( MAP_HEIGHT_RATIO + ( 1 - MAP_HEIGHT_RATIO ) / 2 );
-		
-		int mapWidth = Math.round(applet.width * MAP_WIDTH_RATIO);
-		int mapHeight = Math.round(applet.height * MAP_HEIGHT_RATIO);
-		
-		main = new SearchRunner(applet);
-		
-		main.openMap(mapData, mapWidth, mapHeight);
-		main.initializeGuiPoints();
-		
-		mapView = new MapView(main.map, applet);
+	}
+	
+	public void setMapView(MapView mapView) {
+		this.mapView = mapView;
 	}
 
 	// update
@@ -48,19 +37,19 @@ public class MainWindow {
 		drawGuiPoints();
 		drawTopPane();
 		drawBottomPane();
-		if (main.stillSearching()) {
-			main.attemptToStepForwardInSearch();
+		if (searchRunner.stillSearching()) {
+			searchRunner.attemptToStepForwardInSearch();
 			drawSearchProcess();
 			drawInstructions();
 			drawSolution();
-			main.clearSearchOnNewSearch();
+			searchRunner.clearSearchOnNewSearch();
 		}
 		else // Search has completed
 		{
-			main.attemptToStartNewSearch();
+			searchRunner.attemptToStartNewSearch();
 			drawPromptToComputeANewSolution();
 		}
-		main.updateStartAndEndPoints(); // allow user to drag around end points
+		searchRunner.updateStartAndEndPoints(); // allow user to drag around end points
 	}
 
 	/*
@@ -76,7 +65,7 @@ public class MainWindow {
 	 * points.
 	 */
 	private void drawGuiPoints() {
-		mapView.drawStartAndEnd(main.searchStartPoint(), main.searchEndPoint());
+		mapView.drawStartAndEnd(searchRunner.searchStartPoint(), searchRunner.searchEndPoint());
 	}
 
 	/*
@@ -113,8 +102,8 @@ public class MainWindow {
 	private void drawFrontierProgress() {
 		applet.stroke(applet.color(127, 127, 0));
 		applet.fill(applet.color(255, 255, 0));
-		mapView.drawPoints(main.frontierPoints());
-		applet.text("FRONTIER: " + main.frontierPoints().size(), applet.width / 2, 16);
+		mapView.drawPoints(searchRunner.frontierPoints());
+		applet.text("FRONTIER: " + searchRunner.frontierPoints().size(), applet.width / 2, 16);
 	}
 
 	/*
@@ -124,15 +113,15 @@ public class MainWindow {
 	private void drawExploredProgress() {
 		applet.stroke(applet.color(127, 0, 0));
 		applet.fill(applet.color(255, 0, 0));
-		mapView.drawPoints(main.exploredPoints());
-		applet.text("EXPLORED: " + main.exploredPoints().size(), applet.width / 2, 32);
+		mapView.drawPoints(searchRunner.exploredPoints());
+		applet.text("EXPLORED: " + searchRunner.exploredPoints().size(), applet.width / 2, 32);
 	}
 
 	/*
 	 * Displays the instructions for proceeding with the current step.
 	 */
 	private void drawInstructions() {
-		if (main.searchIsComplete()) {
+		if (searchRunner.searchIsComplete()) {
 			drawPromptToComputeANewSolution();
 		}
 		else {
@@ -160,6 +149,6 @@ public class MainWindow {
 	 * Draws the solution over the map if a solution has been found.
 	 */
 	private void drawSolution() {
-		mapView.drawRoute(main.searchSolution());
+		mapView.drawRoute(searchRunner.searchSolution());
 	}
 }
