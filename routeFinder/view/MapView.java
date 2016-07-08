@@ -24,7 +24,7 @@ public class MapView {
 	public void drawMap() {
 		applet.stroke(127);
 		applet.strokeWeight(1);
-		for (Street street : map.allStreets) {
+		for (Street street : map.streets()) {
 			drawStreet(street);
 		}
 	}

@@ -9,19 +9,16 @@ import processing.data.*;
  */
 public class Map {
 	// access to all points and streets
-	public ArrayList<Point> allPoints;
-	public ArrayList<Street> allStreets;
+	private ArrayList<Point> allPoints;
+	private ArrayList<Street> allStreets;
 	// actual points to search between
-	public Point start;
-	public Point end;
-
-	// actual points to search between have changed
-	public boolean dirtyPoints;
+	private Point start;
+	private Point end;
 	
 	private Bounds bounds;
 
-	int width;
-	int height;
+	private int width;
+	private int height;
 
 	public Map(XML mapData, int width, int height) {
 		this.width = width;
@@ -29,52 +26,77 @@ public class Map {
 		initializePointsAndStreets();
 		loadMap(mapData);
 	}
+	
+	/*
+	 * Sets the start point on the map. If the point is not
+	 * already on the map, the closest point to it will be set
+	 * instead.
+	 */
+	public void setStartPoint(Point newStart) {
+		this.start = closestPointTo(newStart);
+	}
+	
+	/*
+	 * Sets the end point on the map. If the point is not
+	 * already on the map, the closest point to it will be set
+	 * instead.
+	 */
+	public void setEndPoint(Point newEnd) {
+		this.end = closestPointTo(newEnd);
+	}
+	
+	public Point startPoint() {
+		return start;
+	}
+	
+	public Point endPoint() {
+		return end;
+	}
+	
+	public List<Street> streets() {
+		return allStreets;
+	}
 
 	public void clear() {
 		allPoints.clear();
 		allStreets.clear();
 	}
 
-	public void moveEndPointsToClosestStreet(Point guiStart, Point guiEnd) {
-		float dStart = Float.MAX_VALUE;
-		float dEnd = Float.MAX_VALUE;
-		float distSqr = Float.MAX_VALUE;
-		
-		// find closest point to start and end, save locations, and store
-		// mapStart & mapEnd
-		for (Point point : allPoints) {
-			if (point.x < 0 || point.x >= width || point.y < 0 || point.y >= height) {
-				continue;
-			}
-
-			distSqr = ( guiStart.x - point.x ) * ( guiStart.x - point.x )
-					+ ( guiStart.y - point.y ) * ( guiStart.y - point.y );
-			if (distSqr < dStart) {
-				start = point;
-				dStart = distSqr;
-			}
-			distSqr = ( guiEnd.x - point.x ) * ( guiEnd.x - point.x ) + ( guiEnd.y - point.y ) * ( guiEnd.y - point.y );
-			if (distSqr < dEnd) {
-				end = point;
-				dEnd = distSqr;
-			}
-		}
+	public void movePointToClosestStreet(Point guiStart, Point guiEnd) {
+		start = closestPointTo(guiStart);
+		end = closestPointTo(guiEnd);
 
 		// copy locations of closest points back into
 		guiStart.x = start.x;
 		guiStart.y = start.y;
 		guiEnd.x = end.x;
 		guiEnd.y = end.y;
-
-		dirtyPoints = true;
 	}
 	
 	public Bounds bounds() {
 		return bounds;
 	}
+	
+	private Point closestPointTo(Point originalPoint) {
+		Point closestPoint = null;
+		float dStart = Float.MAX_VALUE;
+		float distSqr = Float.MAX_VALUE;
+		for (Point thisPoint : allPoints) {
+			if (thisPoint.x < 0 || thisPoint.x >= width || thisPoint.y < 0 || thisPoint.y >= height) {
+				continue;
+			}
+			distSqr = ( originalPoint.x - thisPoint.x ) * ( originalPoint.x - thisPoint.x )
+					+ ( originalPoint.y - thisPoint.y ) * ( originalPoint.y - thisPoint.y );
+			if (distSqr < dStart) {
+				closestPoint = thisPoint;
+				dStart = distSqr;
+			}
+		}
+		return closestPoint;
+	}
 
 	private void loadMap(XML mapData) {
-		MapLoader loader = new MapLoader(this, mapData);
+		MapLoader loader = new MapLoader(this, mapData, width, height);
 		
 		bounds = loader.bounds();
 		allPoints.addAll(loader.points());
