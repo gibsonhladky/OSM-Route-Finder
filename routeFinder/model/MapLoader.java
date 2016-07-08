@@ -134,7 +134,7 @@ public class MapLoader {
 				points.add(nextPoint);
 			}
 			// create new street
-			Street street = new Street(points);
+			Street street = new Street(points, name);
 			streets.add(street);
 			// add neighboring nodes to each node
 			if (points.size() > 1) {
