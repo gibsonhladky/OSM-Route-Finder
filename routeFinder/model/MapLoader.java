@@ -144,7 +144,7 @@ public class MapLoader {
 			points.add(nextPoint);
 		}
 		
-		return new Street(points, "");
+		return new Street(points);
 	}
 	
 	private void setNeighbors(Street street) {
