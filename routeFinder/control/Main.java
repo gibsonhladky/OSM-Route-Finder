@@ -1,11 +1,11 @@
 package routeFinder.control;
 
 import processing.core.PApplet;
-import routeFinder.view.MainApplet;
+import routeFinder.view.MainWindow;
 
 public class Main extends PApplet {
 	
-	private MainApplet mainApplet;
+	private MainWindow mainApplet;
 	
 	private final String mapFileName = "map.osm";
 
@@ -27,7 +27,7 @@ public class Main extends PApplet {
 	
 	// load map, and initialize fields along with processing modes
 	public void setup() {
-		mainApplet = new MainApplet(this, loadXML(mapFileName));
+		mainApplet = new MainWindow(this, loadXML(mapFileName));
 		textAlign(CENTER);
 		rectMode(CORNER);
 	}

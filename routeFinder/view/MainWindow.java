@@ -7,7 +7,7 @@ import routeFinder.control.SearchRunner;
 /*
  * Original implementation by Gary Dahl
  */
-public class MainApplet {
+public class MainWindow {
 	private MapView mapView; // View component to draw map to the applet
 	private SearchRunner main;
 	
@@ -20,7 +20,7 @@ public class MainApplet {
 	private float MAP_TOP;
 	private float MAP_BOTTOM;
 	
-	public MainApplet(PApplet applet, XML mapData) {
+	public MainWindow(PApplet applet, XML mapData) {
 		this.applet = applet;
 		this.mapData = mapData;
 		setup();
