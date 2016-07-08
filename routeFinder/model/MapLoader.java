@@ -2,7 +2,6 @@ package routeFinder.model;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.List;
 
 import processing.data.XML;
 
@@ -52,17 +51,26 @@ public class MapLoader {
 		points = new ArrayList<Point>();
 		XML nodes[] = mapData.getChildren("node");
 		for (XML node : nodes) {
-			if (isInvalidNode(node)) {
+			if (isInvalidPoint(node)) {
 				continue;
 			}
 			loadPoint(node);
 		}
 	}
 	
-	private boolean isInvalidNode(XML node) {
+	/*
+	 * Returns true if the XML node is not a valid point
+	 * for a map.
+	 */
+	private boolean isInvalidPoint(XML node) {
 		return !node.hasAttribute("id") || !node.hasAttribute("lat") || !node.hasAttribute("lon");
 	}
 	
+	/*
+	 * Loads the point into the loader. Parses the information
+	 * from the XML object and adds the Point to 
+	 * all necessary collections.
+	 */
 	private void loadPoint(XML node) {
 		long id = node.getLong("id", -1);
 		float lat = node.getFloat("lat");
@@ -107,6 +115,10 @@ public class MapLoader {
 		}
 	}
 	
+	/*
+	 * Returns true if the XML object is accessible by
+	 * vehicles.
+	 */
 	private boolean isRoad(XML way) {
 		boolean isRoad = false;
 		XML tags[] = way.getChildren("tag");
@@ -134,6 +146,9 @@ public class MapLoader {
 		return isRoad;
 	}
 	
+	/*
+	 * Creates a Street from the XML object passed in.
+	 */
 	private Street createStreet(XML road) {
 		ArrayList<Point> points = new ArrayList<Point>();
 		XML nds[] = road.getChildren("nd");
@@ -147,6 +162,10 @@ public class MapLoader {
 		return new Street(points);
 	}
 	
+	/*
+	 * Sets each point in a street as a neighbor to it's
+	 * adjacent points.
+	 */
 	private void setNeighbors(Street street) {
 		ArrayList<Point> newPoints = street.points;
 		if (newPoints.size() > 1) {
