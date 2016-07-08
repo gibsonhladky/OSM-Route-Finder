@@ -26,6 +26,8 @@ public class Map {
 		this.bounds = bounds;
 		this.width = width;
 		this.height = height;
+		start = new Point(0, 0);
+		end = new Point(0, 0);
 	}
 	
 	/*

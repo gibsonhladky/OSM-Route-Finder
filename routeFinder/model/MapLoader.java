@@ -3,6 +3,11 @@ package routeFinder.model;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 import processing.data.XML;
 
 /*
@@ -12,7 +17,7 @@ import processing.data.XML;
  */
 public class MapLoader {
 	
-	private XML mapData;
+	private Document mapData;
 	private Bounds bounds;
 	private final Hashtable<Long, Point> pointIDTable = new Hashtable<Long, Point>();
 	private ArrayList<Point> points;
@@ -25,7 +30,7 @@ public class MapLoader {
 		this.height = height;
 	}
 	
-	public Map loadMap(XML mapData) {
+	public Map loadMap(Document mapData) {
 		this.mapData = mapData;
 		load();
 		return new Map(points, streets, bounds, width, height);
@@ -39,9 +44,16 @@ public class MapLoader {
 	}
 	
 	private void loadBounds() {
-		XML boundsData = mapData.getChild("bounds");
-		bounds = new Bounds(boundsData.getFloat("minlat"), boundsData.getFloat("minlon"),
-				boundsData.getFloat("maxlat"), boundsData.getFloat("maxlon"));
+		NodeList boundsNodes = mapData.getElementsByTagName("bounds");
+		Node boundsTag = boundsNodes.item(0);
+		NamedNodeMap attributes = boundsTag.getAttributes();
+		
+		float minlat = Float.parseFloat(attributes.getNamedItem("minlat").getNodeValue());
+		float minlon = Float.parseFloat(attributes.getNamedItem("minlon").getNodeValue());
+		float maxlat = Float.parseFloat(attributes.getNamedItem("maxlat").getNodeValue());
+		float maxlon = Float.parseFloat(attributes.getNamedItem("maxlon").getNodeValue());
+		
+		bounds = new Bounds(minlat, minlon, maxlat, maxlon);
 	}
 	
 	/*
@@ -49,8 +61,10 @@ public class MapLoader {
 	 */
 	private void loadPoints() {
 		points = new ArrayList<Point>();
-		XML nodes[] = mapData.getChildren("node");
-		for (XML node : nodes) {
+		NodeList nodes = mapData.getElementsByTagName("node");
+		
+		for (int i = 0; i < nodes.getLength(); i++) {
+			Node node = nodes.item(i);
 			if (isInvalidPoint(node)) {
 				continue;
 			}
@@ -62,8 +76,12 @@ public class MapLoader {
 	 * Returns true if the XML node is not a valid point
 	 * for a map.
 	 */
-	private boolean isInvalidPoint(XML node) {
-		return !node.hasAttribute("id") || !node.hasAttribute("lat") || !node.hasAttribute("lon");
+	private boolean isInvalidPoint(Node node) {
+		NamedNodeMap attributes = node.getAttributes();
+		
+		return attributes.getNamedItem("id") == null ||
+				attributes.getNamedItem("lat") == null ||
+				attributes.getNamedItem("lon") == null;
 	}
 	
 	/*
@@ -71,10 +89,12 @@ public class MapLoader {
 	 * from the XML object and adds the Point to 
 	 * all necessary collections.
 	 */
-	private void loadPoint(XML node) {
-		long id = node.getLong("id", -1);
-		float lat = node.getFloat("lat");
-		float lon = node.getFloat("lon");
+	private void loadPoint(Node node) {
+		NamedNodeMap attributes = node.getAttributes();
+		long id = Long.parseLong(attributes.getNamedItem("id").getNodeValue());
+		float lat = Float.parseFloat(attributes.getNamedItem("lat").getNodeValue());
+		float lon = Float.parseFloat(attributes.getNamedItem("lon").getNodeValue());
+		
 		Point point = new Point(scaleLon(lon), scaleLat(lat));
 		points.add(point);
 		pointIDTable.put(id, point);
@@ -103,8 +123,9 @@ public class MapLoader {
 		streets = new ArrayList<Street>();
 		
 		// Go through each potential street
-		XML ways[] = mapData.getChildren("way");
-		for (XML road : ways) {
+		NodeList ways = mapData.getElementsByTagName("way");
+		for (int i = 0; i < ways.getLength(); i++) {
+			Node road = ways.item(i);
 			if (!isRoad(road)) {
 				continue;
 			}
@@ -119,13 +140,22 @@ public class MapLoader {
 	 * Returns true if the XML object is accessible by
 	 * vehicles.
 	 */
-	private boolean isRoad(XML way) {
+	private boolean isRoad(Node way) {
 		boolean isRoad = false;
-		XML tags[] = way.getChildren("tag");
-		for (XML tag : tags) {
-			if (tag.hasAttribute("k") && tag.hasAttribute("v")) {
-				if (tag.getString("k").equals("highway")) {
-					switch (tag.getString("v")) {
+		NodeList tags = way.getChildNodes();
+		
+		for (int i = 0; i < tags.getLength(); i++) {
+			Node tag = tags.item(i);
+			if(tag.getNodeName() == null || !tag.getNodeName().equals("tag")) {
+				continue;
+			}
+			
+			NamedNodeMap attributes = tag.getAttributes();
+			Node k = attributes.getNamedItem("k");
+			Node v = attributes.getNamedItem("v");
+			if (k != null && v != null) {
+				if (k.getNodeValue().equals("highway")) {
+					switch (v.getNodeValue()) {
 					case "pedestrian":
 					case "footway":
 					case "cycleway":
@@ -138,9 +168,6 @@ public class MapLoader {
 						isRoad = true;
 					}
 				}
-				else if (tag.getString("k").equals("name")) {
-					
-				}
 			}
 		}
 		return isRoad;
@@ -149,16 +176,23 @@ public class MapLoader {
 	/*
 	 * Creates a Street from the XML object passed in.
 	 */
-	private Street createStreet(XML road) {
+	private Street createStreet(Node road) {
 		ArrayList<Point> points = new ArrayList<Point>();
-		XML nds[] = road.getChildren("nd");
-		for (XML nd : nds) {
-			long index = nd.getLong("ref", -1);
+		
+		NodeList nds = road.getChildNodes();
+		
+		for (int i = 0; i < nds.getLength(); i++) {
+			Node nd = nds.item(i);
+			if(!nd.getNodeName().equals("nd")) {
+				continue;
+			}
+			
+			NamedNodeMap attributes = nd.getAttributes();
+			long index = Long.parseLong(attributes.getNamedItem("ref").getNodeValue());
 			Point nextPoint = pointIDTable.get(index);
 			nextPoint.isOnStreet = true;
 			points.add(nextPoint);
 		}
-		
 		return new Street(points);
 	}
 	
