@@ -2,10 +2,13 @@ package routeFinder.control;
 
 import java.util.List;
 
+import org.w3c.dom.Document;
+
 import processing.core.PApplet;
 import processing.data.XML;
 import routeFinder.model.AStarSearch;
 import routeFinder.model.Map;
+import routeFinder.model.MapLoader;
 import routeFinder.model.Point;
 
 public class SearchRunner {
@@ -72,8 +75,9 @@ public class SearchRunner {
 		placePoints();
 	}
 	
-	public void openMap(XML mapData, int width, int height) {
-		map = new Map(mapData, width, height);
+	public void openMap(Document mapData, int width, int height) {
+		MapLoader loader = new MapLoader(width, height);
+		map = loader.loadMap(mapData);
 	}
 	
 	/*
