@@ -2,18 +2,17 @@ package routeFinder.model;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import processing.data.XML;
-import routeFinder.model.Map.Bounds;
 
 /*
  * MapLoader loads data from an XML file and interprets the
  * data. The loader can then be queried for information
  * about the map.
  */
-class MapLoader {
+public class MapLoader {
 	
-	private final Map mapLoader;
 	private XML mapData;
 	private Bounds bounds;
 	private final Hashtable<Long, Point> pointIDTable = new Hashtable<Long, Point>();
@@ -22,14 +21,15 @@ class MapLoader {
 	
 	private final int width, height;
 	
-	public MapLoader(Map map, XML mapData, int width, int height) {
+	public MapLoader(int width, int height) {
 		this.width = width;
 		this.height = height;
-		mapLoader = map;
+	}
+	
+	public Map loadMap(XML mapData) {
 		this.mapData = mapData;
-		loadBounds();
-		loadPoints();
-		loadStreets();
+		load();
+		return new Map(points(), streets(), bounds(), width, height);
 	}
 	
 	/*
@@ -42,20 +42,27 @@ class MapLoader {
 	/*
 	 * Returns the points loaded from the XML map data.
 	 */
-	public ArrayList<Point> points() {
+	public List<Point> points() {
 		return points;
 	}
 	
 	/*
 	 * Returns the streets loaded from the XML map data.
 	 */
-	public ArrayList<Street> streets() {
+	public List<Street> streets() {
 		return streets;
+	}
+	
+	private void load() {
+		loadBounds();
+		loadPoints();
+		loadStreets();
+		removeUnusedPoints();
 	}
 	
 	private void loadBounds() {
 		XML boundsData = mapData.getChild("bounds");
-		bounds = mapLoader.new Bounds(boundsData.getFloat("minlat"), boundsData.getFloat("minlon"),
+		bounds = new Bounds(boundsData.getFloat("minlat"), boundsData.getFloat("minlon"),
 				boundsData.getFloat("maxlat"), boundsData.getFloat("maxlon"));
 	}
 	
@@ -151,6 +158,15 @@ class MapLoader {
 			}
 			if (points.size() > 1) {
 				points.get(points.size() - 1).neighbors.add(points.get(points.size() - 2));
+			}
+		}
+	}
+	
+	private void removeUnusedPoints() {
+		for (int i = 0; i < points.size(); i++) {
+			if (!points.get(i).isOnStreet) {
+				points.remove(i);
+				i--;
 			}
 		}
 	}

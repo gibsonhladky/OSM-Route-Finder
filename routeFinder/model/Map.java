@@ -9,8 +9,8 @@ import processing.data.*;
  */
 public class Map {
 	// access to all points and streets
-	private ArrayList<Point> allPoints;
-	private ArrayList<Street> allStreets;
+	private List<Point> allPoints;
+	private List<Street> allStreets;
 	// actual points to search between
 	private Point start;
 	private Point end;
@@ -19,12 +19,13 @@ public class Map {
 
 	private int width;
 	private int height;
-
-	public Map(XML mapData, int width, int height) {
+	
+	public Map(List<Point> points, List<Street> streets, Bounds bounds, int width, int height) {
+		this.allPoints = points;
+		this.allStreets = streets;
+		this.bounds = bounds;
 		this.width = width;
 		this.height = height;
-		initializePointsAndStreets();
-		loadMap(mapData);
 	}
 	
 	/*
@@ -93,46 +94,5 @@ public class Map {
 			}
 		}
 		return closestPoint;
-	}
-
-	private void loadMap(XML mapData) {
-		MapLoader loader = new MapLoader(this, mapData, width, height);
-		
-		bounds = loader.bounds();
-		allPoints.addAll(loader.points());
-		allStreets.addAll(loader.streets());
-		removeUnusedPoints();
-	}
-	
-	private void removeUnusedPoints() {
-		for (int i = 0; i < allPoints.size(); i++) {
-			if (!allPoints.get(i).isOnStreet) {
-				allPoints.remove(i);
-				i--;
-			}
-		}
-	}
-
-	private void initializePointsAndStreets() {
-		allPoints = new ArrayList<Point>();
-		allStreets = new ArrayList<Street>();
-	}
-
-	public class Bounds {
-		public final float minLat;
-		public final float minLon;
-		public final float maxLat;
-		public final float maxLon;
-		public final float latRange;
-		public final float lonRange;
-
-		public Bounds(float minLat, float minLon, float maxLat, float maxLon) {
-			this.minLat = minLat;
-			this.minLon = minLon;
-			this.maxLat = maxLat;
-			this.maxLon = maxLon;
-			this.latRange = maxLat - minLat;
-			this.lonRange = maxLon - minLon;
-		}
 	}
 }
