@@ -29,17 +29,8 @@ public class Main extends PApplet {
 	}
 	
 	public void draw() {
-		mainWindow.drawBase();
-		if(searchRunner.stillSearching()) {
-			searchRunner.attemptToStepForwardInSearch();
-			mainWindow.drawSearch();
-			searchRunner.clearSearchOnNewSearch();
-		}
-		else {
-			searchRunner.attemptToStartNewSearch();
-			mainWindow.drawPromptToComputeANewSolution();
-		}
-		searchRunner.updateStartAndEndPoints();
+		mainWindow.draw();
+		updateSearch();
 	}
 	
 	public void settings() {
@@ -54,6 +45,17 @@ public class Main extends PApplet {
 		
 		textAlign(CENTER);
 		rectMode(CORNER);
+	}
+	
+	private void updateSearch() {
+		if(searchRunner.stillSearching()) {
+			searchRunner.attemptToStepForwardInSearch();
+			searchRunner.clearSearchOnNewSearch();
+		}
+		else {
+			searchRunner.attemptToStartNewSearch();
+		}
+		searchRunner.updateStartAndEndPoints();
 	}
 
 	private void loadSearchRunner() {
