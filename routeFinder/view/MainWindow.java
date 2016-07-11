@@ -31,10 +31,24 @@ public class MainWindow {
 	}
 	
 	/*
+	 * Draws the application's current state based on
+	 * the search runner.
+	 */
+	public void draw() {
+		drawBase();
+		if(searchRunner.stillSearching()) {
+			drawSearch();
+		}
+		else {
+			drawPromptToComputeANewSolution();
+		}
+	}
+	
+	/*
 	 * Draws the base for the window - the map, 
 	 * gui, and top and bottom panes.
 	 */
-	public void drawBase() {
+	private void drawBase() {
 		drawMap();
 		drawGuiPoints();
 		drawTopPane();
@@ -44,7 +58,7 @@ public class MainWindow {
 	/*
 	 * Draws the search process over the base.
 	 */
-	public void drawSearch() {
+	private void drawSearch() {
 		drawSearchProcess();
 		drawInstructions();
 		drawSolution();
@@ -53,7 +67,7 @@ public class MainWindow {
 	/*
 	 * Draws the instructions for beginning a new main.search.
 	 */
-	public void drawPromptToComputeANewSolution() {
+	private void drawPromptToComputeANewSolution() {
 		applet.fill(255);
 		applet.text("Press <0>, <1>, or <2> to find a path from the green to red circle.", applet.width / 2, applet.height - 32);
 	}
