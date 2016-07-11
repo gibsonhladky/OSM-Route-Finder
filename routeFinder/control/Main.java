@@ -49,8 +49,8 @@ public class Main extends PApplet {
 	
 	private void updateSearch() {
 		if(searchRunner.stillSearching()) {
-			searchRunner.attemptToStepForwardInSearch();
-			searchRunner.clearSearchOnNewSearch();
+			searchRunner.stepForwardInSearch();
+			searchRunner.attemptToClearSearch();
 		}
 		else {
 			searchRunner.attemptToStartNewSearch();

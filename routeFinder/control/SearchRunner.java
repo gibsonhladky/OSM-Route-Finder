@@ -93,29 +93,20 @@ public class SearchRunner {
 	 * The search continues one step if enter was ever pressed or space was
 	 * pressed again.
 	 */
-	public void attemptToStepForwardInSearch() {
+	public void stepForwardInSearch() {
+		
 		if (enterPressed) {
 			search.exploreNextNode();
 		}
 		else if (theKeyPressedIs('\n')) {
 			enterPressed = true;
 		}
-		else if (theKeyPressedIs(' ')) {
-			// explore one step per spacebar press
-			if (!spaceWasDown) {
-				search.exploreNextNode();
-			}
-			spaceWasDown = true;
-		}
-		else {
-			spaceWasDown = false;
-		}
 	}
 	
 	/*
 	 * When a new main.search is selected, clears the previous main.search.
 	 */
-	public void clearSearchOnNewSearch() {
+	public void attemptToClearSearch() {
 		if (guiPointsMoved || ( search.isComplete() && ( applet.key == '0' || applet.key == '1' || applet.key == '2' ) )) {
 			search = null;
 			enterPressed = false;

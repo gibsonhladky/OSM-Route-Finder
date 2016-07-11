@@ -58,12 +58,7 @@ public class MainWindow {
 	/*
 	 * Draws the search process over the base.
 	 */
-<<<<<<< HEAD
 	public void drawSearch() {
-=======
-	private void drawSearch() {
-		drawSearchProcess();
->>>>>>> master
 		drawInstructions();
 		drawSolution();
 	}
@@ -127,7 +122,7 @@ public class MainWindow {
 	 */
 	private void drawPromptToContinueSearch() {
 		applet.fill(255); // display prompt to continue exploring or reset main.search
-		applet.text("Press <Enter> to continue or <spacebard> to step through main.search.", applet.width / 2, applet.height - 32);
+		applet.text("Press <Enter> to find a route.", applet.width / 2, applet.height - 32);
 	}
 
 	/*
