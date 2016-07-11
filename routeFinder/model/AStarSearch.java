@@ -52,7 +52,7 @@ public class AStarSearch {
 	 * Returns an ArrayList of Map.Points that represents the SearchPoints in
 	 * the frontier.
 	 */
-	public ArrayList<Point> getFrontier() {
+	private ArrayList<Point> getFrontier() {
 		ArrayList<Point> points = new ArrayList<Point>();
 		for (int i = 0; i < frontier.size(); i++) {
 			points.add(frontier.get(i).mapPoint);
@@ -64,7 +64,7 @@ public class AStarSearch {
 	 * Returns an ArrayList of Map.Points that represents the SearchPoints that
 	 * have been explored.
 	 */
-	public ArrayList<Point> getExplored() {
+	private ArrayList<Point> getExplored() {
 		ArrayList<Point> points = new ArrayList<Point>();
 		for (int i = 0; i < explored.size(); i++) {
 			points.add(explored.get(i).mapPoint);
@@ -91,12 +91,21 @@ public class AStarSearch {
 		return false;
 	}
 
+	
+	public List<Point> getRoute() {
+//		while( !isComplete() ) {
+//			exploreNextNode();
+//		}
+
+		return routePoints();
+	}
+	
 	/*
 	 * Returns a list of the points along the path from start to end. The points
 	 * are ordered by position in path from start to end. Returns an empty list
 	 * if no solution was found.
 	 */
-	public List<Point> getSolution() {
+	private List<Point> routePoints() {
 		if (explored.isEmpty()) {
 			return Collections.emptyList();
 		}
@@ -116,7 +125,6 @@ public class AStarSearch {
 		}
 		
 		Collections.reverse(solution);
-
 		return solution;
 	}
 	

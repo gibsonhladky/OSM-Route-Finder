@@ -42,20 +42,12 @@ public class SearchRunner {
 		return guiEnd;
 	}
 	
-	public List<Point> frontierPoints() {
-		return search.getFrontier();
-	}
-	
-	public List<Point> exploredPoints() {
-		return search.getExplored();
-	}
-	
 	public boolean searchIsComplete() {
 		return search.isComplete();
 	}
 	
 	public List<Point> searchSolution() {
-		return search.getSolution();
+		return search.getRoute();
 	}
 	
 	/*

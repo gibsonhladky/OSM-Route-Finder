@@ -45,7 +45,6 @@ public class MainWindow {
 	 * Draws the search process over the base.
 	 */
 	public void drawSearch() {
-		drawSearchProcess();
 		drawInstructions();
 		drawSolution();
 	}
@@ -90,37 +89,6 @@ public class MainWindow {
 		applet.stroke(0);
 		applet.fill(0);
 		applet.rect(0, MAP_BOTTOM, applet.width, applet.height);
-	}
-
-	/*
-	 * Displays the number of Points explored and the number of points in the
-	 * frontier.
-	 */
-	private void drawSearchProcess() {
-		drawFrontierProgress();
-		drawExploredProgress();
-	}
-
-	/*
-	 * Draws yellow points to the map indicating which points are currently in
-	 * the frontier, and how many there are in the top bar.
-	 */
-	private void drawFrontierProgress() {
-		applet.stroke(applet.color(127, 127, 0));
-		applet.fill(applet.color(255, 255, 0));
-		mapView.drawPoints(searchRunner.frontierPoints());
-		applet.text("FRONTIER: " + searchRunner.frontierPoints().size(), applet.width / 2, 16);
-	}
-
-	/*
-	 * Draws red points on the map indicating which points have been
-	 * main.searched, and the number of points explored in the top bar
-	 */
-	private void drawExploredProgress() {
-		applet.stroke(applet.color(127, 0, 0));
-		applet.fill(applet.color(255, 0, 0));
-		mapView.drawPoints(searchRunner.exploredPoints());
-		applet.text("EXPLORED: " + searchRunner.exploredPoints().size(), applet.width / 2, 32);
 	}
 
 	/*
