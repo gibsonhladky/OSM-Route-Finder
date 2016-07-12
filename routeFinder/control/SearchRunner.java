@@ -5,13 +5,18 @@ import java.util.List;
 import org.w3c.dom.Document;
 
 import processing.core.PApplet;
-import processing.data.XML;
 import routeFinder.model.AStarSearch;
 import routeFinder.model.Map;
 import routeFinder.model.MapLoader;
 import routeFinder.model.Point;
 
 public class SearchRunner {
+	
+	public enum SearchState {
+		IDLE, MOVING_GUI, SEARCH_SELECTED, SEARCHING
+	}
+	
+	private SearchState state;
 
 	public Map map;
 	
@@ -22,15 +27,12 @@ public class SearchRunner {
 	private Point guiEnd;
 	private boolean guiPointsMoved;
 	
-	private boolean enterPressed; // press enter to watch entire search until
-	// solution
-	private boolean spaceWasDown; // press space repeatedly to step through
-	// search
 	private AStarSearch search;
 
 	
 	public SearchRunner(PApplet applet) {
 		this.applet = applet;
+		this.state = SearchState.IDLE;
 		guiPointsMoved = false;
 	}
 	
@@ -82,9 +84,11 @@ public class SearchRunner {
 			selectAPointToDrag();
 		}
 		if (aPointIsBeingDragged()) {
+			state = SearchState.MOVING_GUI;
 			updateDraggedPointPosition();
 		}
 		if (draggingHasStopped()) {
+			state = SearchState.IDLE;
 			placePoints();
 		}
 	}
@@ -95,11 +99,11 @@ public class SearchRunner {
 	 */
 	public void stepForwardInSearch() {
 		
-		if (enterPressed) {
+		if (state == SearchState.SEARCHING) {
 			search.exploreNextNode();
 		}
 		else if (theKeyPressedIs('\n')) {
-			enterPressed = true;
+			state = SearchState.SEARCHING;
 		}
 	}
 	
@@ -108,8 +112,8 @@ public class SearchRunner {
 	 */
 	public void attemptToClearSearch() {
 		if (guiPointsMoved || ( search.isComplete() && ( applet.key == '0' || applet.key == '1' || applet.key == '2' ) )) {
+			state = SearchState.IDLE;
 			search = null;
-			enterPressed = false;
 		}
 	}
 	
@@ -118,6 +122,7 @@ public class SearchRunner {
 	 */
 	public void attemptToStartNewSearch() {
 		if (applet.keyPressed && ( applet.key == '0' || applet.key == '1' || applet.key == '2' )) {
+			state = SearchState.SEARCH_SELECTED;
 			search = new AStarSearch(map, applet.key - '0');
 			guiPointsMoved = false;
 		}
