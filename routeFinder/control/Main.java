@@ -8,6 +8,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 
 import processing.core.PApplet;
+import routeFinder.control.SearchRunner.SearchState;
 import routeFinder.view.MainWindow;
 import routeFinder.view.MapView;
 
@@ -55,7 +56,28 @@ public class Main extends PApplet {
 		else {
 			searchRunner.attemptToStartNewSearch();
 		}
-		searchRunner.updateStartAndEndPoints();
+	}
+	
+	@Override
+	public void mousePressed() {
+		if(searchRunner.guiDragging == null) {
+			searchRunner.selectAPointToDrag();
+		}
+	}
+	
+	@Override
+	public void mouseReleased() {
+		searchRunner.placePoints();
+		searchRunner.state = SearchState.IDLE;
+		searchRunner.guiDragging = null;
+	}
+	
+	@Override
+	public void mouseDragged() {
+		searchRunner.state = SearchState.MOVING_GUI;
+		if(searchRunner.aPointIsBeingDragged()) {
+			searchRunner.updateDraggedPointPosition();
+		}
 	}
 
 	private void loadSearchRunner() {

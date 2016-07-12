@@ -16,16 +16,16 @@ public class SearchRunner {
 		IDLE, MOVING_GUI, SEARCH_SELECTED, SEARCHING
 	}
 	
-	private SearchState state;
+	public SearchState state;
 
 	public Map map;
 	
 	private PApplet applet;
 
-	private Point guiDragging;
-	private Point guiStart;
-	private Point guiEnd;
-	private boolean guiPointsMoved;
+	public Point guiDragging;
+	public Point guiStart;
+	public Point guiEnd;
+	public boolean guiPointsMoved;
 	
 	private AStarSearch search;
 
@@ -75,25 +75,6 @@ public class SearchRunner {
 	}
 	
 	/*
-	 * Updates the position of the start and end points.
-	 * Allows the user to drag the points to new positions.
-	 * Draws the points after being called.
-	 */
-	public void updateStartAndEndPoints() {
-		if (aDraggingAttemptHasStarted()) {
-			selectAPointToDrag();
-		}
-		if (aPointIsBeingDragged()) {
-			state = SearchState.MOVING_GUI;
-			updateDraggedPointPosition();
-		}
-		if (draggingHasStopped()) {
-			state = SearchState.IDLE;
-			placePoints();
-		}
-	}
-	
-	/*
 	 * The search continues one step if enter was ever pressed or space was
 	 * pressed again.
 	 */
@@ -129,19 +110,11 @@ public class SearchRunner {
 	}
 	
 	/*
-	 * Returns true when the mouse is pressed and
-	 * the user is not already dragging a point.
-	 */
-	private boolean aDraggingAttemptHasStarted() {
-		return applet.mousePressed && guiDragging == null;
-	}
-	
-	/*
 	 * Selects a GUI point to drag based on current mouse position.
 	 * If the mouse is not in range of any point, no point is set
 	 * to be dragged.
 	 */
-	private void selectAPointToDrag() {
+	public void selectAPointToDrag() {
 		double startToMouseDistance = sqr(applet.mouseX - guiStart.x) + sqr(applet.mouseY - guiStart.y);
 		double endToMouseDistance = sqr(applet.mouseX - guiEnd.x) + sqr(applet.mouseY - guiEnd.y);
 		if (startToMouseDistance <= 50 && startToMouseDistance < endToMouseDistance) {
@@ -156,23 +129,16 @@ public class SearchRunner {
 	 * Returns true if a point is currently being dragged
 	 * by the user.
 	 */
-	private boolean aPointIsBeingDragged() {
+	public boolean aPointIsBeingDragged() {
 		return applet.mousePressed && ( guiDragging != null );
 	}
 	
 	/*
 	 * Moves the dragged point to the current mouse position.
 	 */
-	private void updateDraggedPointPosition() {
+	public void updateDraggedPointPosition() {
 		guiDragging.x = applet.mouseX;
 		guiDragging.y = applet.mouseY;
-	}
-	
-	/*
-	 * Returns true if the user stops dragging a point.
-	 */
-	private boolean draggingHasStopped() {
-		return !applet.mousePressed && ( guiDragging != null );
 	}
 	
 	/*
@@ -180,7 +146,7 @@ public class SearchRunner {
 	 * the gui's positions. Moves the gui's over the point
 	 * they refer to.
 	 */
-	private void placePoints() {
+	public void placePoints() {
 		map.setStartPoint(guiStart);
 		map.setEndPoint(guiEnd);
 		
