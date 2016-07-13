@@ -2,6 +2,7 @@ package routeFinder.view;
 
 import processing.core.*;
 import routeFinder.control.SearchRunner;
+import routeFinder.model.Point;
 
 /*
  * Original implementation by Gary Dahl
@@ -11,6 +12,9 @@ public class MainWindow {
 	private SearchRunner searchRunner;
 	
 	private PApplet applet;
+	
+	private Point guiStart;
+	private Point guiEnd;
 
 	private final float MAP_HEIGHT_RATIO = 0.8f;
 	private final float MAP_WIDTH_RATIO = 1.0f;
@@ -18,12 +22,15 @@ public class MainWindow {
 	private float MAP_TOP;
 	private float MAP_BOTTOM;
 	
-	public MainWindow(PApplet applet, SearchRunner searchRunner) {
+	public MainWindow(PApplet applet, SearchRunner searchRunner, Point guiStart, Point guiEnd) {
 		this.applet = applet;
 		this.searchRunner = searchRunner;
 		
 		MAP_TOP = applet.height * ( 1 - MAP_HEIGHT_RATIO ) / 2;
 		MAP_BOTTOM = applet.height * ( MAP_HEIGHT_RATIO + ( 1 - MAP_HEIGHT_RATIO ) / 2 );
+		
+		this.guiStart = guiStart;
+		this.guiEnd = guiEnd;
 	}
 	
 	public void setMapView(MapView mapView) {
@@ -84,7 +91,7 @@ public class MainWindow {
 	 * points.
 	 */
 	private void drawGuiPoints() {
-		mapView.drawStartAndEnd(searchRunner.searchStartPoint(), searchRunner.searchEndPoint());
+		mapView.drawStartAndEnd(guiStart, guiEnd);
 	}
 
 	/*
