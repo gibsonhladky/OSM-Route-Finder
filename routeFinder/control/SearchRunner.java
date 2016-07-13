@@ -22,9 +22,6 @@ public class SearchRunner {
 	
 	private PApplet applet;
 
-	public Point guiDragging;
-	public Point guiStart;
-	public Point guiEnd;
 	public boolean guiPointsMoved;
 	
 	private AStarSearch search;
@@ -34,14 +31,6 @@ public class SearchRunner {
 		this.applet = applet;
 		this.state = SearchState.IDLE;
 		guiPointsMoved = false;
-	}
-	
-	public Point searchStartPoint() {
-		return guiStart;
-	}
-	
-	public Point searchEndPoint() {
-		return guiEnd;
 	}
 	
 	public boolean searchIsComplete() {
@@ -57,16 +46,6 @@ public class SearchRunner {
 	 */
 	public boolean stillSearching() {
 		return search != null;
-	}
-	
-	/*
-	 * Sets the start and end GUI points to an initial state. The points are set
-	 * apart to allow easier usability.
-	 */
-	public void initializeGuiPoints() {
-		guiStart = new Point(applet.width * 2 / 10, applet.height / 2);
-		guiEnd = new Point(applet.width * 8 / 10, applet.height / 2);
-		placePoints();
 	}
 	
 	public void openMap(Document mapData, int width, int height) {
@@ -110,53 +89,20 @@ public class SearchRunner {
 	}
 	
 	/*
-	 * Selects a GUI point to drag based on current mouse position.
-	 * If the mouse is not in range of any point, no point is set
-	 * to be dragged.
-	 */
-	public void selectAPointToDrag() {
-		double startToMouseDistance = sqr(applet.mouseX - guiStart.x) + sqr(applet.mouseY - guiStart.y);
-		double endToMouseDistance = sqr(applet.mouseX - guiEnd.x) + sqr(applet.mouseY - guiEnd.y);
-		if (startToMouseDistance <= 50 && startToMouseDistance < endToMouseDistance) {
-			guiDragging = guiStart;
-		}
-		else if (endToMouseDistance <= 50) {
-			guiDragging = guiEnd;
-		}
-	}
-	
-	/*
-	 * Returns true if a point is currently being dragged
-	 * by the user.
-	 */
-	public boolean aPointIsBeingDragged() {
-		return applet.mousePressed && ( guiDragging != null );
-	}
-	
-	/*
-	 * Moves the dragged point to the current mouse position.
-	 */
-	public void updateDraggedPointPosition() {
-		guiDragging.x = applet.mouseX;
-		guiDragging.y = applet.mouseY;
-	}
-	
-	/*
 	 * Updates the map's start and end points based on
 	 * the gui's positions. Moves the gui's over the point
 	 * they refer to.
 	 */
-	public void placePoints() {
-		map.setStartPoint(guiStart);
-		map.setEndPoint(guiEnd);
+	public void placePoints(Point start, Point end) {
+		map.setStartPoint(start);
+		map.setEndPoint(end);
 		
-		guiStart.x = map.startPoint().x;
-		guiStart.y = map.startPoint().y;
-		guiEnd.x = map.endPoint().x;
-		guiEnd.y = map.endPoint().y;
+		start.x = map.startPoint().x;
+		start.y = map.startPoint().y;
+		end.x = map.endPoint().x;
+		end.y = map.endPoint().y;
 		
 		guiPointsMoved = true;
-		guiDragging = null;
 	}
 	
 	/*
@@ -164,12 +110,5 @@ public class SearchRunner {
 	 */
 	private boolean theKeyPressedIs(char c) {
 		return applet.keyPressed && applet.key == c;
-	}
-	
-	/*
-	 * Square function. Returns x^2
-	 */
-	private double sqr(double x) {
-		return Math.pow(x, 2);
 	}
 }
