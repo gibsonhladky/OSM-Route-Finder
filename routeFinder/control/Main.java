@@ -30,20 +30,10 @@ public class Main extends PApplet {
 		
 	}
 	
-	public static void main(String args[]) {
-		PApplet.main(new String[] {"routeFinder.control.Main"});
-	}
-	
-	public void draw() {
-		mainWindow.draw();
-		updateSearch();
-	}
-	
-	public void settings() {
-		size(800, 600);
-	}
-	
-	
+	/*
+	 * Called at application start to set up all 
+	 * necessary pieces of the application.
+	 */
 	public void setup() {
 		loadSearchRunner();
 		mainWindow = new MainWindow(this, searchRunner, guiStart, guiEnd);
@@ -51,6 +41,20 @@ public class Main extends PApplet {
 		
 		textAlign(CENTER);
 		rectMode(CORNER);
+	}
+	
+	/*
+	 * Driving function for a Processing PApplet.
+	 * This is called by the application's runner
+	 * in an infinite loop.
+	 */
+	public void draw() {
+		mainWindow.draw();
+		updateSearch();
+	}
+	
+	public void settings() {
+		size(800, 600);
 	}
 	
 	@Override
@@ -61,23 +65,18 @@ public class Main extends PApplet {
 	@Override
 	public void mouseReleased() {
 		placePoints();
-		searchRunner.state = SearchState.IDLE;
+		transitionTo(SearchState.IDLE);
 		guiDragging = null;
 	}
 	
 	@Override
 	public void mouseDragged() {
-		searchRunner.state = SearchState.MOVING_GUI;
+		transitionTo(SearchState.MOVING_GUI);
 		if(aPointIsBeingDragged()) {
 			updateDraggedPointPosition();
 		}
 	}
-	
-	private void placePoints() {
-		searchRunner.placePoints(guiStart, guiEnd);
-		guiDragging = null;
-	}
-	
+
 	private void selectPointToDrag() {
 		double startToMouseDistance = sqr(mouseX - guiStart.x) + sqr(mouseY - guiStart.y);
 		double endToMouseDistance = sqr(mouseX - guiEnd.x) + sqr(mouseY - guiEnd.y);
@@ -89,6 +88,15 @@ public class Main extends PApplet {
 		}
 	}
 	
+	private void placePoints() {
+		searchRunner.changeSearchPoints(guiStart, guiEnd);
+		guiDragging = null;
+	}
+	
+	private void transitionTo(SearchState newState) {
+		searchRunner.state = newState;
+	}
+	
 	private boolean aPointIsBeingDragged() {
 		return guiDragging != null;
 	}
@@ -96,10 +104,6 @@ public class Main extends PApplet {
 	private void updateDraggedPointPosition() {
 		guiDragging.x = mouseX;
 		guiDragging.y = mouseY;
-	}
-
-	private double sqr(double x) {
-		return Math.pow(x, 2);
 	}
 	
 	private void updateSearch() {
@@ -112,6 +116,10 @@ public class Main extends PApplet {
 		}
 	}
 
+	/*
+	 * Loads the search runner with the map referred to in Main.
+	 * Opens the map and places initial start and stop points.
+	 */
 	private void loadSearchRunner() {
 		int mapWidth = Math.round(width * MAP_WIDTH_RATIO);
 		int mapHeight = Math.round(height * MAP_HEIGHT_RATIO);
@@ -131,9 +139,23 @@ public class Main extends PApplet {
 		}
 	}
 	
+	/*
+	 * Places the GUI points at a starting position on the map.
+	 */
 	private void initializeGuiPoints() {
 		guiStart = new Point(width * 2 / 10, height / 2);
 		guiEnd = new Point(width * 8 / 10, height / 2);
 		placePoints();
 	}
+	
+	
+	private double sqr(double x) {
+		return Math.pow(x, 2);
+	}
+	
+
+	public static void main(String args[]) {
+		PApplet.main(new String[] {"routeFinder.control.Main"});
+	}
+
 }

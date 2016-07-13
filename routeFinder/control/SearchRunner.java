@@ -93,7 +93,7 @@ public class SearchRunner {
 	 * the gui's positions. Moves the gui's over the point
 	 * they refer to.
 	 */
-	public void placePoints(Point start, Point end) {
+	public void changeSearchPoints(Point start, Point end) {
 		map.setStartPoint(start);
 		map.setEndPoint(end);
 		
