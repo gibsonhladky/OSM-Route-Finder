@@ -50,11 +50,24 @@ public class Main extends PApplet {
 	 */
 	public void draw() {
 		mainWindow.draw();
-		updateSearch();
 	}
 	
 	public void settings() {
 		size(800, 600);
+	}
+	
+	@Override
+	public void keyPressed() {
+		switch(key) {
+		case '\n':
+			transitionTo(SearchState.SEARCHING);
+			break;
+		case '0':
+		case '1':
+		case '2':
+			searchRunner.selectSearch(key - '0');
+			searchRunner.search();
+		}
 	}
 	
 	@Override
@@ -105,16 +118,6 @@ public class Main extends PApplet {
 		guiDragging.x = mouseX;
 		guiDragging.y = mouseY;
 	}
-	
-	private void updateSearch() {
-		if(searchRunner.stillSearching()) {
-			searchRunner.stepForwardInSearch();
-			searchRunner.attemptToClearSearch();
-		}
-		else {
-			searchRunner.attemptToStartNewSearch();
-		}
-	}
 
 	/*
 	 * Loads the search runner with the map referred to in Main.
@@ -152,7 +155,6 @@ public class Main extends PApplet {
 	private double sqr(double x) {
 		return Math.pow(x, 2);
 	}
-	
 
 	public static void main(String args[]) {
 		PApplet.main(new String[] {"routeFinder.control.Main"});
