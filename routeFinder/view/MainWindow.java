@@ -2,6 +2,7 @@ package routeFinder.view;
 
 import processing.core.*;
 import routeFinder.control.SearchRunner;
+import routeFinder.model.Point;
 
 /*
  * Original implementation by Gary Dahl
@@ -11,6 +12,9 @@ public class MainWindow {
 	private SearchRunner searchRunner;
 	
 	private PApplet applet;
+	
+	private Point guiStart;
+	private Point guiEnd;
 
 	private final float MAP_HEIGHT_RATIO = 0.8f;
 	private final float MAP_WIDTH_RATIO = 1.0f;
@@ -18,12 +22,15 @@ public class MainWindow {
 	private float MAP_TOP;
 	private float MAP_BOTTOM;
 	
-	public MainWindow(PApplet applet, SearchRunner searchRunner) {
+	public MainWindow(PApplet applet, SearchRunner searchRunner, Point guiStart, Point guiEnd) {
 		this.applet = applet;
 		this.searchRunner = searchRunner;
 		
 		MAP_TOP = applet.height * ( 1 - MAP_HEIGHT_RATIO ) / 2;
 		MAP_BOTTOM = applet.height * ( MAP_HEIGHT_RATIO + ( 1 - MAP_HEIGHT_RATIO ) / 2 );
+		
+		this.guiStart = guiStart;
+		this.guiEnd = guiEnd;
 	}
 	
 	public void setMapView(MapView mapView) {
@@ -58,8 +65,7 @@ public class MainWindow {
 	/*
 	 * Draws the search process over the base.
 	 */
-	private void drawSearch() {
-		drawSearchProcess();
+	public void drawSearch() {
 		drawInstructions();
 		drawSolution();
 	}
@@ -85,7 +91,7 @@ public class MainWindow {
 	 * points.
 	 */
 	private void drawGuiPoints() {
-		mapView.drawStartAndEnd(searchRunner.searchStartPoint(), searchRunner.searchEndPoint());
+		mapView.drawStartAndEnd(guiStart, guiEnd);
 	}
 
 	/*
@@ -107,37 +113,6 @@ public class MainWindow {
 	}
 
 	/*
-	 * Displays the number of Points explored and the number of points in the
-	 * frontier.
-	 */
-	private void drawSearchProcess() {
-		drawFrontierProgress();
-		drawExploredProgress();
-	}
-
-	/*
-	 * Draws yellow points to the map indicating which points are currently in
-	 * the frontier, and how many there are in the top bar.
-	 */
-	private void drawFrontierProgress() {
-		applet.stroke(applet.color(127, 127, 0));
-		applet.fill(applet.color(255, 255, 0));
-		mapView.drawPoints(searchRunner.frontierPoints());
-		applet.text("FRONTIER: " + searchRunner.frontierPoints().size(), applet.width / 2, 16);
-	}
-
-	/*
-	 * Draws red points on the map indicating which points have been
-	 * main.searched, and the number of points explored in the top bar
-	 */
-	private void drawExploredProgress() {
-		applet.stroke(applet.color(127, 0, 0));
-		applet.fill(applet.color(255, 0, 0));
-		mapView.drawPoints(searchRunner.exploredPoints());
-		applet.text("EXPLORED: " + searchRunner.exploredPoints().size(), applet.width / 2, 32);
-	}
-
-	/*
 	 * Displays the instructions for proceeding with the current step.
 	 */
 	private void drawInstructions() {
@@ -154,7 +129,7 @@ public class MainWindow {
 	 */
 	private void drawPromptToContinueSearch() {
 		applet.fill(255); // display prompt to continue exploring or reset main.search
-		applet.text("Press <Enter> to continue or <spacebard> to step through main.search.", applet.width / 2, applet.height - 32);
+		applet.text("Press <Enter> to find a route.", applet.width / 2, applet.height - 32);
 	}
 
 	/*
