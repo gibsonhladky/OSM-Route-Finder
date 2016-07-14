@@ -2,6 +2,7 @@ package routeFinder.view;
 
 import processing.core.*;
 import routeFinder.control.SearchRunner;
+import routeFinder.control.SearchRunner.SearchState;
 import routeFinder.model.Point;
 
 /*
@@ -15,18 +16,10 @@ public class MainWindow {
 	
 	private Point guiStart;
 	private Point guiEnd;
-
-	private final float MAP_HEIGHT_RATIO = 0.8f;
-
-	private float MAP_TOP;
-	private float MAP_BOTTOM;
 	
 	public MainWindow(PApplet applet, SearchRunner searchRunner, Point guiStart, Point guiEnd) {
 		this.applet = applet;
 		this.searchRunner = searchRunner;
-		
-		MAP_TOP = applet.height * ( 1 - MAP_HEIGHT_RATIO ) / 2;
-		MAP_BOTTOM = applet.height * ( MAP_HEIGHT_RATIO + ( 1 - MAP_HEIGHT_RATIO ) / 2 );
 		
 		this.guiStart = guiStart;
 		this.guiEnd = guiEnd;
@@ -42,11 +35,8 @@ public class MainWindow {
 	 */
 	public void draw() {
 		drawBase();
-		if(searchRunner.stillSearching()) {
-			drawSearch();
-		}
-		else {
-			drawPromptToComputeANewSolution();
+		if(searchRunner.state == SearchState.SEARCHING) {
+			drawSolution();
 		}
 	}
 	
@@ -57,22 +47,13 @@ public class MainWindow {
 	private void drawBase() {
 		drawMap();
 		drawGuiPoints();
-		drawTopPane();
-		drawBottomPane();
-	}
-	
-	/*
-	 * Draws the search process over the base.
-	 */
-	public void drawSearch() {
 		drawInstructions();
-		drawSolution();
 	}
 
 	/*
 	 * Draws the instructions for beginning a new main.search.
 	 */
-	private void drawPromptToComputeANewSolution() {
+	private void drawInstructions() {
 		applet.fill(255);
 		applet.text("Press <0>, <1>, or <2> to find a path from the green to red circle.", applet.width / 2, applet.height - 32);
 	}
@@ -91,44 +72,6 @@ public class MainWindow {
 	 */
 	private void drawGuiPoints() {
 		mapView.drawStartAndEnd(guiStart, guiEnd);
-	}
-
-	/*
-	 * Clears the top of the applet with black.
-	 */
-	private void drawTopPane() {
-		applet.stroke(0);
-		applet.fill(0);
-		applet.rect(0, 0, applet.width, MAP_TOP);
-	}
-
-	/*
-	 * Clears the bottom of the applet with black.
-	 */
-	private void drawBottomPane() {
-		applet.stroke(0);
-		applet.fill(0);
-		applet.rect(0, MAP_BOTTOM, applet.width, applet.height);
-	}
-
-	/*
-	 * Displays the instructions for proceeding with the current step.
-	 */
-	private void drawInstructions() {
-		if (searchRunner.searchIsComplete()) {
-			drawPromptToComputeANewSolution();
-		}
-		else {
-			drawPromptToContinueSearch();
-		}
-	}
-
-	/*
-	 * Draws the instructions to continue in a main.search.
-	 */
-	private void drawPromptToContinueSearch() {
-		applet.fill(255); // display prompt to continue exploring or reset main.search
-		applet.text("Press <Enter> to find a route.", applet.width / 2, applet.height - 32);
 	}
 
 	/*
