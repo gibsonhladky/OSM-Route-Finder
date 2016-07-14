@@ -17,7 +17,6 @@ public class MainWindow {
 	private Point guiEnd;
 
 	private final float MAP_HEIGHT_RATIO = 0.8f;
-	private final float MAP_WIDTH_RATIO = 1.0f;
 
 	private float MAP_TOP;
 	private float MAP_BOTTOM;

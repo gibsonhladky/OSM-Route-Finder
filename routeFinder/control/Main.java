@@ -130,7 +130,7 @@ public class Main extends PApplet {
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		    Document doc = docBuilder.parse(mapFile);
 	
-			searchRunner = new SearchRunner(this);
+			searchRunner = new SearchRunner();
 			searchRunner.openMap(doc, mapWidth, mapHeight);
 			initializeGuiPoints();
 		}
