@@ -39,7 +39,7 @@ public class SearchRunner {
 	 * Returns true if the search has not completed.
 	 */
 	public boolean stillSearching() {
-		return search != null;
+		return !searchIsComplete();
 	}
 	
 	public void openMap(Document mapData, int width, int height) {
@@ -51,6 +51,7 @@ public class SearchRunner {
 	 * Runs the current search to completion.
 	 */
 	public void search() {
+		state = SearchState.SEARCHING;
 		while(! search.isComplete()) {
 			search.exploreNextNode();
 		}
@@ -59,7 +60,7 @@ public class SearchRunner {
 	/*
 	 * Starts a new search when a key selecting the type of search is pressed.
 	 */
-	public void selectSearch(int heuristic) {
+	public void setSearchHeuristic(int heuristic) {
 		state = SearchState.SEARCH_SELECTED;
 		search = new AStarSearch(map, heuristic);
 	}
@@ -70,6 +71,7 @@ public class SearchRunner {
 	 * they refer to.
 	 */
 	public void changeSearchPoints(Point start, Point end) {
+		// TODO: Decouple from map
 		map.setStartPoint(start);
 		map.setEndPoint(end);
 		

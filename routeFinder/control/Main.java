@@ -23,8 +23,8 @@ public class Main extends PApplet {
 	private final float MAP_WIDTH_RATIO = 1.0f;
 	
 	private Point guiDragging;
-	public Point guiStart;
-	public Point guiEnd;
+	private Point guiStart;
+	private Point guiEnd;
 
 	public Main() {
 		
@@ -59,13 +59,10 @@ public class Main extends PApplet {
 	@Override
 	public void keyPressed() {
 		switch(key) {
-		case '\n':
-			transitionTo(SearchState.SEARCHING);
-			break;
 		case '0':
 		case '1':
 		case '2':
-			searchRunner.selectSearch(key - '0');
+			searchRunner.setSearchHeuristic(key - '0');
 			searchRunner.search();
 		}
 	}
