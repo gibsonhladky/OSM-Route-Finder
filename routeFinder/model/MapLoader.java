@@ -33,7 +33,7 @@ public class MapLoader {
 	public Map loadMap(Document mapData) {
 		this.mapData = mapData;
 		load();
-		return new Map(points, streets, bounds, width, height);
+		return new Map(points, streets, bounds);
 	}
 	
 	private void load() {

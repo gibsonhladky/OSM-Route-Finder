@@ -2,8 +2,6 @@ package routeFinder.model;
 
 import java.util.*;
 
-import processing.data.*;
-
 /*
  * Original implementation by Gary Dahl
  */
@@ -16,16 +14,10 @@ public class Map {
 	private Point end;
 	
 	private Bounds bounds;
-
-	private int width;
-	private int height;
 	
-	public Map(List<Point> points, List<Street> streets, Bounds bounds, int width, int height) {
+	public Map(List<Point> points, List<Street> streets, Bounds bounds) {
 		this.allPoints = points;
 		this.allStreets = streets;
-		this.bounds = bounds;
-		this.width = width;
-		this.height = height;
 		start = new Point(0, 0);
 		end = new Point(0, 0);
 	}
@@ -82,19 +74,18 @@ public class Map {
 	
 	private Point closestPointTo(Point originalPoint) {
 		Point closestPoint = null;
-		float dStart = Float.MAX_VALUE;
-		float distSqr = Float.MAX_VALUE;
+		float closestDistance = Float.MAX_VALUE;
 		for (Point thisPoint : allPoints) {
-			if (thisPoint.x < 0 || thisPoint.x >= width || thisPoint.y < 0 || thisPoint.y >= height) {
-				continue;
-			}
-			distSqr = ( originalPoint.x - thisPoint.x ) * ( originalPoint.x - thisPoint.x )
-					+ ( originalPoint.y - thisPoint.y ) * ( originalPoint.y - thisPoint.y );
-			if (distSqr < dStart) {
+			if (distanceBetween(thisPoint, originalPoint) < closestDistance) {
 				closestPoint = thisPoint;
-				dStart = distSqr;
+				closestDistance = distanceBetween(thisPoint, originalPoint);
 			}
 		}
 		return closestPoint;
+	}
+	
+	private float distanceBetween(Point point1, Point point2) {
+		return ( point1.x - point2.x ) * ( point1.x - point2.x )
+				+ ( point1.y - point2.y ) * ( point1.y - point2.y );
 	}
 }

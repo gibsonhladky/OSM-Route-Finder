@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.w3c.dom.Document;
 
-import processing.core.PApplet;
 import routeFinder.model.AStarSearch;
 import routeFinder.model.Map;
 import routeFinder.model.MapLoader;
@@ -23,7 +22,7 @@ public class SearchRunner {
 	private AStarSearch search;
 
 	
-	public SearchRunner(PApplet applet) {
+	public SearchRunner() {
 		this.state = SearchState.IDLE;
 	}
 	
@@ -39,7 +38,7 @@ public class SearchRunner {
 	 * Returns true if the search has not completed.
 	 */
 	public boolean stillSearching() {
-		return !searchIsComplete();
+		return search != null;
 	}
 	
 	public void openMap(Document mapData, int width, int height) {
