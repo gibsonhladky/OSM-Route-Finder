@@ -70,18 +70,22 @@ public class Main extends PApplet {
 	@Override
 	public void mousePressed() {
 		selectPointToDrag();
+		if(aPointIsBeingDragged()) {
+			transitionTo(SearchState.MOVING_GUI);
+		}
 	}
 	
 	@Override
 	public void mouseReleased() {
 		placePoints();
-		transitionTo(SearchState.IDLE);
+		if(searchRunner.state == SearchState.MOVING_GUI) {
+			transitionTo(SearchState.IDLE);
+		}
 		guiDragging = null;
 	}
 	
 	@Override
 	public void mouseDragged() {
-		transitionTo(SearchState.MOVING_GUI);
 		if(aPointIsBeingDragged()) {
 			updateDraggedPointPosition();
 		}
