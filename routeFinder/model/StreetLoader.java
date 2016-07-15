@@ -11,6 +11,9 @@ import org.w3c.dom.NodeList;
 
 class StreetLoader {
 
+	private static final String V_TAG = "v";
+	private static final String K_TAG = "k";
+	private static final String TAG = "tag";
 	private static final String HIGHWAY_TAG = "highway";
 	private static final String POINT_REFERENCE_TAG = "ref";
 	private static final String POINT_ON_STREET_TAG = "nd";
@@ -27,12 +30,10 @@ class StreetLoader {
 		return streets;
 	}
 	
-	public void load(Document streetData) {
+	public void load(Document mapData) {
 		streets = new ArrayList<Street>();
-		
-		NodeList streetReferences = streetData.getElementsByTagName(STREET_TAG);
-		for (int i = 0; i < streetReferences.getLength(); i++) {
-			Node streetReference = streetReferences.item(i);
+		NodeList streetReferences = mapData.getElementsByTagName(STREET_TAG);
+		for (Node streetReference : asList(streetReferences)) {
 			if (isValidStreetReference(streetReference)) {
 				addStreet(parseStreet(streetReference));	
 			}
@@ -41,8 +42,7 @@ class StreetLoader {
 	
 	private boolean isValidStreetReference(Node way) {
 		NodeList tags = way.getChildNodes();
-		for (int i = 0; i < tags.getLength(); i++) {
-			Node tag = tags.item(i);
+		for (Node tag : asList(tags)) {
 			if(isValidTag(tag) && isRoadTag(tag)) {
 				return true;
 			}
@@ -52,14 +52,14 @@ class StreetLoader {
 	
 	private boolean isValidTag(Node tag) {
 		return !(tag.getNodeName() == null) && 
-				(tag.getNodeName().equals("tag"));
+				(tag.getNodeName().equals(TAG));
 	}
 	
 	private boolean isRoadTag(Node tag) {
 		NamedNodeMap attributes = tag.getAttributes();
 		// TODO: Research meaning behind k and v and rename these variables
-		Node k = attributes.getNamedItem("k");
-		Node v = attributes.getNamedItem("v");
+		Node k = attributes.getNamedItem(K_TAG);
+		Node v = attributes.getNamedItem(V_TAG);
 		if(k == null || v == null) {
 			return false;
 		}
@@ -92,8 +92,7 @@ class StreetLoader {
 	
 	private ArrayList<Point> parsePointsAlongStreet(NodeList pointReferences) {
 		ArrayList<Point> pointsAlongRoad = new ArrayList<Point>();
-		for (int i = 0; i < pointReferences.getLength(); i++) {
-			Node pointReference = pointReferences.item(i);
+		for (Node pointReference : asList(pointReferences)) {
 			if(isValidPointReference(pointReference)) {
 				pointsAlongRoad.add(getReferencedPoint(pointReference));
 			}
@@ -128,6 +127,19 @@ class StreetLoader {
 		if (streetPoints.size() > 1) {
 			streetPoints.get(streetPoints.size() - 1).neighbors.add(streetPoints.get(streetPoints.size() - 2));
 		}
+	}
+	
+	/*
+	 * Converts a NodeList to a List.
+	 * This makes reading the code a heck of a lot easier.
+	 */
+	// TODO: Move this to a utility class.
+	private static List<Node> asList(NodeList nodeList) {
+		List<Node> list = new ArrayList<Node>(nodeList.getLength());
+		for(int i = 0; i < nodeList.getLength(); i++) {
+			list.add(nodeList.item(i));
+		}
+		return list;
 	}
 	
 }

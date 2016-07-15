@@ -11,6 +11,12 @@ import org.w3c.dom.NodeList;
  */
 public class MapLoader {
 	
+	private static final String MAX_LONGITUDE_TAG = "maxlon";
+	private static final String MAX_LATITUDE_TAG = "maxlat";
+	private static final String MIN_LONGITUDE_TAG = "minlon";
+	private static final String MIN_LATITUDE_TAG = "minlat";
+	private static final String BOUNDS_TAG = "bounds";
+	
 	private Document mapData;
 	private Bounds bounds;
 	private PointLoader pointLoader;
@@ -38,14 +44,14 @@ public class MapLoader {
 	}
 	
 	private void loadBounds() {
-		NodeList boundsNodes = mapData.getElementsByTagName("bounds");
+		NodeList boundsNodes = mapData.getElementsByTagName(BOUNDS_TAG);
 		Node boundsTag = boundsNodes.item(0);
 		NamedNodeMap attributes = boundsTag.getAttributes();
 		
-		float minlat = Float.parseFloat(attributes.getNamedItem("minlat").getNodeValue());
-		float minlon = Float.parseFloat(attributes.getNamedItem("minlon").getNodeValue());
-		float maxlat = Float.parseFloat(attributes.getNamedItem("maxlat").getNodeValue());
-		float maxlon = Float.parseFloat(attributes.getNamedItem("maxlon").getNodeValue());
+		float minlat = Float.parseFloat(attributes.getNamedItem(MIN_LATITUDE_TAG).getNodeValue());
+		float minlon = Float.parseFloat(attributes.getNamedItem(MIN_LONGITUDE_TAG).getNodeValue());
+		float maxlat = Float.parseFloat(attributes.getNamedItem(MAX_LATITUDE_TAG).getNodeValue());
+		float maxlon = Float.parseFloat(attributes.getNamedItem(MAX_LONGITUDE_TAG).getNodeValue());
 		
 		bounds = new Bounds(minlat, minlon, maxlat, maxlon);
 	}
