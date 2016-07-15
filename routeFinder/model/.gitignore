@@ -7,3 +7,5 @@
 /SearchPoint.class
 /MapLoader.class
 /Bounds.class
+/PointLoader.class
+/StreetLoader.class
