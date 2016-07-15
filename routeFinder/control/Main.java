@@ -15,6 +15,7 @@ import routeFinder.view.MapView;
 
 public class Main extends PApplet {
 	
+	private static final int MOUSE_BUFFER = 50;
 	private MainWindow mainWindow;
 	private SearchRunner searchRunner;
 	
@@ -30,12 +31,19 @@ public class Main extends PApplet {
 		
 	}
 	
+	public void settings() {
+		size(800, 600);
+	}
+	
 	/*
 	 * Called at application start to set up all 
 	 * necessary pieces of the application.
 	 */
 	public void setup() {
 		loadSearchRunner();
+		openMap();
+		initializeGuiPoints();
+		
 		mainWindow = new MainWindow(this, searchRunner, guiStart, guiEnd);
 		mainWindow.setMapView(new MapView(searchRunner.map, this));
 		
@@ -50,10 +58,6 @@ public class Main extends PApplet {
 	 */
 	public void draw() {
 		mainWindow.draw();
-	}
-	
-	public void settings() {
-		size(800, 600);
 	}
 	
 	@Override
@@ -92,14 +96,18 @@ public class Main extends PApplet {
 	}
 
 	private void selectPointToDrag() {
-		double startToMouseDistance = sqr(mouseX - guiStart.x) + sqr(mouseY - guiStart.y);
-		double endToMouseDistance = sqr(mouseX - guiEnd.x) + sqr(mouseY - guiEnd.y);
-		if (startToMouseDistance <= 50 && startToMouseDistance < endToMouseDistance) {
-			guiDragging = guiStart;
+		if (aPointIsUnderMouse()) {
+			guiDragging = distanceToMouse(guiStart) < distanceToMouse(guiEnd) ? guiStart : guiEnd;
 		}
-		else if (endToMouseDistance <= 50) {
-			guiDragging = guiEnd;
-		}
+	}
+	
+	private boolean aPointIsUnderMouse() {
+		return distanceToMouse(guiStart) <= MOUSE_BUFFER ||
+				distanceToMouse(guiEnd) <= MOUSE_BUFFER;
+	}
+	
+	private double distanceToMouse(Point point) {
+		return sqr(mouseX - point.x) + sqr(mouseY - point.y);
 	}
 	
 	private void placePoints() {
@@ -125,22 +133,27 @@ public class Main extends PApplet {
 	 * Opens the map and places initial start and stop points.
 	 */
 	private void loadSearchRunner() {
-		int mapWidth = Math.round(width * MAP_WIDTH_RATIO);
-		int mapHeight = Math.round(height * MAP_HEIGHT_RATIO);
-		
-		try {
-			File mapFile = new File(mapFileName);
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-		    Document doc = docBuilder.parse(mapFile);
+		searchRunner = new SearchRunner();
+	}
 	
-			searchRunner = new SearchRunner();
-			searchRunner.openMap(doc, mapWidth, mapHeight);
-			initializeGuiPoints();
+	private void openMap() {
+		try {
+			Document mapDoc = parseMapFile();
+			int mapWidth = Math.round(width * MAP_WIDTH_RATIO);
+			int mapHeight = Math.round(height * MAP_HEIGHT_RATIO);
+			searchRunner.openMap(mapDoc, mapWidth, mapHeight);
 		}
 		catch(Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private Document parseMapFile() throws Exception {
+		File mapFile = new File(mapFileName);
+		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+	    Document doc = docBuilder.parse(mapFile);
+	    return doc;
 	}
 	
 	/*

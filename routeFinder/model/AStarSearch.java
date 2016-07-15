@@ -8,22 +8,24 @@ import java.util.List;
  * Original structure provided by Gary Dahl
  */
 public class AStarSearch {
+
+
+	private SearchPoint startPoint, goalPoint;
 	private ArrayList<SearchPoint> frontier;
 	private ArrayList<SearchPoint> explored;
-
-	// Two SearchPoints to keep track of the start and goal
-	private SearchPoint startPoint, goalPoint;
 
 	// The chosen heuristic
 	// 0: always estimate zero, 1: manhattan distance, 2: euclidean l2 distance
 	private int heuristic;
 
-	public AStarSearch(Map map, int heuristic) {
-		this.startPoint = new SearchPoint(map.startPoint(), map.endPoint(), heuristic, map.startPoint(), null);
-		this.goalPoint = new SearchPoint(map.startPoint(), map.endPoint(), heuristic, map.endPoint(), null);
+	
+	public AStarSearch(Point start, Point end, int heuristic) {
+		this.startPoint = new SearchPoint(start, end, heuristic, start, null);
+		this.goalPoint = new SearchPoint(start, end, heuristic, end, null);
 		this.heuristic = heuristic;
 		frontier = new ArrayList<SearchPoint>();
 		explored = new ArrayList<SearchPoint>();
+		
 		// Load the frontier with the start point
 		frontier.add(startPoint);
 	}
@@ -34,98 +36,63 @@ public class AStarSearch {
 	 * nothing if the end point has been found.
 	 */
 	public void exploreNextNode() {
-		// Do nothing if search is complete
-		if (isComplete()) {
-			return;
+		if (!isComplete()) {
+			SearchPoint nextPoint = getBestPointInFrontier();
+			addPointToExplored(nextPoint);
+			updateFrontierWithNeighborsOf(nextPoint);
 		}
-
-		Collections.sort(frontier);
-		
-		// Move the node with lowest f() from frontier to explored
-		SearchPoint bestPoint = frontier.remove(0);
-		explored.add(bestPoint);
-
-		addNeighborsToFrontier(bestPoint);
+	}
+	
+	public List<Point> getRoute() {
+		if (goalReached()) {
+			List<Point> route = traceBackRouteFrom(goalPoint);
+			Collections.reverse(route);
+			return route;
+		}
+		else {
+			return Collections.emptyList();
+		}
 	}
 
-	/*
-	 * Returns an ArrayList of Map.Points that represents the SearchPoints in
-	 * the frontier.
-	 */
-	private ArrayList<Point> getFrontier() {
-		ArrayList<Point> points = new ArrayList<Point>();
-		for (int i = 0; i < frontier.size(); i++) {
-			points.add(frontier.get(i).mapPoint);
-		}
-		return points;
-	}
-
-	/*
-	 * Returns an ArrayList of Map.Points that represents the SearchPoints that
-	 * have been explored.
-	 */
-	private ArrayList<Point> getExplored() {
-		ArrayList<Point> points = new ArrayList<Point>();
-		for (int i = 0; i < explored.size(); i++) {
-			points.add(explored.get(i).mapPoint);
-		}
-		return points;
-	}
-
-	/*
-	 * Returns true when a search is complete: Either the end has been found, or
-	 * the end cannot be reached.
-	 */
 	public boolean isComplete() {
-		// Search explored list for the goal point
-		for(Point p : getExplored()) {
-			if (p.equals(goalPoint.mapPoint)) {
+		return goalReached() || noRouteExists();
+	}
+	
+	private boolean goalReached() {
+		for(SearchPoint p : explored) {
+			if (p.equals(goalPoint)) {
 				return true;
 			}
 		}
-		// Return true if no solution is found
-		if (frontier.isEmpty()) {
-			return true;
-		}
-		// Otherwise, return false
 		return false;
 	}
-
 	
-	public List<Point> getRoute() {
-//		while( !isComplete() ) {
-//			exploreNextNode();
-//		}
-
-		return routePoints();
+	private boolean noRouteExists() {
+		return frontier.isEmpty();
 	}
 	
-	/*
-	 * Returns a list of the points along the path from start to end. The points
-	 * are ordered by position in path from start to end. Returns an empty list
-	 * if no solution was found.
-	 */
-	private List<Point> routePoints() {
-		if (explored.isEmpty()) {
-			return Collections.emptyList();
-		}
-		// Grab the end point from the end of the explored list
-		SearchPoint point = explored.get(explored.size() - 1);
+	private SearchPoint getBestPointInFrontier() {
+		Collections.sort(frontier);
+		
+		SearchPoint bestPoint = frontier.remove(0);
+		explored.add(bestPoint);
+		
+		return bestPoint;
+	}
+	
+	private void addPointToExplored(SearchPoint exploredPoint) {
+		explored.add(exploredPoint);
+	}
 
-		// Return an empty array list if there is no solution
-		if (!point.equals(goalPoint)) {
-			return Collections.emptyList();
+	
+	private List<Point> traceBackRouteFrom(SearchPoint thisPoint) {
+		ArrayList<Point> reverseRoute = new ArrayList<Point>();
+		SearchPoint currPoint = thisPoint;
+		while (currPoint != null) {
+			reverseRoute.add(currPoint.mapPoint);
+			currPoint = currPoint.previous;
 		}
-		
-		ArrayList<Point> solution = new ArrayList<Point>();
-		// Traceback over the prev pointers
-		while (point != null) {
-			solution.add(point.mapPoint);
-			point = point.previous;
-		}
-		
-		Collections.reverse(solution);
-		return solution;
+		return reverseRoute;
 	}
 	
 	/*
@@ -133,43 +100,49 @@ public class AStarSearch {
 	 * to be searched later. If a point already in the frontier 
 	 * can be reached faster through this point, it is updated.
 	 */
-	private void addNeighborsToFrontier(SearchPoint point) {
+	private void updateFrontierWithNeighborsOf(SearchPoint point) {
 		ArrayList<Point> neighbors = point.mapPoint.neighbors;
 		for (Point neighbor : neighbors) {
-			// Add completely new points to the frontier
-			addNewPointToFrontier(neighbor, point);
+			SearchPoint newPoint = createSearchPoint(neighbor, point);
+			if (isNewPoint(newPoint)) {
+				frontier.add(newPoint);
+			}
+			if (frontier.contains(newPoint)) {
+				updateFrontierWithBestPoint(newPoint);
+			}
+		}
+	}
+	
+	private SearchPoint createSearchPoint(Point mapPoint, SearchPoint prev) {
+		return new SearchPoint(this.startPoint.mapPoint, this.goalPoint.mapPoint, this.heuristic,
+				mapPoint, prev);
+	}
+	
+	private boolean isNewPoint(SearchPoint point) {
+		return !frontier.contains(point) && !explored.contains(point);
+	}
+	
+	/*
+	 * Replaces the point in the frontier matching this replacement
+	 * if the replacement is a better point for the search.
+	 */
+	private void updateFrontierWithBestPoint(SearchPoint replacement) {
+		for (SearchPoint existingPoint : frontier) {
+			if (isValidReplacementFor(replacement, existingPoint)) {
+				existingPoint = replacement;
+			}
 			
-			// Replace points in the frontier if a shorter path to them is found
-			if (getFrontier().contains(neighbor)) {
-				replaceFrontierPoint(neighbor, point);
+			// TODO: Find a better way to handle updating goalPoint's
+			// traceback pointer.
+			
+			// update goalPoint for a traceback pointer.
+			if(replacement.equals(goalPoint)) {
+				goalPoint = replacement;
 			}
 		}
 	}
 	
-	/*
-	 * Adds the point to the frontier if it is not already in
-	 * the frontier or explored.
-	 */
-	private void addNewPointToFrontier(Point p, SearchPoint previous) {
-		if (!getFrontier().contains(p) && !getExplored().contains(p)) {
-			frontier.add(new SearchPoint(this.startPoint.mapPoint, this.goalPoint.mapPoint, this.heuristic,
-					p, previous));
-		}
+	private boolean isValidReplacementFor(SearchPoint replacement, SearchPoint original) {
+		return original.equals(replacement) && original.compareTo(replacement) > 0;
 	}
-	
-	/*
-	 * Replaces a point in the frontier if a shorter path
-	 * to that point is found.
-	 */
-	private void replaceFrontierPoint(Point p, SearchPoint previous) {
-		SearchPoint newPoint = new SearchPoint(this.startPoint.mapPoint, this.goalPoint.mapPoint, this.heuristic,
-				p, previous);
-		for (int j = 0; j < frontier.size(); j++) {
-			if (frontier.get(j).equals(newPoint)
-					&& frontier.get(j).distanceFromStart() > newPoint.distanceFromStart()) {
-				frontier.set(j, newPoint);
-			}
-		}
-	}
-
 }

@@ -61,7 +61,7 @@ public class SearchRunner {
 	 */
 	public void setSearchHeuristic(int heuristic) {
 		state = SearchState.SEARCH_SELECTED;
-		search = new AStarSearch(map, heuristic);
+		search = new AStarSearch(map.startPoint(), map.endPoint(), heuristic);
 	}
 	
 	/*
