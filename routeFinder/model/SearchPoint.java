@@ -1,6 +1,7 @@
 package routeFinder.model;
 
 public class SearchPoint implements Comparable<SearchPoint> {
+	
 	private final Point startPoint;
 	private final Point goalPoint;
 	private final int heuristic;
@@ -24,27 +25,13 @@ public class SearchPoint implements Comparable<SearchPoint> {
 		distanceFromStartInitialized = false;
 	}
 
-	/*
-	 * Returns the minimum cost to reach this point from the start point.
-	 */
 	public float distanceFromStart() {
 		// Avoid high recursion costs:
-		if (distanceFromStartInitialized) {
-			return distanceFromStart;
+		if (!distanceFromStartInitialized) {
+			distanceFromStartInitialized = true;
+			calculateDistanceFromStart();
 		}
-
-		distanceFromStartInitialized = true;
-		// Recursively find the distance from start.
-		// Base case
-		if (this.mapPoint.equals(startPoint)) {
-			distanceFromStart = 0;
-			return distanceFromStart;
-		}
-		// Recursive case
-		else {
-			distanceFromStart = previous.distanceFromStart() + distanceBetween(mapPoint, previous.mapPoint);
-			return distanceFromStart;
-		}
+		return distanceFromStart;
 	}
 
 	/*
@@ -54,12 +41,6 @@ public class SearchPoint implements Comparable<SearchPoint> {
 		return heuristicCostToReachEnd() + distanceFromStart();
 	}
 
-	/*
-	 * Compares on priority: 
-	 * <: lower expected cost OR equal expected cost and lower heuristic cost. 
-	 * ==: equal expected cost and heuristic cost. 
-	 * >: higher expected cost OR equal expected cost and higher heuristic cost.
-	 */
 	@Override
 	public int compareTo(SearchPoint other) {
 		if (other.expectedCost() == this.expectedCost()) {
@@ -89,13 +70,16 @@ public class SearchPoint implements Comparable<SearchPoint> {
 		if (other.getClass() != this.getClass()) {
 			return false;
 		}
-
 		return ( (SearchPoint) other ).mapPoint.equals(this.mapPoint);
 	}
-
-	// Returns the Euclidean 12 distance between any two points
-	public float distanceBetween(Point a, Point b) {
-		return (float) Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+	
+	private void calculateDistanceFromStart() {
+		if (mapPoint.equals(startPoint)) {
+			distanceFromStart = 0;
+		}
+		else {
+			distanceFromStart = previous.distanceFromStart() + distanceBetween(mapPoint, previous.mapPoint);
+		}
 	}
 
 	/*
@@ -104,14 +88,19 @@ public class SearchPoint implements Comparable<SearchPoint> {
 	 * l2 distance
 	 */
 	private float heuristicCostToReachEnd() {
-		if (heuristic == 0) {
+		switch (heuristic) {
+		case 0:
 			return (float) 0;
-		}
-		else if (heuristic == 1) {
+		case 1:
 			return Math.abs(mapPoint.x - goalPoint.x) + Math.abs(mapPoint.y - goalPoint.y);
-		}
-		else {
+		case 2:
 			return distanceBetween(goalPoint, this.mapPoint);
+		default:
+			throw new IllegalStateException("Invalid heuristic.");
 		}
+	}
+
+	private float distanceBetween(Point a, Point b) {
+		return (float) Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 	}
 }
