@@ -25,25 +25,9 @@ public class SearchPoint implements Comparable<SearchPoint> {
 		distanceFromStartInitialized = false;
 	}
 
-	public float distanceFromStart() {
-		// Avoid high recursion costs:
-		if (!distanceFromStartInitialized) {
-			distanceFromStartInitialized = true;
-			calculateDistanceFromStart();
-		}
-		return distanceFromStart;
-	}
-
-	/*
-	 * Returns the expected cost to reach the end point from this search point.
-	 */
-	public float expectedCost() {
-		return heuristicCostToReachEnd() + distanceFromStart();
-	}
-
 	@Override
 	public int compareTo(SearchPoint other) {
-		if (other.expectedCost() == this.expectedCost()) {
+		if (this.expectedCost() == other.expectedCost()) {
 			if (this.distanceFromStart() == other.distanceFromStart())
 				return 0;
 			else if (this.distanceFromStart() < other.distanceFromStart()) {
@@ -71,6 +55,22 @@ public class SearchPoint implements Comparable<SearchPoint> {
 			return false;
 		}
 		return ( (SearchPoint) other ).mapPoint.equals(this.mapPoint);
+	}
+
+	private float distanceFromStart() {
+		// Avoid high recursion costs:
+		if (!distanceFromStartInitialized) {
+			distanceFromStartInitialized = true;
+			calculateDistanceFromStart();
+		}
+		return distanceFromStart;
+	}
+
+	/*
+	 * Returns the expected cost to reach the end point from this search point.
+	 */
+	private float expectedCost() {
+		return heuristicCostToReachEnd() + distanceFromStart();
 	}
 	
 	private void calculateDistanceFromStart() {

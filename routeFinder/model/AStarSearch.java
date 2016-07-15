@@ -143,7 +143,6 @@ public class AStarSearch {
 	}
 	
 	private boolean isValidReplacementFor(SearchPoint replacement, SearchPoint original) {
-		return original.equals(replacement)
-				&& original.distanceFromStart() > replacement.distanceFromStart();
+		return original.equals(replacement) && original.compareTo(replacement) > 0;
 	}
 }
