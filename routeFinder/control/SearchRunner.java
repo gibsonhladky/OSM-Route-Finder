@@ -30,19 +30,8 @@ public class SearchRunner {
 		end = new Point(0, 0);
 	}
 	
-	public boolean searchIsComplete() {
-		return search.isComplete();
-	}
-	
 	public List<Point> searchSolution() {
 		return search.getRoute();
-	}
-	
-	/*
-	 * Returns true if the search has not completed.
-	 */
-	public boolean stillSearching() {
-		return search != null;
 	}
 	
 	public void openMap(Document mapData, int width, int height) {
@@ -55,9 +44,7 @@ public class SearchRunner {
 	 */
 	public void search() {
 		state = SearchState.SEARCHING;
-		while(! search.isComplete()) {
-			search.exploreNextNode();
-		}
+		search.search();
 	}
 	
 	/*
@@ -69,11 +56,9 @@ public class SearchRunner {
 	}
 	
 	/*
-	 * Updates the map's start and end points based on
-	 * the gui's positions. Moves the gui's over the point
-	 * they refer to.
+	 * Modifies the start and end locations of the search.
 	 */
-	public void changeSearchPoints(Point start, Point end) {
+	public void setSearchPoints(Point start, Point end) {
 		this.start = map.closestPointTo(start);
 		this.end = map.closestPointTo(end);
 	}
