@@ -1,4 +1,4 @@
-package routeFinder;
+package routeFinder.model;
 import java.util.ArrayList;
 
 /*
@@ -20,5 +20,7 @@ public class Point
 		this.y = y;
 		neighbors = new ArrayList<Point>();
 		isOnStreet = false;
-	}	
+	}
+	
+	
 }
