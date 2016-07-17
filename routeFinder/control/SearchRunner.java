@@ -20,10 +20,14 @@ public class SearchRunner {
 	public Map map;
 	
 	private AStarSearch search;
-
+	private Point start;
+	private Point end;
 	
 	public SearchRunner() {
 		this.state = SearchState.IDLE;
+
+		start = new Point(0, 0);
+		end = new Point(0, 0);
 	}
 	
 	public boolean searchIsComplete() {
@@ -61,7 +65,7 @@ public class SearchRunner {
 	 */
 	public void setSearchHeuristic(int heuristic) {
 		state = SearchState.SEARCH_SELECTED;
-		search = new AStarSearch(map.startPoint(), map.endPoint(), heuristic);
+		search = new AStarSearch(start, end, heuristic);
 	}
 	
 	/*
@@ -70,13 +74,7 @@ public class SearchRunner {
 	 * they refer to.
 	 */
 	public void changeSearchPoints(Point start, Point end) {
-		// TODO: Decouple from map
-		map.setStartPoint(start);
-		map.setEndPoint(end);
-		
-		start.x = map.startPoint().x;
-		start.y = map.startPoint().y;
-		end.x = map.endPoint().x;
-		end.y = map.endPoint().y;
+		this.start = map.closestPointTo(start);
+		this.end = map.closestPointTo(end);
 	}
 }
