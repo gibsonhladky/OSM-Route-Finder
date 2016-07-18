@@ -111,7 +111,7 @@ public class Main extends PApplet {
 	}
 	
 	private void placePoints() {
-		searchRunner.changeSearchPoints(guiStart, guiEnd);
+		searchRunner.setSearchPoints(guiStart, guiEnd);
 		guiDragging = null;
 	}
 	

@@ -29,14 +29,9 @@ public class AStarSearch {
 		// Load the frontier with the start point
 		frontier.add(startPoint);
 	}
-
-	/*
-	 * Explores the highest priority (lowest expected cost) node in the frontier
-	 * and adds neighboring nodes to the frontier for further exploration. Does
-	 * nothing if the end point has been found.
-	 */
-	public void exploreNextNode() {
-		if (!isComplete()) {
+	
+	public void search() {
+		while (!isComplete()) {
 			SearchPoint nextPoint = getBestPointInFrontier();
 			addPointToExplored(nextPoint);
 			updateFrontierWithNeighborsOf(nextPoint);
@@ -54,7 +49,7 @@ public class AStarSearch {
 		}
 	}
 
-	public boolean isComplete() {
+	private boolean isComplete() {
 		return goalReached() || noRouteExists();
 	}
 	
