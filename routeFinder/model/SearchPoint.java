@@ -2,9 +2,7 @@ package routeFinder.model;
 
 public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 	
-	private final MapPoint startPoint;
-	private final MapPoint goalPoint;
-	private final int heuristic;
+	private final SearchCriteria criteria;
 
 	public MapPoint mapPoint;
 
@@ -17,9 +15,7 @@ public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 	public SearchPoint(MapPoint mapPoint, SearchPoint prev, SearchCriteria criteria) {
 		super(mapPoint.getX(), mapPoint.getY());
 		
-		this.startPoint = criteria.start;
-		this.goalPoint = criteria.end;
-		this.heuristic = criteria.heuristic;
+		this.criteria = criteria;
 		this.mapPoint = mapPoint;
 		this.previous = prev;
 		distanceFromStart = 0;
@@ -75,7 +71,7 @@ public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 	}
 	
 	private void calculateDistanceFromStart() {
-		if (mapPoint.equals(startPoint)) {
+		if (mapPoint.equals(criteria.start)) {
 			distanceFromStart = 0;
 		}
 		else {
@@ -89,13 +85,13 @@ public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 	 * l2 distance
 	 */
 	private double heuristicCostToReachEnd() {
-		switch (heuristic) {
+		switch (criteria.heuristic) {
 		case 0:
 			return (float) 0;
 		case 1:
-			return Math.abs(mapPoint.getX() - goalPoint.getX()) + Math.abs(mapPoint.getY() - goalPoint.getY());
+			return Math.abs(mapPoint.getX() - criteria.end.getX()) + Math.abs(mapPoint.getY() - criteria.end.getY());
 		case 2:
-			return goalPoint.distanceTo(this.mapPoint);
+			return criteria.end.distanceTo(this.mapPoint);
 		default:
 			throw new IllegalStateException("Invalid heuristic.");
 		}
