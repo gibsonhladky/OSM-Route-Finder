@@ -1,6 +1,6 @@
 package routeFinder.model;
 
-public class SearchPoint implements Comparable<SearchPoint> {
+public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 	
 	private final MapPoint startPoint;
 	private final MapPoint goalPoint;
@@ -13,13 +13,14 @@ public class SearchPoint implements Comparable<SearchPoint> {
 
 	// traceback pointer for getSolution()
 	public SearchPoint previous;
-
-	// Takes a Map Point and SearchPoint as input
-	public SearchPoint(MapPoint startPoint, MapPoint goalPoint, int heuristic, MapPoint mapPoint, SearchPoint prev) {
-		this.startPoint = startPoint;
-		this.goalPoint = goalPoint;
+	
+	public SearchPoint(MapPoint mapPoint, SearchPoint prev, SearchCriteria criteria) {
+		super(mapPoint.getX(), mapPoint.getY());
+		
+		this.startPoint = criteria.start;
+		this.goalPoint = criteria.end;
+		this.heuristic = criteria.heuristic;
 		this.mapPoint = mapPoint;
-		this.heuristic = heuristic;
 		this.previous = prev;
 		distanceFromStart = 0;
 		distanceFromStartInitialized = false;

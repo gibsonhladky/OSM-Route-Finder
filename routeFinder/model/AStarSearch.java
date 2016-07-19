@@ -11,18 +11,22 @@ public class AStarSearch {
 
 	SearchCriteria criteria;
 	
+	private SearchPoint startPoint, goalPoint;
 	private ArrayList<SearchPoint> frontier;
 	private ArrayList<SearchPoint> explored;
-
 
 	
 	public AStarSearch(MapPoint start, MapPoint end, int heuristic) {
 		criteria = new SearchCriteria(start, end, heuristic);
+		
+		this.startPoint = new SearchPoint(start, null, criteria);
+		this.goalPoint = new SearchPoint(end, null, criteria);
+		
 		frontier = new ArrayList<SearchPoint>();
 		explored = new ArrayList<SearchPoint>();
 		
 		// Load the frontier with the start point
-		frontier.add(criteria.startPoint);
+		frontier.add(startPoint);
 	}
 	
 	public void search() {
@@ -35,7 +39,7 @@ public class AStarSearch {
 	
 	public List<MapPoint> getRoute() {
 		if (goalReached()) {
-			List<MapPoint> route = traceBackRouteFrom(criteria.goalPoint);
+			List<MapPoint> route = traceBackRouteFrom(goalPoint);
 			Collections.reverse(route);
 			return route;
 		}
@@ -50,7 +54,7 @@ public class AStarSearch {
 	
 	private boolean goalReached() {
 		for(SearchPoint p : explored) {
-			if (p.equals(criteria.goalPoint)) {
+			if (p.equals(goalPoint)) {
 				return true;
 			}
 		}
@@ -104,8 +108,7 @@ public class AStarSearch {
 	}
 	
 	private SearchPoint createSearchPoint(MapPoint mapPoint, SearchPoint prev) {
-		return new SearchPoint(criteria.startPoint.mapPoint, criteria.goalPoint.mapPoint, criteria.heuristic,
-				mapPoint, prev);
+		return new SearchPoint(mapPoint, prev, criteria);
 	}
 	
 	private boolean isNewPoint(SearchPoint point) {
@@ -126,8 +129,8 @@ public class AStarSearch {
 			// traceback pointer.
 			
 			// update goalPoint for a traceback pointer.
-			if(replacement.equals(criteria.goalPoint)) {
-				criteria.goalPoint = replacement;
+			if(replacement.equals(goalPoint)) {
+				goalPoint = replacement;
 			}
 		}
 	}
