@@ -8,7 +8,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 
 	public MapPoint mapPoint;
 
-	private float distanceFromStart;
+	private double distanceFromStart;
 	private boolean distanceFromStartInitialized;
 
 	// traceback pointer for getSolution()
@@ -57,7 +57,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 		return ( (SearchPoint) other ).mapPoint.equals(this.mapPoint);
 	}
 
-	private float distanceFromStart() {
+	private double distanceFromStart() {
 		// Avoid high recursion costs:
 		if (!distanceFromStartInitialized) {
 			distanceFromStartInitialized = true;
@@ -69,7 +69,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 	/*
 	 * Returns the expected cost to reach the end point from this search point.
 	 */
-	private float expectedCost() {
+	private double expectedCost() {
 		return heuristicCostToReachEnd() + distanceFromStart();
 	}
 	
@@ -78,7 +78,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 			distanceFromStart = 0;
 		}
 		else {
-			distanceFromStart = previous.distanceFromStart() + distanceBetween(mapPoint, previous.mapPoint);
+			distanceFromStart = previous.distanceFromStart() + mapPoint.distanceTo(previous.mapPoint);
 		}
 	}
 
@@ -87,20 +87,16 @@ public class SearchPoint implements Comparable<SearchPoint> {
 	 * heuristic: 0: always estimate zero, 1: manhattan distance, 2: euclidean
 	 * l2 distance
 	 */
-	private float heuristicCostToReachEnd() {
+	private double heuristicCostToReachEnd() {
 		switch (heuristic) {
 		case 0:
 			return (float) 0;
 		case 1:
 			return Math.abs(mapPoint.getX() - goalPoint.getX()) + Math.abs(mapPoint.getY() - goalPoint.getY());
 		case 2:
-			return distanceBetween(goalPoint, this.mapPoint);
+			return goalPoint.distanceTo(this.mapPoint);
 		default:
 			throw new IllegalStateException("Invalid heuristic.");
 		}
-	}
-
-	private float distanceBetween(MapPoint a, MapPoint b) {
-		return (float) Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getY() - b.getY(), 2));
 	}
 }

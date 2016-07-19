@@ -109,7 +109,7 @@ public class Main extends PApplet {
 	}
 	
 	private double distanceToMouse(Point point) {
-		return sqr(mouseX - point.getX()) + sqr(mouseY - point.getY());
+		return point.distanceTo(new Point(mouseX, mouseY));
 	}
 	
 	private void placePoints() {
@@ -164,11 +164,6 @@ public class Main extends PApplet {
 		guiStart = new DraggablePoint(width * 2 / 10, height / 2);
 		guiEnd = new DraggablePoint(width * 8 / 10, height / 2);
 		placePoints();
-	}
-	
-	
-	private double sqr(double x) {
-		return Math.pow(x, 2);
 	}
 
 	public static void main(String args[]) {

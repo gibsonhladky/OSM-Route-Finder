@@ -22,12 +22,12 @@ public class Map {
 	
 	public MapPoint closestPointTo(Point originalPoint) {
 		MapPoint closestPoint = null;
-		float closestDistance = Float.MAX_VALUE;
+		double closestDistance = Float.MAX_VALUE;
 		for (Street thisStreet : streets) {
 			MapPoint closestPointOnStreet = closestPointOnStreetTo(originalPoint, thisStreet);
-			if(distanceBetween(closestPointOnStreet, originalPoint) < closestDistance) {
+			if(closestPointOnStreet.distanceTo(originalPoint) < closestDistance) {
 				closestPoint = closestPointOnStreet;
-				closestDistance = distanceBetween(closestPointOnStreet, originalPoint);
+				closestDistance = closestPointOnStreet.distanceTo(originalPoint);
 			}
 		}
 		return closestPoint;
@@ -35,19 +35,13 @@ public class Map {
 	
 	private MapPoint closestPointOnStreetTo(Point originalPoint, Street street) {
 		MapPoint closestPoint = null;
-		float closestDistance = Float.MAX_VALUE;
+		double closestDistance = Float.MAX_VALUE;
 		for (MapPoint thisPoint : street.points) {
-			if (distanceBetween(thisPoint, originalPoint) < closestDistance) {
+			if (thisPoint.distanceTo(originalPoint) < closestDistance) {
 				closestPoint = thisPoint;
-				closestDistance = distanceBetween(thisPoint, originalPoint);
+				closestDistance = thisPoint.distanceTo(originalPoint);
 			}
 		}
 		return closestPoint;
-	}
-	
-	// Returns the euclidean distance squared between two points.
-	private float distanceBetween(Point point1, Point point2) {
-		return ( point1.getX() - point2.getX() ) * ( point1.getX() - point2.getX() )
-				+ ( point1.getY() - point2.getY() ) * ( point1.getY() - point2.getY() );
 	}
 }

@@ -1,11 +1,11 @@
 package routeFinder.model;
 
-public abstract class Point {
+public class Point {
 	
 	private float x;
 	private float y;
 	
-	Point(float x, float y) {
+	public Point(float x, float y) {
 		setX(x);
 		setY(y);
 	}
@@ -22,8 +22,12 @@ public abstract class Point {
 		return y;
 	}
 
-	public void setY(float y) {
+	protected void setY(float y) {
 		this.y = y;
+	}
+	
+	public double distanceTo(Point other) {
+		return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
 	}
 	
 }
