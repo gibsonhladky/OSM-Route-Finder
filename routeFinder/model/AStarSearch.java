@@ -18,10 +18,8 @@ public class AStarSearch {
 	
 	public AStarSearch(MapPoint start, MapPoint end, int heuristic) {
 		criteria = new SearchCriteria(start, end, heuristic);
-		
 		this.startPoint = new SearchPoint(start, null, criteria);
 		this.goalPoint = new SearchPoint(end, null, criteria);
-		
 		frontier = new ArrayList<SearchPoint>();
 		explored = new ArrayList<SearchPoint>();
 		
@@ -95,7 +93,7 @@ public class AStarSearch {
 	 * can be reached faster through this point, it is updated.
 	 */
 	private void updateFrontierWithNeighborsOf(SearchPoint point) {
-		List<MapPoint> neighbors = point.getNeighbors();
+		List<MapPoint> neighbors = point.mapPoint.getNeighbors();
 		for (MapPoint neighbor : neighbors) {
 			SearchPoint newPoint = createSearchPoint(neighbor, point);
 			if (isNewPoint(newPoint)) {

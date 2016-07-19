@@ -9,6 +9,15 @@ public class Point {
 		setX(x);
 		setY(y);
 	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(other instanceof Point) {
+			Point otherPoint = (Point) other;
+			return this.x == otherPoint.x && this.y == otherPoint.y;
+		}
+		return false;
+	}
 
 	public float getX() {
 		return x;

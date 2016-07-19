@@ -4,7 +4,7 @@ public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 	
 	private final SearchCriteria criteria;
 
-	private MapPoint mapPoint;
+	public MapPoint mapPoint;
 
 	private double distanceFromStart;
 	private boolean distanceFromStartInitialized;
@@ -14,12 +14,18 @@ public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 	
 	public SearchPoint(MapPoint mapPoint, SearchPoint prev, SearchCriteria criteria) {
 		super(mapPoint.getX(), mapPoint.getY());
-		
+		setNeighbors(mapPoint);
 		this.criteria = criteria;
 		this.mapPoint = mapPoint;
 		this.previous = prev;
 		distanceFromStart = 0;
 		distanceFromStartInitialized = false;
+	}
+	
+	private void setNeighbors(MapPoint mapPoint) {
+		for(MapPoint neighbor : mapPoint.getNeighbors()) {
+			this.addNeighbor(neighbor);
+		}
 	}
 
 	@Override
