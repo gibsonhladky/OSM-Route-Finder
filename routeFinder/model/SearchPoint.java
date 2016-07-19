@@ -1,31 +1,26 @@
 package routeFinder.model;
 
+import java.util.List;
+
 public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 	
 	private final SearchCriteria criteria;
 
-	public MapPoint mapPoint;
+	private MapPoint mapPoint;
 
 	private double distanceFromStart;
 	private boolean distanceFromStartInitialized;
 
 	// traceback pointer for getSolution()
-	public SearchPoint previous;
+	private SearchPoint previous;
 	
 	public SearchPoint(MapPoint mapPoint, SearchPoint prev, SearchCriteria criteria) {
 		super(mapPoint.getX(), mapPoint.getY());
-		setNeighbors(mapPoint);
 		this.criteria = criteria;
 		this.mapPoint = mapPoint;
 		this.previous = prev;
 		distanceFromStart = 0;
 		distanceFromStartInitialized = false;
-	}
-	
-	private void setNeighbors(MapPoint mapPoint) {
-		for(MapPoint neighbor : mapPoint.getNeighbors()) {
-			this.addNeighbor(neighbor);
-		}
 	}
 
 	@Override
@@ -101,5 +96,14 @@ public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 		default:
 			throw new IllegalStateException("Invalid heuristic.");
 		}
+	}
+	
+	public SearchPoint previous() {
+		return previous;
+	}
+	
+	@Override
+	public List<MapPoint> getNeighbors() {
+		return mapPoint.getNeighbors();
 	}
 }
