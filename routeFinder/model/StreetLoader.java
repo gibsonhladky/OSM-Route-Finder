@@ -11,8 +11,8 @@ import org.w3c.dom.NodeList;
 
 class StreetLoader {
 
-	private static final String V_TAG = "v";
-	private static final String K_TAG = "k";
+	private static final String VALUE_TAG = "v";
+	private static final String KEY_TAG = "k";
 	private static final String TAG = "tag";
 	private static final String HIGHWAY_TAG = "highway";
 	private static final String POINT_REFERENCE_TAG = "ref";
@@ -57,14 +57,13 @@ class StreetLoader {
 	
 	private boolean isRoadTag(Node tag) {
 		NamedNodeMap attributes = tag.getAttributes();
-		// TODO: Research meaning behind k and v and rename these variables
-		Node k = attributes.getNamedItem(K_TAG);
-		Node v = attributes.getNamedItem(V_TAG);
-		if(k == null || v == null) {
+		Node key = attributes.getNamedItem(KEY_TAG);
+		Node value = attributes.getNamedItem(VALUE_TAG);
+		if(key == null || value == null) {
 			return false;
 		}
-		else if(k.getNodeValue().equals(HIGHWAY_TAG)) {
-			switch (v.getNodeValue()) {
+		else if(key.getNodeValue().equals(HIGHWAY_TAG)) {
+			switch (value.getNodeValue()) {
 			case "pedestrian":
 			case "footway":
 			case "cycleway":
