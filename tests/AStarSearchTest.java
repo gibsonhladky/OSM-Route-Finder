@@ -80,8 +80,8 @@ public class AStarSearchTest {
 	}
 	
 	private void setAsNeighbors(MapPoint p1, MapPoint p2) {
-		p1.neighbors.add(p2);
-		p2.neighbors.add(p1);
+		p1.addNeighbor(p2);
+		p2.addNeighbor(p1);
 	}
 	
 	private void whenSearched() {
