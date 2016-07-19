@@ -1,4 +1,6 @@
-package routeFinder.model;
+package search;
+
+import routeFinder.model.MapPoint;
 
 public class SearchCriteria {
 

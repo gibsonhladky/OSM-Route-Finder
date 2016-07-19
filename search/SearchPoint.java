@@ -1,6 +1,8 @@
-package routeFinder.model;
+package search;
 
 import java.util.List;
+
+import routeFinder.model.MapPoint;
 
 public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 	

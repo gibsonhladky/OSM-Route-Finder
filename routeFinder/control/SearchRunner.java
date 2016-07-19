@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.w3c.dom.Document;
 
-import routeFinder.model.AStarSearch;
 import routeFinder.model.Map;
 import routeFinder.model.MapLoader;
 import routeFinder.model.MapPoint;
 import routeFinder.model.Point;
+import search.AStarSearch;
 
 public class SearchRunner {
 	

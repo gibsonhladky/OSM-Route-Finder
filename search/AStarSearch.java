@@ -1,8 +1,10 @@
-package routeFinder.model;
+package search;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import routeFinder.model.MapPoint;
 
 /*
  * Original structure provided by Gary Dahl

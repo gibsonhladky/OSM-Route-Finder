@@ -10,8 +10,8 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import routeFinder.model.AStarSearch;
 import routeFinder.model.MapPoint;
+import search.AStarSearch;
 
 public class AStarSearchTest {
 	
