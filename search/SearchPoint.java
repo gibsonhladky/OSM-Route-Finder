@@ -45,18 +45,6 @@ public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 		}
 	}
 
-	/*
-	 * Returns true if and only if the search points refer to the same map
-	 * points.
-	 */
-	@Override
-	public boolean equals(Object other) {
-		if (other.getClass() != this.getClass()) {
-			return false;
-		}
-		return ( (SearchPoint) other ).mapPoint.equals(this.mapPoint);
-	}
-
 	private double distanceFromStart() {
 		// Avoid high recursion costs:
 		if (!distanceFromStartInitialized) {
