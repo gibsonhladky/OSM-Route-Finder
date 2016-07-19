@@ -14,7 +14,7 @@ public abstract class Point {
 		return x;
 	}
 
-	public void setX(float x) {
+	protected void setX(float x) {
 		this.x = x;
 	}
 

@@ -64,7 +64,7 @@ public class SearchRunner {
 	/*
 	 * Modifies the start and end locations of the search.
 	 */
-	public void setSearchPoints(MapPoint start, MapPoint end) {
+	public void setSearchPoints(Point start, Point end) {
 		this.start = map.closestPointTo(start);
 		this.end = map.closestPointTo(end);
 	}
