@@ -92,7 +92,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 		case 0:
 			return (float) 0;
 		case 1:
-			return Math.abs(mapPoint.x - goalPoint.x) + Math.abs(mapPoint.y - goalPoint.y);
+			return Math.abs(mapPoint.getX() - goalPoint.getX()) + Math.abs(mapPoint.getY() - goalPoint.getY());
 		case 2:
 			return distanceBetween(goalPoint, this.mapPoint);
 		default:
@@ -101,6 +101,6 @@ public class SearchPoint implements Comparable<SearchPoint> {
 	}
 
 	private float distanceBetween(MapPoint a, MapPoint b) {
-		return (float) Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+		return (float) Math.sqrt(Math.pow(a.getX() - b.getX(), 2) + Math.pow(a.getY() - b.getY(), 2));
 	}
 }

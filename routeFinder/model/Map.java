@@ -47,7 +47,7 @@ public class Map {
 	
 	// Returns the euclidean distance squared between two points.
 	private float distanceBetween(MapPoint point1, MapPoint point2) {
-		return ( point1.x - point2.x ) * ( point1.x - point2.x )
-				+ ( point1.y - point2.y ) * ( point1.y - point2.y );
+		return ( point1.getX() - point2.getX() ) * ( point1.getX() - point2.getX() )
+				+ ( point1.getY() - point2.getY() ) * ( point1.getY() - point2.getY() );
 	}
 }

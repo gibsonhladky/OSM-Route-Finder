@@ -107,7 +107,7 @@ public class Main extends PApplet {
 	}
 	
 	private double distanceToMouse(MapPoint point) {
-		return sqr(mouseX - point.x) + sqr(mouseY - point.y);
+		return sqr(mouseX - point.getX()) + sqr(mouseY - point.getY());
 	}
 	
 	private void placePoints() {
@@ -124,8 +124,8 @@ public class Main extends PApplet {
 	}
 	
 	private void updateDraggedPointPosition() {
-		guiDragging.x = mouseX;
-		guiDragging.y = mouseY;
+		guiDragging.setX(mouseX);
+		guiDragging.setY(mouseY);
 	}
 
 	/*
