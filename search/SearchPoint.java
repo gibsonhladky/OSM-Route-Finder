@@ -1,25 +1,25 @@
-package routeFinder.model;
+package search;
 
-public class SearchPoint implements Comparable<SearchPoint> {
+import java.util.List;
+
+import routeFinder.model.MapPoint;
+
+public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 	
-	private final Point startPoint;
-	private final Point goalPoint;
-	private final int heuristic;
+	private final SearchCriteria criteria;
 
-	public Point mapPoint;
+	private MapPoint mapPoint;
 
-	private float distanceFromStart;
+	private double distanceFromStart;
 	private boolean distanceFromStartInitialized;
 
 	// traceback pointer for getSolution()
-	public SearchPoint previous;
-
-	// Takes a Map Point and SearchPoint as input
-	public SearchPoint(Point startPoint, Point goalPoint, int heuristic, Point mapPoint, SearchPoint prev) {
-		this.startPoint = startPoint;
-		this.goalPoint = goalPoint;
+	private SearchPoint previous;
+	
+	public SearchPoint(MapPoint mapPoint, SearchPoint prev, SearchCriteria criteria) {
+		super(mapPoint.getX(), mapPoint.getY());
+		this.criteria = criteria;
 		this.mapPoint = mapPoint;
-		this.heuristic = heuristic;
 		this.previous = prev;
 		distanceFromStart = 0;
 		distanceFromStartInitialized = false;
@@ -27,7 +27,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 
 	@Override
 	public int compareTo(SearchPoint other) {
-		if (this.expectedCost() == other.expectedCost()) {
+		if (this.expectedCostToReachEnd() == other.expectedCostToReachEnd()) {
 			if (this.distanceFromStart() == other.distanceFromStart())
 				return 0;
 			else if (this.distanceFromStart() < other.distanceFromStart()) {
@@ -37,7 +37,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 				return 1;
 			}
 		}
-		else if (this.expectedCost() > other.expectedCost()) {
+		else if (this.expectedCostToReachEnd() > other.expectedCostToReachEnd()) {
 			return 1;
 		}
 		else {
@@ -57,7 +57,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 		return ( (SearchPoint) other ).mapPoint.equals(this.mapPoint);
 	}
 
-	private float distanceFromStart() {
+	private double distanceFromStart() {
 		// Avoid high recursion costs:
 		if (!distanceFromStartInitialized) {
 			distanceFromStartInitialized = true;
@@ -69,16 +69,16 @@ public class SearchPoint implements Comparable<SearchPoint> {
 	/*
 	 * Returns the expected cost to reach the end point from this search point.
 	 */
-	private float expectedCost() {
+	private double expectedCostToReachEnd() {
 		return heuristicCostToReachEnd() + distanceFromStart();
 	}
 	
 	private void calculateDistanceFromStart() {
-		if (mapPoint.equals(startPoint)) {
+		if (mapPoint.equals(criteria.start)) {
 			distanceFromStart = 0;
 		}
 		else {
-			distanceFromStart = previous.distanceFromStart() + distanceBetween(mapPoint, previous.mapPoint);
+			distanceFromStart = previous.distanceFromStart() + mapPoint.distanceTo(previous.mapPoint);
 		}
 	}
 
@@ -87,20 +87,25 @@ public class SearchPoint implements Comparable<SearchPoint> {
 	 * heuristic: 0: always estimate zero, 1: manhattan distance, 2: euclidean
 	 * l2 distance
 	 */
-	private float heuristicCostToReachEnd() {
-		switch (heuristic) {
+	private double heuristicCostToReachEnd() {
+		switch (criteria.heuristic) {
 		case 0:
 			return (float) 0;
 		case 1:
-			return Math.abs(mapPoint.x - goalPoint.x) + Math.abs(mapPoint.y - goalPoint.y);
+			return Math.abs(mapPoint.getX() - criteria.end.getX()) + Math.abs(mapPoint.getY() - criteria.end.getY());
 		case 2:
-			return distanceBetween(goalPoint, this.mapPoint);
+			return criteria.end.distanceTo(this.mapPoint);
 		default:
 			throw new IllegalStateException("Invalid heuristic.");
 		}
 	}
-
-	private float distanceBetween(Point a, Point b) {
-		return (float) Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+	
+	public SearchPoint previous() {
+		return previous;
+	}
+	
+	@Override
+	public List<MapPoint> getNeighbors() {
+		return mapPoint.getNeighbors();
 	}
 }

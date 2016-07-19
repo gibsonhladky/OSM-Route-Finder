@@ -1,26 +1,42 @@
 package routeFinder.model;
-import java.util.ArrayList;
 
-/*
- * Representation of a point on a map.
- */
-public class Point 
-{
-	// x and y screen coordinate
-	public float x;
-	public float y;
-	// list of points connected to this one by roads
-	public ArrayList<Point> neighbors;
-	// temporary variable used to cull unused points
-	public boolean isOnStreet; 
-
-	public Point(float x, float y)
-	{
-		this.x = x;
-		this.y = y;
-		neighbors = new ArrayList<Point>();
-		isOnStreet = false;
+public class Point {
+	
+	private float x;
+	private float y;
+	
+	public Point(float x, float y) {
+		setX(x);
+		setY(y);
 	}
 	
+	@Override
+	public boolean equals(Object other) {
+		if(other instanceof Point) {
+			Point otherPoint = (Point) other;
+			return this.x == otherPoint.x && this.y == otherPoint.y;
+		}
+		return false;
+	}
+
+	public float getX() {
+		return x;
+	}
+
+	protected void setX(float x) {
+		this.x = x;
+	}
+
+	public float getY() {
+		return y;
+	}
+
+	protected void setY(float y) {
+		this.y = y;
+	}
+	
+	public double distanceTo(Point other) {
+		return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
+	}
 	
 }

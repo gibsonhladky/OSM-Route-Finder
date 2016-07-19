@@ -15,8 +15,8 @@ class PointLoader {
 	private static final String LATITUDE_TAG = "lat";
 	private static final String ID_TAG = "id";
 	
-	private List<Point> points;
-	private final Hashtable<Long, Point> pointReferenceTable = new Hashtable<Long, Point>();
+	private List<MapPoint> points;
+	private final Hashtable<Long, MapPoint> pointReferenceTable = new Hashtable<Long, MapPoint>();
 	private Bounds bounds;
 	
 	private final int width, height;
@@ -26,7 +26,7 @@ class PointLoader {
 		this.height = height;
 		this.bounds = bounds;
 		
-		points = new ArrayList<Point>();
+		points = new ArrayList<MapPoint>();
 	}
 	
 	public void load(Document pointData) {
@@ -38,11 +38,11 @@ class PointLoader {
 		}
 	}
 	
-	public List<Point> getPoints() {		
+	public List<MapPoint> getPoints() {		
 		return points;
 	}
 	
-	public Hashtable<Long, Point> getPointReferences() {
+	public Hashtable<Long, MapPoint> getPointReferences() {
 		return pointReferenceTable;
 	}
 	
@@ -54,17 +54,17 @@ class PointLoader {
 				attributes.getNamedItem(LONGITUDE_TAG) != null;
 	}
 	
-	private void addPoint(Point newPoint, long id) {
+	private void addPoint(MapPoint newPoint, long id) {
 		points.add(newPoint);
 		pointReferenceTable.put(id, newPoint);
 	}
 	
-	private Point parsePoint(Node node) {
+	private MapPoint parsePoint(Node node) {
 		NamedNodeMap attributes = node.getAttributes();
 		float lon = Float.parseFloat(attributes.getNamedItem(LONGITUDE_TAG).getNodeValue());
 		float lat = Float.parseFloat(attributes.getNamedItem(LATITUDE_TAG).getNodeValue());
 		
-		return new Point(scaleLon(lon), scaleLat(lat));
+		return new MapPoint(scaleLon(lon), scaleLat(lat));
 	}
 	
 	private long parsePointID(Node pointNode) {

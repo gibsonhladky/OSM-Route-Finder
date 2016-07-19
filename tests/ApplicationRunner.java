@@ -3,7 +3,7 @@ package tests;
 import static org.junit.Assert.*;
 
 import routeFinder.control.SearchRunner;
-import routeFinder.model.Point;
+import routeFinder.model.MapPoint;
 import processing.core.PApplet;
 
 public class ApplicationRunner {
@@ -19,7 +19,7 @@ public class ApplicationRunner {
 		main.openMap(p.loadXML(mapFileName));
 	}
 	
-	public void setPoints(Point start, Point end) { 
+	public void setPoints(MapPoint start, MapPoint end) { 
 		main.setFrom(start);
 		main.setTo(end);
 	}

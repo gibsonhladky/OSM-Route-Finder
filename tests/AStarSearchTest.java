@@ -10,21 +10,21 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import routeFinder.model.AStarSearch;
-import routeFinder.model.Point;
+import routeFinder.model.MapPoint;
+import search.AStarSearch;
 
 public class AStarSearchTest {
 	
 	AStarSearch search;
 	
-	Point start = new Point(0, 0);
-	Point end = new Point(10, 0);
+	MapPoint start = new MapPoint(0, 0);
+	MapPoint end = new MapPoint(10, 0);
 	
-	List<Point> noRoute;
-	List<Point> shortRoute;
-	List<Point> longCircuitousRoute;
-	List<Point> longJaggedRoute;
-	List<Point> deadEndRoute;
+	List<MapPoint> noRoute;
+	List<MapPoint> shortRoute;
+	List<MapPoint> longCircuitousRoute;
+	List<MapPoint> longJaggedRoute;
+	List<MapPoint> deadEndRoute;
 
 	@Before
 	public void setUp() throws Exception {
@@ -71,7 +71,7 @@ public class AStarSearchTest {
 		thenRouteShouldBe(longCircuitousRoute);
 	}
 	
-	private void givenMapContainingRoute(List<Point> route) {
+	private void givenMapContainingRoute(List<MapPoint> route) {
 		if(!route.isEmpty()) {
 			for(int i = 0; i < route.size() - 1; i++) {
 				setAsNeighbors(route.get(i), route.get(i + 1));
@@ -79,16 +79,16 @@ public class AStarSearchTest {
 		}
 	}
 	
-	private void setAsNeighbors(Point p1, Point p2) {
-		p1.neighbors.add(p2);
-		p2.neighbors.add(p1);
+	private void setAsNeighbors(MapPoint p1, MapPoint p2) {
+		p1.addNeighbor(p2);
+		p2.addNeighbor(p1);
 	}
 	
 	private void whenSearched() {
 		search.search();
 	}
 	
-	private void thenRouteShouldBe(List<Point> expectedRoute) {
+	private void thenRouteShouldBe(List<MapPoint> expectedRoute) {
 		assertEquals(expectedRoute, search.getRoute());
 	}
 	
@@ -110,20 +110,20 @@ public class AStarSearchTest {
 	}
 	
 	private void initializeLongCircuitousRoute() {
-		longCircuitousRoute = Arrays.asList(start, new Point(5, 5), end);
+		longCircuitousRoute = Arrays.asList(start, new MapPoint(5, 5), end);
 	}
 	
 	private void initializeLongJaggedRoute() {
-		longJaggedRoute = new ArrayList<Point>(10);
+		longJaggedRoute = new ArrayList<MapPoint>(10);
 		longJaggedRoute.add(start);
 		for(int i = 1; i < 10; i++) {
-			longJaggedRoute.add(new Point(i, i%2));
+			longJaggedRoute.add(new MapPoint(i, i%2));
 		}
 		longJaggedRoute.add(end);
 	}
 	
 	private void initializeDeadEndRoute() {
-		deadEndRoute = Arrays.asList(start, new Point(0, 5));
+		deadEndRoute = Arrays.asList(start, new MapPoint(0, 5));
 	}
 	
 

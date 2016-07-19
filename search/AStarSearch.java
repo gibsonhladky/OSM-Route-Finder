@@ -1,28 +1,27 @@
-package routeFinder.model;
+package search;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import routeFinder.model.MapPoint;
 
 /*
  * Original structure provided by Gary Dahl
  */
 public class AStarSearch {
 
-
+	SearchCriteria criteria;
+	
 	private SearchPoint startPoint, goalPoint;
 	private ArrayList<SearchPoint> frontier;
 	private ArrayList<SearchPoint> explored;
 
-	// The chosen heuristic
-	// 0: always estimate zero, 1: manhattan distance, 2: euclidean l2 distance
-	private int heuristic;
-
 	
-	public AStarSearch(Point start, Point end, int heuristic) {
-		this.startPoint = new SearchPoint(start, end, heuristic, start, null);
-		this.goalPoint = new SearchPoint(start, end, heuristic, end, null);
-		this.heuristic = heuristic;
+	public AStarSearch(MapPoint start, MapPoint end, int heuristic) {
+		criteria = new SearchCriteria(start, end, heuristic);
+		this.startPoint = new SearchPoint(start, null, criteria);
+		this.goalPoint = new SearchPoint(end, null, criteria);
 		frontier = new ArrayList<SearchPoint>();
 		explored = new ArrayList<SearchPoint>();
 		
@@ -38,9 +37,9 @@ public class AStarSearch {
 		}
 	}
 	
-	public List<Point> getRoute() {
+	public List<MapPoint> getRoute() {
 		if (goalReached()) {
-			List<Point> route = traceBackRouteFrom(goalPoint);
+			List<MapPoint> route = traceBackRouteFrom(goalPoint);
 			Collections.reverse(route);
 			return route;
 		}
@@ -80,12 +79,12 @@ public class AStarSearch {
 	}
 
 	
-	private List<Point> traceBackRouteFrom(SearchPoint thisPoint) {
-		ArrayList<Point> reverseRoute = new ArrayList<Point>();
+	private List<MapPoint> traceBackRouteFrom(SearchPoint thisPoint) {
+		ArrayList<MapPoint> reverseRoute = new ArrayList<MapPoint>();
 		SearchPoint currPoint = thisPoint;
 		while (currPoint != null) {
-			reverseRoute.add(currPoint.mapPoint);
-			currPoint = currPoint.previous;
+			reverseRoute.add(currPoint);
+			currPoint = currPoint.previous();
 		}
 		return reverseRoute;
 	}
@@ -96,8 +95,8 @@ public class AStarSearch {
 	 * can be reached faster through this point, it is updated.
 	 */
 	private void updateFrontierWithNeighborsOf(SearchPoint point) {
-		ArrayList<Point> neighbors = point.mapPoint.neighbors;
-		for (Point neighbor : neighbors) {
+		List<MapPoint> neighbors = point.getNeighbors();
+		for (MapPoint neighbor : neighbors) {
 			SearchPoint newPoint = createSearchPoint(neighbor, point);
 			if (isNewPoint(newPoint)) {
 				frontier.add(newPoint);
@@ -108,9 +107,8 @@ public class AStarSearch {
 		}
 	}
 	
-	private SearchPoint createSearchPoint(Point mapPoint, SearchPoint prev) {
-		return new SearchPoint(this.startPoint.mapPoint, this.goalPoint.mapPoint, this.heuristic,
-				mapPoint, prev);
+	private SearchPoint createSearchPoint(MapPoint mapPoint, SearchPoint prev) {
+		return new SearchPoint(mapPoint, prev, criteria);
 	}
 	
 	private boolean isNewPoint(SearchPoint point) {

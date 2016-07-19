@@ -9,7 +9,7 @@ public class Map {
 	
 	private final List<Street> streets;
 	
-	public Map(List<Point> points, List<Street> streets, Bounds bounds) {
+	public Map(List<MapPoint> points, List<Street> streets, Bounds bounds) {
 		this.streets = streets;
 	}
 	
@@ -20,34 +20,28 @@ public class Map {
 		return Collections.unmodifiableList(streets);
 	}
 	
-	public Point closestPointTo(Point originalPoint) {
-		Point closestPoint = null;
-		float closestDistance = Float.MAX_VALUE;
+	public MapPoint closestPointTo(Point originalPoint) {
+		MapPoint closestPoint = null;
+		double closestDistance = Float.MAX_VALUE;
 		for (Street thisStreet : streets) {
-			Point closestPointOnStreet = closestPointOnStreetTo(originalPoint, thisStreet);
-			if(distanceBetween(closestPointOnStreet, originalPoint) < closestDistance) {
+			MapPoint closestPointOnStreet = closestPointOnStreetTo(originalPoint, thisStreet);
+			if(closestPointOnStreet.distanceTo(originalPoint) < closestDistance) {
 				closestPoint = closestPointOnStreet;
-				closestDistance = distanceBetween(closestPointOnStreet, originalPoint);
+				closestDistance = closestPointOnStreet.distanceTo(originalPoint);
 			}
 		}
 		return closestPoint;
 	}
 	
-	private Point closestPointOnStreetTo(Point originalPoint, Street street) {
-		Point closestPoint = null;
-		float closestDistance = Float.MAX_VALUE;
-		for (Point thisPoint : street.points) {
-			if (distanceBetween(thisPoint, originalPoint) < closestDistance) {
+	private MapPoint closestPointOnStreetTo(Point originalPoint, Street street) {
+		MapPoint closestPoint = null;
+		double closestDistance = Float.MAX_VALUE;
+		for (MapPoint thisPoint : street.points) {
+			if (thisPoint.distanceTo(originalPoint) < closestDistance) {
 				closestPoint = thisPoint;
-				closestDistance = distanceBetween(thisPoint, originalPoint);
+				closestDistance = thisPoint.distanceTo(originalPoint);
 			}
 		}
 		return closestPoint;
-	}
-	
-	// Returns the euclidean distance squared between two points.
-	private float distanceBetween(Point point1, Point point2) {
-		return ( point1.x - point2.x ) * ( point1.x - point2.x )
-				+ ( point1.y - point2.y ) * ( point1.y - point2.y );
 	}
 }
