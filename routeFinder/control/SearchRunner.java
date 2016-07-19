@@ -1,5 +1,6 @@
 package routeFinder.control;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Document;
@@ -7,6 +8,7 @@ import org.w3c.dom.Document;
 import routeFinder.model.AStarSearch;
 import routeFinder.model.Map;
 import routeFinder.model.MapLoader;
+import routeFinder.model.MapPoint;
 import routeFinder.model.Point;
 
 public class SearchRunner {
@@ -20,18 +22,22 @@ public class SearchRunner {
 	public Map map;
 	
 	private AStarSearch search;
-	private Point start;
-	private Point end;
+	private MapPoint start;
+	private MapPoint end;
 	
 	public SearchRunner() {
 		this.state = SearchState.IDLE;
 
-		start = new Point(0, 0);
-		end = new Point(0, 0);
+		start = new MapPoint(0, 0);
+		end = new MapPoint(0, 0);
 	}
 	
 	public List<Point> searchSolution() {
-		return search.getRoute();
+		List<Point> result = new ArrayList<Point>(search.getRoute().size());
+		for(MapPoint each : search.getRoute()) {
+			result.add(each);
+		}
+		return result;
 	}
 	
 	public void openMap(Document mapData, int width, int height) {
@@ -58,7 +64,7 @@ public class SearchRunner {
 	/*
 	 * Modifies the start and end locations of the search.
 	 */
-	public void setSearchPoints(Point start, Point end) {
+	public void setSearchPoints(MapPoint start, MapPoint end) {
 		this.start = map.closestPointTo(start);
 		this.end = map.closestPointTo(end);
 	}

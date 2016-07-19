@@ -2,13 +2,13 @@ package tests;
 
 import org.junit.Test;
 
-import routeFinder.model.Point;
+import routeFinder.model.MapPoint;
 
 public class OSMRouteFinderEndToEndTest {
 	
 	private final ApplicationRunner application = new ApplicationRunner();
-	private final Point SIMPLE_MAP_START = new Point(0, 0);
-	private final Point SIMPLE_MAP_END = new Point(1, 1);
+	private final MapPoint SIMPLE_MAP_START = new MapPoint(0, 0);
+	private final MapPoint SIMPLE_MAP_END = new MapPoint(1, 1);
 	private final int ZERO_HEURISTIC = 0;
 
 	@Test

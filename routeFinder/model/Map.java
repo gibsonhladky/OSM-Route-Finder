@@ -9,7 +9,7 @@ public class Map {
 	
 	private final List<Street> streets;
 	
-	public Map(List<Point> points, List<Street> streets, Bounds bounds) {
+	public Map(List<MapPoint> points, List<Street> streets, Bounds bounds) {
 		this.streets = streets;
 	}
 	
@@ -20,11 +20,11 @@ public class Map {
 		return Collections.unmodifiableList(streets);
 	}
 	
-	public Point closestPointTo(Point originalPoint) {
-		Point closestPoint = null;
+	public MapPoint closestPointTo(MapPoint originalPoint) {
+		MapPoint closestPoint = null;
 		float closestDistance = Float.MAX_VALUE;
 		for (Street thisStreet : streets) {
-			Point closestPointOnStreet = closestPointOnStreetTo(originalPoint, thisStreet);
+			MapPoint closestPointOnStreet = closestPointOnStreetTo(originalPoint, thisStreet);
 			if(distanceBetween(closestPointOnStreet, originalPoint) < closestDistance) {
 				closestPoint = closestPointOnStreet;
 				closestDistance = distanceBetween(closestPointOnStreet, originalPoint);
@@ -33,10 +33,10 @@ public class Map {
 		return closestPoint;
 	}
 	
-	private Point closestPointOnStreetTo(Point originalPoint, Street street) {
-		Point closestPoint = null;
+	private MapPoint closestPointOnStreetTo(MapPoint originalPoint, Street street) {
+		MapPoint closestPoint = null;
 		float closestDistance = Float.MAX_VALUE;
-		for (Point thisPoint : street.points) {
+		for (MapPoint thisPoint : street.points) {
 			if (distanceBetween(thisPoint, originalPoint) < closestDistance) {
 				closestPoint = thisPoint;
 				closestDistance = distanceBetween(thisPoint, originalPoint);
@@ -46,7 +46,7 @@ public class Map {
 	}
 	
 	// Returns the euclidean distance squared between two points.
-	private float distanceBetween(Point point1, Point point2) {
+	private float distanceBetween(MapPoint point1, MapPoint point2) {
 		return ( point1.x - point2.x ) * ( point1.x - point2.x )
 				+ ( point1.y - point2.y ) * ( point1.y - point2.y );
 	}

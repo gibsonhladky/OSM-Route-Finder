@@ -20,9 +20,9 @@ class StreetLoader {
 	private static final String STREET_TAG = "way";
 	
 	private ArrayList<Street> streets;
-	private Hashtable<Long, Point> pointReferenceTable; 
+	private Hashtable<Long, MapPoint> pointReferenceTable; 
 	
-	public StreetLoader(Hashtable<Long, Point> pointReferenceTable) {
+	public StreetLoader(Hashtable<Long, MapPoint> pointReferenceTable) {
 		this.pointReferenceTable = pointReferenceTable;
 	}
 	
@@ -85,13 +85,13 @@ class StreetLoader {
 	
 	private Street parseStreet(Node road) {
 		NodeList pointReferences = road.getChildNodes();	
-		ArrayList<Point> streetPoints = parsePointsAlongStreet(pointReferences);
+		ArrayList<MapPoint> streetPoints = parsePointsAlongStreet(pointReferences);
 		setNeighbors(streetPoints);
 		return new Street(streetPoints);
 	}
 	
-	private ArrayList<Point> parsePointsAlongStreet(NodeList pointReferences) {
-		ArrayList<Point> pointsAlongRoad = new ArrayList<Point>();
+	private ArrayList<MapPoint> parsePointsAlongStreet(NodeList pointReferences) {
+		ArrayList<MapPoint> pointsAlongRoad = new ArrayList<MapPoint>();
 		for (Node pointReference : asList(pointReferences)) {
 			if(isValidPointReference(pointReference)) {
 				pointsAlongRoad.add(getReferencedPoint(pointReference));
@@ -108,15 +108,15 @@ class StreetLoader {
 	/*
 	 * Expects pointReference to be valid.
 	 */
-	private Point getReferencedPoint(Node pointReference) {
+	private MapPoint getReferencedPoint(Node pointReference) {
 		NamedNodeMap attributes = pointReference.getAttributes();
 		long referenceID = Long.parseLong(attributes.getNamedItem(POINT_REFERENCE_TAG).getNodeValue());
-		Point nextPoint = pointReferenceTable.get(referenceID);
+		MapPoint nextPoint = pointReferenceTable.get(referenceID);
 		nextPoint.isOnStreet = true;
 		return nextPoint;
 	}
 	
-	private void setNeighbors(ArrayList<Point> streetPoints) {
+	private void setNeighbors(ArrayList<MapPoint> streetPoints) {
 		if (streetPoints.size() > 1) {
 			streetPoints.get(0).neighbors.add(streetPoints.get(1));
 		}

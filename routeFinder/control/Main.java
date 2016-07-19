@@ -9,7 +9,7 @@ import org.w3c.dom.Document;
 
 import processing.core.PApplet;
 import routeFinder.control.SearchRunner.SearchState;
-import routeFinder.model.Point;
+import routeFinder.model.MapPoint;
 import routeFinder.view.MainWindow;
 import routeFinder.view.MapView;
 
@@ -23,9 +23,9 @@ public class Main extends PApplet {
 	private final float MAP_HEIGHT_RATIO = 0.8f;
 	private final float MAP_WIDTH_RATIO = 1.0f;
 	
-	private Point guiDragging;
-	private Point guiStart;
-	private Point guiEnd;
+	private MapPoint guiDragging;
+	private MapPoint guiStart;
+	private MapPoint guiEnd;
 
 	public Main() {
 		
@@ -106,7 +106,7 @@ public class Main extends PApplet {
 				distanceToMouse(guiEnd) <= MOUSE_BUFFER;
 	}
 	
-	private double distanceToMouse(Point point) {
+	private double distanceToMouse(MapPoint point) {
 		return sqr(mouseX - point.x) + sqr(mouseY - point.y);
 	}
 	
@@ -160,8 +160,8 @@ public class Main extends PApplet {
 	 * Places the GUI points at a starting position on the map.
 	 */
 	private void initializeGuiPoints() {
-		guiStart = new Point(width * 2 / 10, height / 2);
-		guiEnd = new Point(width * 8 / 10, height / 2);
+		guiStart = new MapPoint(width * 2 / 10, height / 2);
+		guiEnd = new MapPoint(width * 8 / 10, height / 2);
 		placePoints();
 	}
 	

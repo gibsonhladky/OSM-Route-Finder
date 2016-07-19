@@ -2,11 +2,11 @@ package routeFinder.model;
 
 public class SearchPoint implements Comparable<SearchPoint> {
 	
-	private final Point startPoint;
-	private final Point goalPoint;
+	private final MapPoint startPoint;
+	private final MapPoint goalPoint;
 	private final int heuristic;
 
-	public Point mapPoint;
+	public MapPoint mapPoint;
 
 	private float distanceFromStart;
 	private boolean distanceFromStartInitialized;
@@ -15,7 +15,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 	public SearchPoint previous;
 
 	// Takes a Map Point and SearchPoint as input
-	public SearchPoint(Point startPoint, Point goalPoint, int heuristic, Point mapPoint, SearchPoint prev) {
+	public SearchPoint(MapPoint startPoint, MapPoint goalPoint, int heuristic, MapPoint mapPoint, SearchPoint prev) {
 		this.startPoint = startPoint;
 		this.goalPoint = goalPoint;
 		this.mapPoint = mapPoint;
@@ -100,7 +100,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 		}
 	}
 
-	private float distanceBetween(Point a, Point b) {
+	private float distanceBetween(MapPoint a, MapPoint b) {
 		return (float) Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 	}
 }
