@@ -83,7 +83,7 @@ public class AStarSearch {
 		ArrayList<MapPoint> reverseRoute = new ArrayList<MapPoint>();
 		SearchPoint currPoint = thisPoint;
 		while (currPoint != null) {
-			reverseRoute.add(currPoint.mapPoint);
+			reverseRoute.add(currPoint);
 			currPoint = currPoint.previous;
 		}
 		return reverseRoute;
@@ -95,7 +95,7 @@ public class AStarSearch {
 	 * can be reached faster through this point, it is updated.
 	 */
 	private void updateFrontierWithNeighborsOf(SearchPoint point) {
-		List<MapPoint> neighbors = point.mapPoint.getNeighbors();
+		List<MapPoint> neighbors = point.getNeighbors();
 		for (MapPoint neighbor : neighbors) {
 			SearchPoint newPoint = createSearchPoint(neighbor, point);
 			if (isNewPoint(newPoint)) {

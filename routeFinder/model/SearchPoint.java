@@ -4,7 +4,7 @@ public class SearchPoint extends MapPoint implements Comparable<SearchPoint> {
 	
 	private final SearchCriteria criteria;
 
-	public MapPoint mapPoint;
+	private MapPoint mapPoint;
 
 	private double distanceFromStart;
 	private boolean distanceFromStartInitialized;
