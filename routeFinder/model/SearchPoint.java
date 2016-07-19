@@ -27,7 +27,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 
 	@Override
 	public int compareTo(SearchPoint other) {
-		if (this.expectedCost() == other.expectedCost()) {
+		if (this.expectedCostToReachEnd() == other.expectedCostToReachEnd()) {
 			if (this.distanceFromStart() == other.distanceFromStart())
 				return 0;
 			else if (this.distanceFromStart() < other.distanceFromStart()) {
@@ -37,7 +37,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 				return 1;
 			}
 		}
-		else if (this.expectedCost() > other.expectedCost()) {
+		else if (this.expectedCostToReachEnd() > other.expectedCostToReachEnd()) {
 			return 1;
 		}
 		else {
@@ -69,7 +69,7 @@ public class SearchPoint implements Comparable<SearchPoint> {
 	/*
 	 * Returns the expected cost to reach the end point from this search point.
 	 */
-	private double expectedCost() {
+	private double expectedCostToReachEnd() {
 		return heuristicCostToReachEnd() + distanceFromStart();
 	}
 	

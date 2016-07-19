@@ -9,25 +9,20 @@ import java.util.List;
  */
 public class AStarSearch {
 
-
-	private SearchPoint startPoint, goalPoint;
+	SearchCriteria criteria;
+	
 	private ArrayList<SearchPoint> frontier;
 	private ArrayList<SearchPoint> explored;
 
-	// The chosen heuristic
-	// 0: always estimate zero, 1: manhattan distance, 2: euclidean l2 distance
-	private int heuristic;
 
 	
 	public AStarSearch(MapPoint start, MapPoint end, int heuristic) {
-		this.startPoint = new SearchPoint(start, end, heuristic, start, null);
-		this.goalPoint = new SearchPoint(start, end, heuristic, end, null);
-		this.heuristic = heuristic;
+		criteria = new SearchCriteria(start, end, heuristic);
 		frontier = new ArrayList<SearchPoint>();
 		explored = new ArrayList<SearchPoint>();
 		
 		// Load the frontier with the start point
-		frontier.add(startPoint);
+		frontier.add(criteria.startPoint);
 	}
 	
 	public void search() {
@@ -40,7 +35,7 @@ public class AStarSearch {
 	
 	public List<MapPoint> getRoute() {
 		if (goalReached()) {
-			List<MapPoint> route = traceBackRouteFrom(goalPoint);
+			List<MapPoint> route = traceBackRouteFrom(criteria.goalPoint);
 			Collections.reverse(route);
 			return route;
 		}
@@ -55,7 +50,7 @@ public class AStarSearch {
 	
 	private boolean goalReached() {
 		for(SearchPoint p : explored) {
-			if (p.equals(goalPoint)) {
+			if (p.equals(criteria.goalPoint)) {
 				return true;
 			}
 		}
@@ -109,7 +104,7 @@ public class AStarSearch {
 	}
 	
 	private SearchPoint createSearchPoint(MapPoint mapPoint, SearchPoint prev) {
-		return new SearchPoint(this.startPoint.mapPoint, this.goalPoint.mapPoint, this.heuristic,
+		return new SearchPoint(criteria.startPoint.mapPoint, criteria.goalPoint.mapPoint, criteria.heuristic,
 				mapPoint, prev);
 	}
 	
@@ -131,8 +126,8 @@ public class AStarSearch {
 			// traceback pointer.
 			
 			// update goalPoint for a traceback pointer.
-			if(replacement.equals(goalPoint)) {
-				goalPoint = replacement;
+			if(replacement.equals(criteria.goalPoint)) {
+				criteria.goalPoint = replacement;
 			}
 		}
 	}
