@@ -3,9 +3,9 @@ import java.util.ArrayList;
 
 public class Street 
 {
-	public final ArrayList<Point> points;
+	public final ArrayList<MapPoint> points;
 	
-	public Street(ArrayList<Point> points)
+	public Street(ArrayList<MapPoint> points)
 	{
 		this.points = points;
 	}	

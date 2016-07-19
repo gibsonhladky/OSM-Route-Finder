@@ -45,7 +45,7 @@ public class MapView {
 	 */
 	public void drawPoints(List<Point> points) {
 		for (Point p : points) {
-			applet.ellipse(p.x, p.y, 4, 4);
+			applet.ellipse(p.getX(), p.getY(), 4, 4);
 		}
 	}
 
@@ -55,9 +55,9 @@ public class MapView {
 	public void drawStartAndEnd(Point guiStart, Point guiEnd) {
 		applet.fill(0, 0, 0, 0);
 		applet.stroke(0, 255, 0);
-		applet.ellipse(guiStart.x, guiStart.y, 8, 8);
+		applet.ellipse(guiStart.getX(), guiStart.getY(), 8, 8);
 		applet.stroke(255, 0, 0);
-		applet.ellipse(guiEnd.x, guiEnd.y, 8, 8);
+		applet.ellipse(guiEnd.getX(), guiEnd.getY(), 8, 8);
 	}
 	
 	/*
@@ -73,6 +73,6 @@ public class MapView {
 	 * Draws a line on the applet between two points.
 	 */
 	private void drawLineBetween(Point p1, Point p2) {
-		applet.line(p1.x, p1.y, p2.x, p2.y);
+		applet.line(p1.getX(), p1.getY(), p2.getX(), p2.getY());
 	}
 }

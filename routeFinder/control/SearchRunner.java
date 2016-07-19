@@ -1,13 +1,15 @@
 package routeFinder.control;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Document;
 
-import routeFinder.model.AStarSearch;
 import routeFinder.model.Map;
 import routeFinder.model.MapLoader;
+import routeFinder.model.MapPoint;
 import routeFinder.model.Point;
+import search.AStarSearch;
 
 public class SearchRunner {
 	
@@ -20,25 +22,22 @@ public class SearchRunner {
 	public Map map;
 	
 	private AStarSearch search;
-
+	private MapPoint start;
+	private MapPoint end;
 	
 	public SearchRunner() {
 		this.state = SearchState.IDLE;
-	}
-	
-	public boolean searchIsComplete() {
-		return search.isComplete();
+
+		start = new MapPoint(0, 0);
+		end = new MapPoint(0, 0);
 	}
 	
 	public List<Point> searchSolution() {
-		return search.getRoute();
-	}
-	
-	/*
-	 * Returns true if the search has not completed.
-	 */
-	public boolean stillSearching() {
-		return search != null;
+		List<Point> result = new ArrayList<Point>(search.getRoute().size());
+		for(MapPoint each : search.getRoute()) {
+			result.add(each);
+		}
+		return result;
 	}
 	
 	public void openMap(Document mapData, int width, int height) {
@@ -51,9 +50,7 @@ public class SearchRunner {
 	 */
 	public void search() {
 		state = SearchState.SEARCHING;
-		while(! search.isComplete()) {
-			search.exploreNextNode();
-		}
+		search.search();
 	}
 	
 	/*
@@ -61,22 +58,14 @@ public class SearchRunner {
 	 */
 	public void setSearchHeuristic(int heuristic) {
 		state = SearchState.SEARCH_SELECTED;
-		search = new AStarSearch(map.startPoint(), map.endPoint(), heuristic);
+		search = new AStarSearch(start, end, heuristic);
 	}
 	
 	/*
-	 * Updates the map's start and end points based on
-	 * the gui's positions. Moves the gui's over the point
-	 * they refer to.
+	 * Modifies the start and end locations of the search.
 	 */
-	public void changeSearchPoints(Point start, Point end) {
-		// TODO: Decouple from map
-		map.setStartPoint(start);
-		map.setEndPoint(end);
-		
-		start.x = map.startPoint().x;
-		start.y = map.startPoint().y;
-		end.x = map.endPoint().x;
-		end.y = map.endPoint().y;
+	public void setSearchPoints(Point start, Point end) {
+		this.start = map.closestPointTo(start);
+		this.end = map.closestPointTo(end);
 	}
 }

@@ -9,3 +9,7 @@
 /Bounds.class
 /PointLoader.class
 /StreetLoader.class
+/Frontier.class
+/MapPoint.class
+/DraggablePoint.class
+/SearchCriteria.class

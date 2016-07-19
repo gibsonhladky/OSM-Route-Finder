@@ -9,6 +9,8 @@ import org.w3c.dom.Document;
 
 import processing.core.PApplet;
 import routeFinder.control.SearchRunner.SearchState;
+import routeFinder.model.DraggablePoint;
+import routeFinder.model.MapPoint;
 import routeFinder.model.Point;
 import routeFinder.view.MainWindow;
 import routeFinder.view.MapView;
@@ -23,9 +25,9 @@ public class Main extends PApplet {
 	private final float MAP_HEIGHT_RATIO = 0.8f;
 	private final float MAP_WIDTH_RATIO = 1.0f;
 	
-	private Point guiDragging;
-	private Point guiStart;
-	private Point guiEnd;
+	private DraggablePoint guiDragging;
+	private DraggablePoint guiStart;
+	private DraggablePoint guiEnd;
 
 	public Main() {
 		
@@ -107,11 +109,11 @@ public class Main extends PApplet {
 	}
 	
 	private double distanceToMouse(Point point) {
-		return sqr(mouseX - point.x) + sqr(mouseY - point.y);
+		return point.distanceTo(new Point(mouseX, mouseY));
 	}
 	
 	private void placePoints() {
-		searchRunner.changeSearchPoints(guiStart, guiEnd);
+		searchRunner.setSearchPoints(guiStart, guiEnd);
 		guiDragging = null;
 	}
 	
@@ -124,8 +126,7 @@ public class Main extends PApplet {
 	}
 	
 	private void updateDraggedPointPosition() {
-		guiDragging.x = mouseX;
-		guiDragging.y = mouseY;
+		guiDragging.dragTo(mouseX, mouseY);
 	}
 
 	/*
@@ -160,14 +161,9 @@ public class Main extends PApplet {
 	 * Places the GUI points at a starting position on the map.
 	 */
 	private void initializeGuiPoints() {
-		guiStart = new Point(width * 2 / 10, height / 2);
-		guiEnd = new Point(width * 8 / 10, height / 2);
+		guiStart = new DraggablePoint(width * 2 / 10, height / 2);
+		guiEnd = new DraggablePoint(width * 8 / 10, height / 2);
 		placePoints();
-	}
-	
-	
-	private double sqr(double x) {
-		return Math.pow(x, 2);
 	}
 
 	public static void main(String args[]) {
