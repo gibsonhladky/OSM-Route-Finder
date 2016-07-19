@@ -29,29 +29,17 @@ public class SearchPointTest {
 
 	@Test
 	public void compareToFartherPointsProducesNegative() {
-		assertNegative(testPoint.compareTo(fartherPoint()));
+		assertTrue(testPoint.compareTo(fartherPoint()) < 0);
 	}
 	
 	@Test
 	public void compareToSameDistanceProducesZero() {
-		assertZero(testPoint.compareTo(sameDistancePoint()));
+		assertTrue(testPoint.compareTo(sameDistancePoint()) == 0);
 	}
 	
 	@Test
 	public void compareToCloserPointProducesPositive() {
-		assertPositive(testPoint.compareTo(closerPoint()));
-	}
-	
-	private void assertNegative(int value) {
-		assertTrue(value < 0);
-	}
-	
-	private void assertZero(int value) {
-		assertTrue(value == 0);
-	}
-	
-	private void assertPositive(int value) {
-		assertTrue(value > 0);
+		assertTrue(testPoint.compareTo(closerPoint()) > 0);
 	}
 	
 	private SearchPoint fartherPoint() {

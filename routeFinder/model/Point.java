@@ -14,7 +14,7 @@ public class Point {
 	public boolean equals(Object other) {
 		if(other instanceof Point) {
 			Point otherPoint = (Point) other;
-			return this.x == otherPoint.x && this.y == otherPoint.y;
+			return distanceTo(otherPoint) == 0;
 		}
 		return false;
 	}
@@ -36,7 +36,10 @@ public class Point {
 	}
 	
 	public double distanceTo(Point other) {
-		return Math.sqrt(Math.pow(this.x - other.x, 2) + Math.pow(this.y - other.y, 2));
+		return Math.sqrt( sqr(this.x - other.x) + sqr(this.y - other.y) );
 	}
 	
+	private double sqr(double value) {
+		return Math.pow(value, 2);
+	}
 }
