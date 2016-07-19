@@ -118,14 +118,14 @@ class StreetLoader {
 	
 	private void setNeighbors(ArrayList<MapPoint> streetPoints) {
 		if (streetPoints.size() > 1) {
-			streetPoints.get(0).neighbors.add(streetPoints.get(1));
+			streetPoints.get(0).addNeighbor(streetPoints.get(1));
 		}
 		for (int i = 1; i < streetPoints.size() - 1; i++) {
-			streetPoints.get(i).neighbors.add(streetPoints.get(i - 1));
-			streetPoints.get(i).neighbors.add(streetPoints.get(i + 1));
+			streetPoints.get(i).addNeighbor(streetPoints.get(i - 1));
+			streetPoints.get(i).addNeighbor(streetPoints.get(i + 1));
 		}
 		if (streetPoints.size() > 1) {
-			streetPoints.get(streetPoints.size() - 1).neighbors.add(streetPoints.get(streetPoints.size() - 2));
+			streetPoints.get(streetPoints.size() - 1).addNeighbor(streetPoints.get(streetPoints.size() - 2));
 		}
 	}
 	

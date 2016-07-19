@@ -96,7 +96,7 @@ public class AStarSearch {
 	 * can be reached faster through this point, it is updated.
 	 */
 	private void updateFrontierWithNeighborsOf(SearchPoint point) {
-		ArrayList<MapPoint> neighbors = point.mapPoint.neighbors;
+		List<MapPoint> neighbors = point.mapPoint.getNeighbors();
 		for (MapPoint neighbor : neighbors) {
 			SearchPoint newPoint = createSearchPoint(neighbor, point);
 			if (isNewPoint(newPoint)) {

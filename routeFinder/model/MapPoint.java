@@ -1,6 +1,8 @@
 package routeFinder.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /*
  * Representation of a point on a map.
@@ -8,7 +10,7 @@ import java.util.ArrayList;
 public class MapPoint extends Point {
 	
 	// list of points connected to this one by roads
-	public ArrayList<MapPoint> neighbors;
+	private List<MapPoint> neighbors;
 	// temporary variable used to cull unused points
 	public boolean isOnStreet;
 
@@ -16,6 +18,14 @@ public class MapPoint extends Point {
 		super(x, y);
 		neighbors = new ArrayList<MapPoint>();
 		isOnStreet = false;
+	}
+	
+	public List<MapPoint> getNeighbors() {
+		return Collections.unmodifiableList(neighbors);
+	}
+	
+	public void addNeighbor(MapPoint newNeighbor) {
+		neighbors.add(newNeighbor);
 	}
 
 }
