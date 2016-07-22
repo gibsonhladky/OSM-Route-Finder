@@ -1,9 +1,12 @@
-package routeFinder.model;
+package loading;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import routeFinder.model.Bounds;
+import routeFinder.model.Map;
 
 /*
  * MapLoader loads data from a Document and interprets the

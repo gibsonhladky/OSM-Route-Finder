@@ -5,8 +5,8 @@ import java.util.List;
 
 import org.w3c.dom.Document;
 
+import loading.MapLoader;
 import routeFinder.model.Map;
-import routeFinder.model.MapLoader;
 import routeFinder.model.MapPoint;
 import routeFinder.model.Point;
 import search.AStarSearch;
